@@ -8,15 +8,15 @@
 #define M_ROAD 2
 
 //resource
-uint8_t rock = 19;
-uint8_t wood = 19;
-uint8_t wheat = 19;
-uint8_t brick = 19;
-uint8_t wool = 19;
+static uint8_t rock = 19;
+static uint8_t wood = 19;
+static uint8_t wheat = 19;
+static uint8_t brick = 19;
+static uint8_t wool = 19;
 //develope card
-uint8_t knight_card = 14;
-uint8_t progress_card = 6;
-uint8_t score_card = 5;
+static uint8_t knight_card = 14;
+static uint8_t progress_card = 6;
+static uint8_t score_card = 5;
 
 typedef struct _sPlayer1{
     uint8_t rock;
