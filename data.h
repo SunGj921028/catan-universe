@@ -7,16 +7,14 @@
 #define M_KNIGHT 2
 #define M_ROAD 2
 
-//resource
-static uint8_t rock = 19;
-static uint8_t wood = 19;
-static uint8_t wheat = 19;
-static uint8_t brick = 19;
-static uint8_t wool = 19;
-//develope card
-static uint8_t knight_card = 14;
-static uint8_t progress_card = 6;
-static uint8_t score_card = 5;
+#define ROCK_REMAIN 19
+#define WOOD_REMAIN 19
+#define WHEAT_REMAIN 19
+#define BRICK_REMAIN 19
+#define WOOL_REMAIN 19
+#define KNIGHT_CARD_REMAIN 14
+#define PROGESS_CARD_REAMIN 6
+#define SCORE_CARD_REMAIN 5
 
 typedef struct _sPlayer1{
     uint8_t rock;
