@@ -33,10 +33,10 @@ int progress_remain[3] = {2,2,2};
 //develop_card_remain
 int develop_card_remain = KNIGHT_CARD_REMAIN + SCORE_CARD_REMAIN + PROGESS_CARD_REAMIN;
 //player
-sPlayer * you;
-sPlayer * A;
-sPlayer * B;
-sPlayer * C;
+sPlayer * p1;
+sPlayer * p2;
+sPlayer * p3;
+sPlayer * p4;
 
 void title(){
     CLEAR;

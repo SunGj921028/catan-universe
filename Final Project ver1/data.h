@@ -57,9 +57,9 @@ typedef struct _sPlayer{
 
 sPlayer * player_init();
 
-extern sPlayer * you;
-extern sPlayer * A;
-extern sPlayer * B;
-extern sPlayer * C;
+extern sPlayer * p1;
+extern sPlayer * p2;
+extern sPlayer * p3;
+extern sPlayer * p4;
 
 #endif

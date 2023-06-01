@@ -21,10 +21,10 @@ extern int develop_card_order[25];
 extern int develop_index;
 
 //player
-// extern sPlayer * you;
-// extern sPlayer * A;
-// extern sPlayer * B;
-// extern sPlayer * C;
+// extern sPlayer * p1;
+// extern sPlayer * p2;
+// extern sPlayer * p3;
+// extern sPlayer * p4;
 
 void get_develop_card(sPlayer * player){
     if(develop_index==0){

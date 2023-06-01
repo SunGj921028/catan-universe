@@ -7,10 +7,10 @@ extern int region[19];
 extern int develop_card_order[25];
 extern int develop_index;
 
-extern sPlayer * you;
-extern sPlayer * A;
-extern sPlayer * B;
-extern sPlayer * C;
+extern sPlayer * p1;
+extern sPlayer * p2;
+extern sPlayer * p3;
+extern sPlayer * p4;
 
 void print_init(){
     printf("-------------\n");
