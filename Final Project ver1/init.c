@@ -23,7 +23,7 @@ void init_region(){
 }
 
 //標板塊數字
-void land_num_initial(){
+void region_num_initial(){
     for(int i=0;i<19;i++){
         region[i]=-1;
     }//初始化成-1

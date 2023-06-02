@@ -78,12 +78,12 @@ int main(int argc, char *argv[]){
             //init_map();
             //print_map();
             init_region();
-            land_num_initial();
+            region_num_initial();
             develop_card_init();
-            you = player_init();
-            A = player_init();
-            B = player_init();
-            C = player_init();
+            p1 = player_init();
+            p2 = player_init();
+            p3 = player_init();
+            p4 = player_init();
             print_init();
         }
         return 0;

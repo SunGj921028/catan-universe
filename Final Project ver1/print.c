@@ -28,9 +28,9 @@ void print_init(){
         printf("%d %d\n",develop_card_order[i],develop_index++);
     }
     printf("-------------\n");
-    printf("%u\n",you->build_card);
-    printf("%u\n",A->iron);
-    printf("%u\n",B->city.city_hand);
-    printf("%u\n",C->road.road_hand);
+    printf("%u\n",p1->build_card);
+    printf("%u\n",p2->iron);
+    printf("%u\n",p3->city.city_hand);
+    printf("%u\n",p4->road.road_hand);
     return;
 }

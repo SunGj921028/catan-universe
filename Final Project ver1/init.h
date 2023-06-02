@@ -29,7 +29,7 @@ int32_t startup();
 //region
 void init_region();
 //標板塊數字
-void land_num_initial();
+void region_num_initial();
 //發展卡洗牌
 void develop_card_init();
 //print function

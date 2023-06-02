@@ -1,5 +1,4 @@
-#ifndef __data_H
-#define __data_H
+#pragma once
 
 #define VILLAGE_POINT 1
 #define CITY_POINT 2
@@ -61,5 +60,3 @@ extern sPlayer * p1;
 extern sPlayer * p2;
 extern sPlayer * p3;
 extern sPlayer * p4;
-
-#endif
