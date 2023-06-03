@@ -59,7 +59,7 @@ void develop_card_init(){
 //player init
 sPlayer * player_init(){
     sPlayer *pPlayer = calloc(1,sizeof(sPlayer));
-    pPlayer->iron = 10;
+    pPlayer->iron = 0;
     pPlayer->wood = 0;
     pPlayer->wheat = 0;
     pPlayer->brick = 0;
