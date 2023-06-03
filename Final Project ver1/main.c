@@ -24,7 +24,7 @@ int resource[5] = {
     19    //sheep
 };
 //knight remain
-int knight = KNIGHT_CARD_REMAIN;
+int knight_remain = KNIGHT_CARD_REMAIN;
 //score remani
 int score_remain = SCORE_CARD_REMAIN;
 //progress remain
