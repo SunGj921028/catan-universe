@@ -37,6 +37,7 @@ sPlayer * p1;
 sPlayer * p2;
 sPlayer * p3;
 sPlayer * p4;
+sPlayer *Player[4]={p1,p2,p3,p4};
 
 void title(){
     CLEAR;
