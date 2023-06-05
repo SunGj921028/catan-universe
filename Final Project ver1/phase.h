@@ -10,6 +10,7 @@
 void throw_dice(sPlayer * player);
 //dice random
 int32_t dice();
+int first=0;
 //search and judge to take the resource
 void take_resource(sPlayer * player, int32_t dice);
 
