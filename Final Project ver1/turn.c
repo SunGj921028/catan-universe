@@ -76,7 +76,7 @@ void first_sec_turn(){
 	}//設回第二輪最後一個放的人開始
 }
 
-void turn_process(sPlayer *p){
+void turn_process(sPlayer *p){//參數代Player[first] first是全域會自己變
 	int end=0;
 	throw_dice(p);
 	char action[2];
