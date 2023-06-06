@@ -22,7 +22,7 @@ extern int progress_remain[3];
 extern int score_remain;
 //develop_card_remain
 extern int develop_card_remain;
-
+int first=0;
 //初始頁面
 int32_t startup();
 
