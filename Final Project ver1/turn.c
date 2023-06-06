@@ -120,6 +120,7 @@ void turn_process(sPlayer *p){//參數代Player[first] first是全域會自己�
 			  		p->sheep--;
 			  		p->wheat--;
 			  		p->rock--;
+					p->hand-=3;
 			  	}
 			  }
 			  else{
