@@ -90,7 +90,7 @@ void turn_process(sPlayer *p){//參數代Player[first] first是全域會自己�
 			  break;
 			
 			case '1':
-			  //trade();
+			  trade(p);
 			  break;
 			
 			case '2':
