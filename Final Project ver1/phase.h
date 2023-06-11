@@ -23,9 +23,6 @@ void take_resource_dice(int32_t harvest_resource[2][5]);
 void get_develop_card(sPlayer * player);
 bool judge_buy_card(sPlayer * player);
 
-//player
-void player_move();
-
 //ai
 void ai_move(int p);
 bool judge_ai_action(uint8_t action, uint8_t player_number);
