@@ -1,10 +1,9 @@
-#include<stdio.h>
-#include<stdint.h>
-#include<stdlib.h>
-#include<time.h>
 #include"init.h"
 #include"data.h"
 #include"choose.h"
+#include"phase.h"
+#include<stdio.h>
+#include<stdint.h>
 
 /*0:沙漠 1:丘陵() 2:山脈() 3:草原(sheep) 4:森林(wood) 5:麥田(wheat)*/
 int source_region[19] = {0 ,1,1,1, 2,2,2, 3,3,3,3, 4,4,4,4, 5,5,5,5};
@@ -37,6 +36,7 @@ sPlayer * p1;
 sPlayer * p2;
 sPlayer * p3;
 sPlayer * p4;
+//sPlayer *Player[4]={p1,p2,p3,p4};
 
 void title(){
     CLEAR;
@@ -71,22 +71,35 @@ int32_t startup(){
 
 int main(int argc, char *argv[]){
     srand(time(NULL));
+    //build turn 1 and 2
+    bool build = false;
     title();
-    while(1){
-        if(startup()){
-            CLEAR;
-            //init_map();
-            //print_map();
-            init_region();
-            region_num_initial();
-            develop_card_init();
-            p1 = player_init();
-            p2 = player_init();
-            p3 = player_init();
-            p4 = player_init();
-            print_init();
+    if(startup()){
+        CLEAR;
+        //map_init();
+        //print_map();
+        init_region();
+        region_num_initial();
+        develop_card_init();
+        p1 = player_init();
+        p2 = player_init();
+        p3 = player_init();
+        p4 = player_init();
+        //throw_dice(p1,1);
+        //print_init();
+        build = false;
+        uint8_t count = 1;
+        while(1){
+            //if(!build) {first_sec_turn(), build = true;}
+            if((count%5) == 1){
+                printf("Player move\n");
+                //player_move();
+            }else{
+                ai_move(count%5); //2 3 4
+            }
+            count += 1;
+            if(count == 5) {count = 1;}
         }
-        return 0;
     }
     return 0;
 }

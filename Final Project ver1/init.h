@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 /*0:沙漠 1:丘陵 2:山脈 3:草原 4:森林 5:麥田*/
 extern int source_region[19];
@@ -12,7 +13,7 @@ extern int region[19];
 //0 knight(14) 1 progress(6) 2 score(5)
 extern int develop_card_order[25];
 extern int develop_index;
-//0 rock 1 wood 2 wheat 3 brick 4 sheep
+//0 iron 1 wood 2 wheat 3 brick 4 sheep
 extern int resource[5];//sum is 95
 //knight storage
 extern int knight_remain;
@@ -25,7 +26,6 @@ extern int develop_card_remain;
 
 //初始頁面
 int32_t startup();
-
 //region
 void init_region();
 //標板塊數字

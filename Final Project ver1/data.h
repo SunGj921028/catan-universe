@@ -18,26 +18,26 @@
 #include<stdint.h>
 
 typedef struct _sVillage{
-    uint8_t village_hand;
+    uint8_t village_hand;//5
     uint8_t village_build;
 } sVillage;
 
 typedef struct _sCity{
-    uint8_t city_hand;
+    uint8_t city_hand;//4
     uint8_t city_build;
 } sCity;
 
 typedef struct _sRoad{
-    uint8_t road_hand;
+    uint8_t road_hand;//15
     uint8_t road_build;
 } sRoad;
 
 typedef struct _sPlayer{
-    uint8_t iron;
+    uint8_t iron;//0
     uint8_t wood;
     uint8_t wheat;
     uint8_t brick;
-    uint8_t sheep;
+    uint8_t sheep;//4
     uint8_t knight;      //騎士卡(0)
     uint8_t U_knight;
     uint8_t harvest_card;//豐收之年(1)

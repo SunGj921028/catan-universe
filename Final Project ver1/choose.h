@@ -5,7 +5,6 @@
 #include <termios.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#define CLEAR printf("\033[H\033[2J"); //clear terminal
 
 int getch() {
     int ch;

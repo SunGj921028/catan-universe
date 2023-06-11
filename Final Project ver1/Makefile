@@ -1,2 +1,2 @@
 all:
-	gcc *.c -o catan
+	gcc *.c -lm -o catan
