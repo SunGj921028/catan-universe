@@ -127,9 +127,9 @@ void print_player_hands(sPlayer * player, uint8_t n){
         char state_with_player_number[60] = {0};
         sprintf(state_with_player_number,"player %u's resource card in hand:",n);
         printf("%s\n",state_with_player_number);
-        printf(GRAY"iron "WHITE"wood "YELLOW"wheat "RED"brick " L_GREEN"sheep");
+        printf(PURPLE"iron "CYAN"wood "YELLOW"wheat "RED"brick " L_GREEN"sheep");
         printf("\n");
-        printf(GRAY"%4d "WHITE"%4d "YELLOW"%5d "RED"%5d "L_GREEN"%5d",player->iron,player->wood,player->wheat,player->brick,player->sheep);
+        printf(PURPLE"%4d "CYAN"%4d "YELLOW"%5d "RED"%5d "L_GREEN"%5d",player->iron,player->wood,player->wheat,player->brick,player->sheep);
         printf(WHITE"\n");
         char number_requested_sentence[60] = {0};
         sprintf(number_requested_sentence,"You need to throw %d resource cards!!\n",num);

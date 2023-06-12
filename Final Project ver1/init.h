@@ -21,8 +21,11 @@ extern int knight_remain;
 extern int progress_remain[3];
 //score remain
 extern int score_remain;
-//develop_card_remain
-extern int develop_card_remain;
+//develop_card_keep
+extern int develop_card_keep;
+
+//player order
+extern int first_player;
 
 //初始頁面
 int32_t startup();
@@ -33,4 +36,4 @@ void region_num_initial();
 //發展卡洗牌
 void develop_card_init();
 //print function
-void print_init();
+void print_init(uint8_t p);

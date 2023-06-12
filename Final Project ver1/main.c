@@ -1,6 +1,7 @@
 #include"init.h"
 #include"data.h"
 #include"choose.h"
+#include"color.h"
 #include"phase.h"
 #include<stdio.h>
 #include<stdint.h>
@@ -30,7 +31,9 @@ int score_remain = SCORE_CARD_REMAIN;
 //0 -> harvest, 1 -> build, 2 -> steal
 int progress_remain[3] = {2,2,2};
 //develop_card_remain
-int develop_card_remain = KNIGHT_CARD_REMAIN + SCORE_CARD_REMAIN + PROGESS_CARD_REAMIN;
+int develop_card_remain = -1;
+//player order
+int first_player = 0;
 //player
 sPlayer * p1;
 sPlayer * p2;
@@ -59,7 +62,7 @@ int32_t startup(){
         }else if(a=='s' || a=='S'){
             return 1;
         }else if(a=='q' || a=='Q'){
-            printf("\n");
+            printf(RED"Game End!!\e[0m\n");
             exit(0);
         }else{
             continue;
@@ -86,18 +89,22 @@ int main(int argc, char *argv[]){
         p3 = player_init();
         p4 = player_init();
         //throw_dice(p1,1);
-        //print_init();
         build = false;
-        uint8_t count = 1;
+        uint8_t count = 0;
         while(1){
-            //if(!build) {first_sec_turn(), build = true;}
+            if(!build) {first_sec_turn(), count = (first_player + 1), build = true;}
+            printf("Start from player %d.\n",count);
             if((count%5) == 1){
                 printf("Player move\n");
-                //player_move();
+                player_move();
+                return 0;
             }else{
-                ai_move(count%5); //2 3 4
+                //ai_move(count%5); //2 3 4
+                //sleep(1);
             }
             count += 1;
+            score();
+            //print_init(count%5);
             if(count == 5) {count = 1;}
         }
     }

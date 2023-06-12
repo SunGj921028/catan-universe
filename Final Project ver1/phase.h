@@ -4,11 +4,18 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdbool.h>
+#include<unistd.h>
 #include<time.h>
 #include"data.h"
 
-#define PASS printf("------------------------------>\n")
+#define PASS printf("----------------------------------->\n")
 #define CLEAR printf("\033[H\033[2J") //clear terminal
+
+//first round and second round
+void first_sec_turn();
+
+//score
+void score(uint8_t p);
 
 //play dice
 //take resource and see the pirate's move
@@ -20,11 +27,9 @@ int32_t dice();
 void take_resource_dice(int32_t harvest_resource[2][5]);
 
 //get develop card
-void get_develop_card(sPlayer * player);
+void get_develop_card(sPlayer * player, uint8_t player_number);
 bool judge_buy_card(sPlayer * player);
-
-//player
-void player_move();
+void save_develop_card(uint8_t p);
 
 //ai
 void ai_move(int p);
@@ -40,3 +45,8 @@ void move_thief(sPlayer * player, uint8_t is_ai);
 
 //real player
 void player_move();
+
+//trade
+void list_can_trade(sPlayer * player, uint8_t trade_option);
+bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type);
+void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type);
