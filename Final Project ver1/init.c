@@ -66,7 +66,7 @@ sPlayer * player_init(){
     pPlayer->sheep = 5;
     pPlayer->knight = 0;
     pPlayer->U_knight = 0;
-    pPlayer->harvest_card = 0;
+    pPlayer->harvest_card = 1;
     pPlayer->build_card = 0;
     pPlayer->steal_card = 1;
     pPlayer->score_card = 1;

@@ -89,7 +89,7 @@ void get_develop_card(sPlayer * player, uint8_t player_number){
     resource[2]++;
     resource[4]++;
     printf("%u %u %u %u\n",player->knight,player->harvest_card,player->build_card,player->steal_card);
-    printf(PURPLE"Player %d buy a develop card!!\e[0m\n",player_number);
+    printf(PURPLE"~~Player %d buy a develop card!!\e[0m\n",player_number);
     printf("---------------\n");
     keep_index++;
     develop_index++;
@@ -100,10 +100,10 @@ void develop_card_state(sPlayer * player, uint8_t player_number, uint8_t is_ai)
 {
     if(is_ai==0)
     {
-        printf("Player %d :\n",player_number);
-        printf(GREEN"knight(0) "YELLOW"harvest_card(1) "L_BLUE"build_card(2) "RED"steal_card(3) " L_GREEN"score_card(4)");
+        printf("*Player %d :\n",player_number);
+        printf(GREEN"knight(0) "YELLOW"harvest_card(1) "L_BLUE"build_card(2) "RED"steal_card(3) ");
         printf("\n");
-        printf(GREEN"%9d "YELLOW"%15d "L_BLUE"%13d "RED"%13d "L_GREEN"%13d",player->knight,player->harvest_card,player->build_card,player->steal_card,player->score_card);
+        printf(GREEN"%9d "YELLOW"%15d "L_BLUE"%13d "RED"%13d",player->knight,player->harvest_card,player->build_card,player->steal_card);
         printf("\n");
         printf(GREEN"used_knight ");
         printf("\n");
@@ -127,7 +127,7 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
 {
     int32_t take_resource1 = 0;  
     int8_t count = 1;
-    printf(RED"Player %d uses the harvest_card\e[0m\n",p);
+    printf(RED"*Player %d uses the harvest_card\e[0m\n",p);
     while(count<3)
     {
         while(1)
@@ -148,8 +148,8 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
 
             if(resource[take_resource1]==0)
             {
-                printf("the resuorce you choose is none left\n");
-                printf("you should change your input\n");
+                printf("->the resuorce you choose is none left\n");
+                printf("->you should change your input\n");
                 continue;
             }
             else
@@ -193,7 +193,7 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
     int32_t road = 0;
     if(is_ai==0)
     {
-        printf("Player 1 uses the build_card\n");
+        printf("*Player 1 uses the build_card\n");
         while(count<3)
         {
             while(1)
@@ -211,7 +211,7 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
     }
     else if(is_ai==1)//ai的部份
     {    
-        printf("Player %d uses the build_card\n",player_number);
+        printf("*Player %d uses the build_card\n",player_number);
         while(count<3)
         {
             while(1)
@@ -233,7 +233,7 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
 {
     int32_t take_resource2 = 0;
     int32_t get_resource = 0;
-    printf("Player %d uses the steal_card\n",player_number);
+    printf("*Player %d uses the steal_card\n",player_number);
     while(1)
     {
         if(is_ai==0){
@@ -330,27 +330,27 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
 bool error_detect_use_card_state(sPlayer * player,int8_t card_serial_number, uint8_t is_ai)
 {
     if(player->U_develop == 1){
-        if(!is_ai){ printf(RED"You have use one develop card in this turn!!\e[0m\n");}
+        if(!is_ai){ printf(RED"!!But You have use one develop card in this turn!!\e[0m\n");}
         return false;
     }
     if(card_serial_number==0){
         if(player->knight==0){
-            if(!is_ai){ printf(RED"You don't have Knight Card!!\e[0m\n");}
+            if(!is_ai){ printf(RED"!!But You don't have Knight Card!!\e[0m\n");}
             return false;
         }
     }else if(card_serial_number==1){
         if(player->harvest_card==0){
-            if(!is_ai){ printf(RED"You don't have Harvest Card!!\e[0m\n");}
+            if(!is_ai){ printf(RED"!!But You don't have Harvest Card!!\e[0m\n");}
             return false;
         }
     }else if(card_serial_number==2){
         if(player->build_card==0){
-            if(!is_ai){ printf(RED"You don't have Build Card!!\e[0m\n");}
+            if(!is_ai){ printf(RED"!!But You don't have Build Card!!\e[0m\n");}
             return false;
         }
     }else if(card_serial_number==3){
         if(player->steal_card==0){
-            if(!is_ai){ printf(RED"You don't have Steal Card!!\e[0m\n");}
+            if(!is_ai){ printf(RED"!!But You don't have Steal Card!!\e[0m\n");}
             return false;
         }
     }
@@ -365,14 +365,13 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
     else if(player_number==2){player_steal = 2, player = p2;}
     else if(player_number==3){player_steal = 3, player = p3;}
     else if(player_number==4){player_steal = 4, player = p4;}
-    printf(RED"Player %d want to use develop card\e[0m\n",player_number);
+    printf(L_PURPLE"->Player %d want to use develop card\e[0m\n",player_number);
     if(error_detect_use_card_state(player,card_serial_number,is_ai))
     {
         if((card_serial_number==0))
         {
             player->knight--;
             knight_card(player,player_number,is_ai);
-            printf("Ending the use card state\n");
             player->U_develop = 1;
             return 0;
         }
@@ -380,15 +379,13 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
         {
             player->harvest_card--;
             harvest_card(player,player_number,is_ai);
-            printf("Ending the use card state\n");
             player->U_develop = 1;
             return 0;                       
         }
         else if((card_serial_number==2))
         {
             player->build_card--;
-            build_card(player,player_number,is_ai); 
-            printf("Ending the use card state\n");
+            build_card(player,player_number,is_ai);
             player->U_develop = 1;                
             return 0;                        
         }
@@ -399,15 +396,9 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             else if(player_steal==2){steal_card(player,p1,p3,p4,player_number,is_ai);}
             else if(player_steal==3){steal_card(player,p1,p2,p4,player_number,is_ai);}
             else if(player_steal==4){steal_card(player,p1,p2,p3,player_number,is_ai);}
-            printf("Ending the use card state\n");
             player->U_develop = 1;
             return 0;
         }
     }
-    else
-    {
-        printf("Error,using the wrong card\n");
-        printf("Ending the use card state\n");
-        return -1;
-    }
+    return -1;
 }
