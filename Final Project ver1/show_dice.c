@@ -1,4 +1,4 @@
-#include ""
+#include "phase.h"
 void show_dice(int dice){
 	CLEAR
 	int ran;
