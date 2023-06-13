@@ -10,7 +10,7 @@ extern sPlayer * p4;
 extern int resource[5];//sum is 95
 
 //dice == 7
-uint8_t count = 0;
+//uint8_t count = 0;
 void throw_card(sPlayer * player, uint8_t arr[], size_t n){
     PASS;
     for(int i = 0;i < n; i++){
@@ -172,6 +172,7 @@ void check_hand(){
 void move_thief(sPlayer * player, uint8_t is_ai){
     if(!is_ai){
     }else{}
+    return;
 }
 
 void thief_action(sPlayer * player, uint8_t is_ai){

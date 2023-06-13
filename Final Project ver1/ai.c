@@ -18,7 +18,8 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
     else if(player_number==3) {player = p3;}
     else {player = p4;}
     //0->get        1->use         2->road
-    //3->village    4->upgrade     5->trade(bank)     6->trade(harbor)
+    //3->village    4->upgrade     5->trade(bank)
+    //6->trade(harbor)(2:1)     7->trade(harbor)(3:1)
     if(action==0){
         if(judge_buy_card(player)){ return true;}
     }else if(action==1){
@@ -39,14 +40,21 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         //build village
     }else if(action==4){
         //upgrade village
-    }else if(action==5 || action==6){
-        int option = (action==5) ? 1 : 2;
+    }else if(action==5 || action==6 || action==7){
+        int32_t option = 0;
+        if(action!=5){ option = (action==6) ? 2 : 3;}
+        else { option = 1;}
         printf("option is %d\n",option);
-        if(trade_judge(player,option,0)){ trade(player,option,0); return true;}
-        if(trade_judge(player,option,1)){ trade(player,option,1); return true;}
-        if(trade_judge(player,option,2)){ trade(player,option,2); return true;}
-        if(trade_judge(player,option,3)){ trade(player,option,3); return true;}
-        if(trade_judge(player,option,4)){ trade(player,option,4); return true;}
+        uint8_t resource_type[5] = {0};
+        for(int i=0;i<5;i++){
+            int j = i + rand()/(RAND_MAX/(5-i)+1);
+            int temp = resource_type[j];
+            resource_type[j] = resource_type[i];
+            resource_type[i] = temp;
+        }
+        for(int i=0;i<5;i++){
+            if(trade_judge(player,option,resource_type[i])){ trade(player,1,resource_type[i],option); return true;}
+        }
     }
 
     return false;
@@ -68,14 +76,14 @@ void ai_move(int p){
     while(again_action){
         //random action order
         //can reset ai's hard
-        uint8_t action[7] = {0,1,2,3,4,5,6};
-        for(int i=0;i<7;i++){
-            int j = i + rand()/(RAND_MAX/(7-i)+1);
+        uint8_t action[8] = {0,1,2,3,4,5,6,7};
+        for(int i=0;i<8;i++){
+            int j = i + rand()/(RAND_MAX/(8-i)+1);
             int temp = action[j];
             action[j] = action[i];
             action[i] = temp;
         }
-        for(int i=0;i<7;i++){
+        for(int i=0;i<8;i++){
             if(judge_ai_action(action[i],p)){
                 uint8_t can = rand() % 3;
                 //2/3 will do this action
@@ -109,7 +117,9 @@ void ai_move(int p){
                     }else if(i==5){
                         printf(RED"Player %d chooses to trade with bank!!\e[0m\n",p);
                     }else if(i==6){
-                        printf(RED"Player %d chooses to trade with harbor!!\e[0m\n",p);
+                        printf(RED"Player %d chooses to trade with harbor(2:1)!!\e[0m\n",p);
+                    }else if(i==7){
+                        printf(RED"Player %d chooses to trade with harbor(3:1)!!\e[0m\n",p);
                     }
                 }
             }

@@ -108,7 +108,7 @@ void player_move(){
                         printf("Which 4 same resource do you want to give ? (0-4): ");
                         scanf("%d",&trade_cho_give);
                         if(trade_judge(p1,1,trade_cho_give)){
-                            trade(p1,0,trade_cho_give);
+                            trade(p1,0,trade_cho_give,1);
                             break;
                         }else{
                             printf("-->You can't use this resource to trade with Bank!!\n");
@@ -123,6 +123,15 @@ void player_move(){
                     }
                 }else if(cho_move==2){
                     //harbor
+                    //list the harbor you can trade and ask which or do you want
+                    int32_t harbor_cho = 0;
+                    printf("Which harbor you want to trade with ? (): ");
+                    //scanf("%d",&harbor_cho);
+                    //get 2 or 3 ->cho_type
+                    //list_can_trade(p1,cho_type);
+                    int32_t res_cho = 0;
+                    printf("Which same resource do you want to give ? (0-4): ");
+                    //scanf("%d",&res_cho);
                 }else{
                     printf(RED"Wrong Input!!\e[0m\n");
                 }

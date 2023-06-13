@@ -144,6 +144,7 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
                 }
             }else{
                 take_resource1 = rand() % 5;
+                break;
             }
 
             if(resource[take_resource1]==0)
@@ -251,6 +252,7 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
             }
         }else{
             take_resource2 = rand() % 5;
+            break;
         }
     }
     if(take_resource2==0)

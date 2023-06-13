@@ -156,44 +156,47 @@ void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
 
 void list_can_trade(sPlayer * player, uint8_t trade_option){
     //1->bank
-    //2->harbor
+    //2->harbor(2:1)
+    //3->harbor(3:1)
     bool line = false;
-    if(trade_option==1){
-        printf("___________________________________\n");
-        if(player->iron >= 4){
-            line = true;
-            printf("|");
-            printf(PURPLE"You can use iron to trade.\e[0m\t  ");
-            printf("|\n");
-        }
-        if(player->wood >= 4){
-            line = true;
-            printf("|");
-            printf(CYAN"You can use wood to trade.\e[0m\t  ");
-            printf("|\n");
-        }
-        if(player->wheat >= 4){
-            line = true;
-            printf("|");
-            printf(YELLOW"You can use wheat to trade.\e[0m\t  ");
-            printf("|\n");
-        }
-        if(player->brick >= 4){
-            line = true;
-            printf("|");
-            printf(RED"You can use brick to trade.\e[0m\t  ");
-            printf("|\n");
-        }
-        if(player->sheep >= 4){
-            line = true;
-            printf("|");
-            printf(L_GREEN"You can use wool(sheep) to trade.\e[0m");
-            printf("|\n");
-        }
-        if(line){
-            printf("-----------------------------------\n");
-        }
-    }else{}
+    uint8_t number_you_need = 0;
+    if(trade_option==1){ number_you_need = 4;}
+    else if(trade_option==2){ number_you_need = 2;}
+    else{ number_you_need = 3;}
+    printf("___________________________________\n");
+    if(player->iron >= number_you_need){
+        line = true;
+        printf("|");
+        printf(PURPLE"You can use iron to trade.\e[0m\t  ");
+        printf("|\n");
+    }
+    if(player->wood >= number_you_need){
+        line = true;
+        printf("|");
+        printf(CYAN"You can use wood to trade.\e[0m\t  ");
+        printf("|\n");
+    }
+    if(player->wheat >= number_you_need){
+        line = true;
+        printf("|");
+        printf(YELLOW"You can use wheat to trade.\e[0m\t  ");
+        printf("|\n");
+    }
+    if(player->brick >= number_you_need){
+        line = true;
+        printf("|");
+        printf(RED"You can use brick to trade.\e[0m\t  ");
+        printf("|\n");
+    }
+    if(player->sheep >= number_you_need){
+        line = true;
+        printf("|");
+        printf(L_GREEN"You can use wool(sheep) to trade.\e[0m");
+        printf("|\n");
+    }
+    if(line){
+        printf("-----------------------------------\n");
+    }
     //printf("------------------>\n");
     printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
     // printf(PURPLE"0 -> iron\n");
@@ -215,10 +218,16 @@ bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type){
     if(trade_option==1){
         if(resource_to_trade >= 4){ return true;}
         else{ return false;}
-    }else{}
+    }else if(trade_option==2){//2:1
+        if(resource_to_trade >= 2){ return true;}
+        else{ return false;}
+    }else if(trade_option==3){//3:1
+        if(resource_to_trade >= 3){ return true;}
+        else{ return false;}
+    }
 }
 
-void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type){
+void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_type){
     int32_t trade_cho = -1;
     uint8_t *temp[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
     if(!is_ai){
@@ -230,11 +239,26 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type){
             if(trade_cho!=give_type){ break;}
         }
     }
-    *(temp[give_type]) -= 4;
-    *(temp[trade_cho]) += 1;
-    player->hand -= 3;
-    resource[give_type] += 4;
-    resource[trade_cho] -= 1;
+    if(trade_type==1){//bank
+        *(temp[give_type]) -= 4;
+        *(temp[trade_cho]) += 1;
+        player->hand -= 3;
+        resource[give_type] += 4;
+        resource[trade_cho] -= 1;
+    }else if(trade_type==2){//harbor(2:1)
+        *(temp[give_type]) -= 2;
+        *(temp[trade_cho]) += 1;
+        player->hand -= 1;
+        resource[give_type] += 2;
+        resource[trade_cho] -= 1;
+    }else if(trade_type==3){//harbor(3:1)
+        *(temp[give_type]) -= 3;
+        *(temp[trade_cho]) += 1;
+        player->hand -= 2;
+        resource[give_type] += 3;
+        resource[trade_cho] -= 1;
+    }
+
     printf("%d %d %d %d %d\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
     printf("%d\n",player->hand);
     return;
