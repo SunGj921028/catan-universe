@@ -2,6 +2,7 @@
 #include"data.h"
 #include"init.h"
 #include"color.h"
+#include"card.h"
 
 extern sPlayer * p1;
 extern sPlayer * p2;
@@ -21,7 +22,17 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
     if(action==0){
         if(judge_buy_card(player)){ return true;}
     }else if(action==1){
+        //can reset ai's hard
         //use
+        uint8_t chance = 0;
+        uint8_t cho_of_card = 0;
+        uint8_t cho_arr[4] = {0};
+        while(chance<4){
+            cho_of_card = rand() % 4;
+            if(cho_arr[cho_of_card]!=0){ continue;}
+            if(use_card_state(player_number,cho_of_card,1)==-1){ cho_arr[cho_of_card]++;}
+            chance++;
+        }
     }else if(action==2){
         //build road
     }else if(action==3){
@@ -56,12 +67,13 @@ void ai_move(int p){
     uint8_t again_action = 1;
     while(again_action){
         //random action order
+        //can reset ai's hard
         uint8_t action[7] = {0,1,2,3,4,5,6};
         for(int i=0;i<7;i++){
-            int j=i+rand()/(RAND_MAX/(7-i)+1);
-            int temp=action[j];
-            action[j]=action[i];
-            action[i]=temp;
+            int j = i + rand()/(RAND_MAX/(7-i)+1);
+            int temp = action[j];
+            action[j] = action[i];
+            action[i] = temp;
         }
         for(int i=0;i<7;i++){
             if(judge_ai_action(action[i],p)){
@@ -104,8 +116,8 @@ void ai_move(int p){
         }
         again_action = rand() % 2;
     }
-    if(develop_card_keep!=-1){
+    if(keep_index!=0){
         save_develop_card(p);
-        develop_card_keep = -1;
+        player->U_develop = 0;
     }
 }

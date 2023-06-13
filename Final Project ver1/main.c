@@ -2,6 +2,7 @@
 #include"data.h"
 #include"choose.h"
 #include"color.h"
+#include"card.h"
 #include"phase.h"
 #include<stdio.h>
 #include<stdint.h>
@@ -30,8 +31,9 @@ int score_remain = SCORE_CARD_REMAIN;
 //progress remain
 //0 -> harvest, 1 -> build, 2 -> steal
 int progress_remain[3] = {2,2,2};
-//develop_card_remain
-int develop_card_remain = -1;
+//develop_card_keep
+int develop_card_keep[10] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+int keep_index = 0;
 //player order
 int first_player = 0;
 //player
@@ -94,17 +96,20 @@ int main(int argc, char *argv[]){
         while(1){
             if(!build) {first_sec_turn(), count = (first_player + 1), build = true;}
             printf("Start from player %d.\n",count);
+            //test
+            count = 1;
             if((count%5) == 1){
                 printf("Player move\n");
                 player_move();
-                return 0;
             }else{
                 //ai_move(count%5); //2 3 4
-                //sleep(1);
+                //sleep(2);
             }
-            count += 1;
-            score();
-            //print_init(count%5);
+            //count += 1;
+            score(count%5);
+            PASS;
+            print_init(count%5);
+            return 0;
             if(count == 5) {count = 1;}
         }
     }

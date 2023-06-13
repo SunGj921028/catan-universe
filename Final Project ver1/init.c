@@ -59,17 +59,17 @@ void develop_card_init(){
 //player init
 sPlayer * player_init(){
     sPlayer *pPlayer = calloc(1,sizeof(sPlayer));
-    pPlayer->iron = 0;
-    pPlayer->wood = 0;
-    pPlayer->wheat = 0;
-    pPlayer->brick = 0;
-    pPlayer->sheep = 0;
+    pPlayer->iron = 5;
+    pPlayer->wood = 5;
+    pPlayer->wheat = 5;
+    pPlayer->brick = 5;
+    pPlayer->sheep = 5;
     pPlayer->knight = 0;
     pPlayer->U_knight = 0;
     pPlayer->harvest_card = 0;
     pPlayer->build_card = 0;
-    pPlayer->steal_card = 0;
-    pPlayer->score_card = 0;
+    pPlayer->steal_card = 1;
+    pPlayer->score_card = 1;
     pPlayer->U_develop = 0;
     pPlayer->M_knight = 0;
     pPlayer->M_road = 0;
@@ -79,7 +79,7 @@ sPlayer * player_init(){
     pPlayer->village.village_build = 0;
     pPlayer->road.road_hand = 15;
     pPlayer->road.road_build = 0;
-    pPlayer->hand = 0;
+    pPlayer->hand = 25;
     pPlayer->final_score = 0;
     return pPlayer;
 }

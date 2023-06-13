@@ -20,7 +20,8 @@ extern int score_remain;
 //發展卡發牌順序
 extern int develop_card_order[25];
 extern int develop_index;
-extern int develop_card_keep;
+extern int develop_card_keep[10];
+extern int keep_index;
 
 //player
 extern sPlayer * p1;
@@ -48,68 +49,6 @@ void score(uint8_t p){
     return;
 }
 
-bool judge_buy_card(sPlayer * player){
-    if((player->wheat <= 0) || (player->iron <= 0) || (player->sheep <= 0)){
-        return false;
-    }
-    return true;
-}
-void save_develop_card(uint8_t p){
-    sPlayer * player;
-    if(p==1) {player = p1;}
-    else if(p==2) {player = p2;}
-    else if(p==3) {player = p3;}
-    else {player = p4;}
-
-    if(develop_card_keep==1){
-        player->knight += 1;
-    }else if(develop_card_keep==2){
-        player->harvest_card += 1;
-    }else if(develop_card_keep==3){
-        player->build_card += 1;
-    }else if(develop_card_keep==4){
-        player->steal_card += 1;
-    }else{
-        player->score_card += 1;
-    }
-}
-void get_develop_card(sPlayer * player, uint8_t player_number){
-    //printf("*%d %d\n",develop_card_order[develop_index],develop_index);
-    if(develop_card_order[develop_index]==0){
-        //player -> knight += 1;
-        develop_card_keep = 0;
-        knight_remain--;
-    }else if(develop_card_order[develop_index]==1){
-        //player -> harvest_card += 1;
-        develop_card_keep = 1;
-        progress_remain[0]--;
-    }else if(develop_card_order[develop_index]==2){
-        //player -> build_card += 1;
-        develop_card_keep = 2;
-        progress_remain[1]--;
-    }else if(develop_card_order[develop_index]==3){
-        //player -> steal_card += 1;
-        develop_card_keep = 3;
-        progress_remain[2]--;
-    }else{
-        //player -> score_card += 1;
-        develop_card_keep = 4;
-        score_remain--;
-    }
-    player->wheat--;
-    player->sheep--;
-    player->iron--;
-    player->hand -= 3;
-    resource[0]++;
-    resource[2]++;
-    resource[4]++;
-    printf("%u %u %u %u %u\n",player->knight,player->harvest_card,player->build_card,player->steal_card,player->score_card);
-    printf(PURPLE"Player %d buy a develop card!!\e[0m\n",player_number);
-    printf("---------------\n");
-    develop_index++;
-    return;
-}
-
 void take_resource_dice(int32_t harvest_resource[2][5]){
     sPlayer * player;
     for(int i=0;i<2;i++){
@@ -121,32 +60,56 @@ void take_resource_dice(int32_t harvest_resource[2][5]){
             if(harvest_resource[i][0]!=-1){
                 if(j!=0){
                     if(harvest_resource[i][0]==0){
-                        if((resource[0]-harvest_resource[i][j])>0){
+                        if((resource[0]-harvest_resource[i][j])>=0){
                             player->iron += harvest_resource[i][j];
                             resource[0] -= harvest_resource[i][j];
+                            player->hand += harvest_resource[i][j];
+                        }else{
+                            player->iron += resource[0];
+                            player->hand += resource[0];
+                            resource[0] = 0;
                         }
                     }else if(harvest_resource[i][0]==1){
-                        if((resource[1]-harvest_resource[i][j])>0){
+                        if((resource[1]-harvest_resource[i][j])>=0){
                             player->wood += harvest_resource[i][j];
                             resource[1] -= harvest_resource[i][j];
+                            player->hand += harvest_resource[i][j];
+                        }else{
+                            player->wood += resource[1];
+                            player->hand += resource[1];
+                            resource[1] = 0;
                         }
                     }else if(harvest_resource[i][0]==2){
-                        if((resource[2]-harvest_resource[i][j])>0){
+                        if((resource[2]-harvest_resource[i][j])>=0){
                             player->wheat += harvest_resource[i][j];
                             resource[2] -= harvest_resource[i][j];
+                            player->hand += harvest_resource[i][j];
+                        }else{
+                            player->wheat += resource[2];
+                            player->hand += resource[2];
+                            resource[2] = 0;
                         }
                     }else if(harvest_resource[i][0]==3){
-                        if((resource[3]-harvest_resource[i][j])>0){
+                        if((resource[3]-harvest_resource[i][j])>=0){
                             player->brick += harvest_resource[i][j];
                             resource[3] -= harvest_resource[i][j];
+                            player->hand += harvest_resource[i][j];
+                        }else{
+                            player->brick += resource[3];
+                            player->hand += resource[3];
+                            resource[3] = 0;
                         }
                     }else{
-                        if((resource[4]-harvest_resource[i][j])>0){
+                        if((resource[4]-harvest_resource[i][j])>=0){
                             player->sheep += harvest_resource[i][j];
                             resource[4] -= harvest_resource[i][j];
+                            player->hand += harvest_resource[i][j];
+                        }else{
+                            player->sheep += resource[4];
+                            player->hand += resource[4];
+                            resource[4] = 0;
                         }
                     }
-                    player->hand += harvest_resource[i][j];
                 }
             }
         }
@@ -232,11 +195,12 @@ void list_can_trade(sPlayer * player, uint8_t trade_option){
         }
     }else{}
     //printf("------------------>\n");
-    printf(PURPLE"0 -> iron\n");
-    printf(CYAN"1 -> wood\n");
-    printf(YELLOW"2 -> wheat\n");
-    printf(RED"3 -> brick\n");
-    printf(L_GREEN"4 -> wool(sheep)\e[0m\n");
+    printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
+    // printf(PURPLE"0 -> iron\n");
+    // printf(CYAN"1 -> wood\n");
+    // printf(YELLOW"2 -> wheat\n");
+    // printf(RED"3 -> brick\n");
+    // printf(L_GREEN"4 -> wool(sheep)\e[0m\n");
     return;
 }
 

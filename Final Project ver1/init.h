@@ -22,7 +22,8 @@ extern int progress_remain[3];
 //score remain
 extern int score_remain;
 //develop_card_keep
-extern int develop_card_keep;
+extern int develop_card_keep[10];
+extern int keep_index;
 
 //player order
 extern int first_player;
