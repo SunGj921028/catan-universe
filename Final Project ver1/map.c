@@ -15,16 +15,10 @@
 #define CCLEAR printf("\e[0m")
 #define CLR_F_256(N) printf("\e[38;5;"#N"m")
 #define CLR_B_256(N) printf("\e[48;5;"#N"m")
+#define MAX_VERTICES 100
 
 //int8_t map[23][13][5];
 int8_t c_map_deep = 5;
-/*
-0 ocean
-1 point
-2 line
-3 block
-4 port
-*/
 
 //update color
 //block random
@@ -41,11 +35,28 @@ int8_t log_len=50;
 int8_t map_pk[19]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int8_t re_t[19] = {1,3,2,0,5,5,4,2,3,1,4,3,4,1,5,4,3,2,5};
 int8_t pt_t[19] = {5,2,6,0,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11};
-int8_t ocean_f[34]={62,27,26,25,17,16,15,7,6,5,4,5,6,7,6,5,4,5,6,7,6,5,4,5,6,7,15,16,17,25,26,27,62};
+int8_t ocean_f[38]={62,62,62,27,26,25,17,16,15,7,6,5,4,5,6,7,6,5,4,5,6,7,6,5,4,5,6,7,15,16,17,25,26,27,62,62,62};
 int8_t map_block_i=0;
 int8_t map_line_i=0;
 int8_t map_point_i=0;
+int max_length;
+int32_t vertices_array[72];
+int graph[MAX_VERTICES][MAX_VERTICES];
+int visited[MAX_VERTICES];
+
 bool is_slash;
+
+/*resource switch*/
+int32_t resource_switch(int32_t region_type){
+  switch(region_type){
+    case 0:return 5;break;
+    case 1:return 3;break;
+    case 2:return 0;break;
+    case 3:return 4;break;
+    case 4:return 1;break;
+    case 5:return 2;break;
+  }
+}
 
 /*init use*/
 void map_point_init(int8_t i,int8_t j,int8_t map_p_type){
@@ -75,16 +86,19 @@ void map_point_init(int8_t i,int8_t j,int8_t map_p_type){
     for(int8_t ni=i-1;ni<=i+1;ni++){
       map[ni][j][0]=3;
       for(int8_t k=1;k<c_map_deep;k++){
-        map[ni][j][4]=0;
+        map[ni][j][k]=0;
       }
     }
     map[i-1][j][1]=map_block_i;
-    map[i-1][j][2]=re_t[map_block_i];//region
+    map[i-1][j][2]=resource_switch(re_t[map_block_i]);//region
     map[i][j][1]=map_block_i;
-    map[i][j][2]=re_t[map_block_i];//region
+    map[i][j][2]=resource_switch(re_t[map_block_i]);//region
     map[i+1][j][1]=map_block_i;
-    map[i+1][j][2]=re_t[map_block_i];//region
+    map[i+1][j][2]=resource_switch(re_t[map_block_i]);//region
     map[i][j][3]=pt_t[map_block_i];//point
+    if(resource_switch(re_t[map_block_i])==5){
+      map[i][j][4]=1;
+    }
     map_block_i++;
   }else if(map_p_type == 4){//port
 
@@ -93,7 +107,7 @@ void map_point_init(int8_t i,int8_t j,int8_t map_p_type){
 }
 
 /*print color selection*/
-void map_color_slt(int8_t a,int8_t b){//a: type; b: pID or block type
+void map_color_slt(int8_t a,int8_t b){//a: type; b: playerID or block type
   CCLEAR;
   if(a==0){
     BK_BUL;
@@ -103,7 +117,7 @@ void map_color_slt(int8_t a,int8_t b){//a: type; b: pID or block type
       case 0:CLR_F_256(235);break;
       case 1:CLR_F_256(9);break;
       case 2:CLR_F_256(15);break;
-      case 3:CLR_F_256(12);break;
+      case 3:CLR_F_256(51);break;
       case 4:CLR_F_256(208);break;
     }
   }else if(a==2){
@@ -111,17 +125,18 @@ void map_color_slt(int8_t a,int8_t b){//a: type; b: pID or block type
       case 0:CLR_F_256(244);break;
       case 1:CLR_F_256(9);break;
       case 2:CLR_F_256(15);break;
-      case 3:CLR_F_256(12);break;
+      case 3:CLR_F_256(51);break;
       case 4:CLR_F_256(208);break;
     }
   }else if(a==3){
     switch(b){
-      case 0:{CLR_B_256(142);CLR_F_256(0);}break;//Desert
-      case 1:CLR_B_256(124);break;//blick
-      case 2:{CLR_B_256(249);CLR_F_256(0);}break;//iron
-      case 3:{CLR_B_256(82);CLR_F_256(0);}break;//sheep
-      case 4:CLR_B_256(22);break;//wood
-      case 5:{CLR_B_256(226);CLR_F_256(0);}break;//wheat
+      case 0:{CLR_B_256(249);CLR_F_256(0);}break;//iron
+      case 1:CLR_B_256(22);break;//wood
+      case 2:{CLR_B_256(226);CLR_F_256(0);}break;//wheat
+      case 3:CLR_B_256(124);break;//blick
+      case 4:{CLR_B_256(82);CLR_F_256(0);}break;//sheep
+      case 5:{CLR_B_256(142);CLR_F_256(0);}break;//Desert
+      case 7:{CLR_B_256(57);}break;
     }
   }
   
@@ -147,7 +162,7 @@ void map_print_slt(int8_t i,int8_t j,int8_t ptime,int8_t pmood){
   }else if(a==2){
     map_color_slt(a,map[i][j][1]);
     ptype=map[i][j][3];
-    if(pmood==2 && ptime%3==2){
+    if(pmood==2 && ptime%3==1){
       printf("%02d",map[i][j][2]);
     }else if(ptype==0){
       if(pmood==2){
@@ -163,8 +178,20 @@ void map_print_slt(int8_t i,int8_t j,int8_t ptime,int8_t pmood){
       printf("\\");
     }
   }else if(a==3){
-    map_color_slt(a,map[i][j][2]);
+    int8_t color_slt_tempi=0;
     ptype=map_pk[map[i][j][1]];
+    if(ptype==0 || ptype==1){
+      color_slt_tempi=i+1;
+    }else if(ptype==2){
+      color_slt_tempi=i;
+    }else if(ptype==3 || ptype==4){
+      color_slt_tempi=i-1;
+    }
+    if(map[color_slt_tempi][j][4]==1){
+      map_color_slt(a,7);
+    }else{
+      map_color_slt(a,map[i][j][2]);
+    }
     if(ptype==0){
       if(pmood == 2){
         printf("      ");
@@ -175,12 +202,12 @@ void map_print_slt(int8_t i,int8_t j,int8_t ptime,int8_t pmood){
       printf("    %02d    ",map[i+1][j][3]);
     }else if(ptype==2){
       switch(map[i][j][2]){
-        case 0:printf("   DESERT   ");break;
-        case 1:printf("   BRICK    ");break;
-        case 2:printf("    IRON    ");break;
-        case 3:printf("   SHEEP    ");break;
-        case 4:printf("    WOOD    ");break;
-        case 5:printf("   WHEAT    ");break;
+        case 0:printf("    IRON    ");break;
+        case 1:printf("    WOOD    ");break;
+        case 2:printf("   WHEAT    ");break;
+        case 3:printf("   BRICK    ");break;
+        case 4:printf("   SHEEP    ");break;
+        case 5:printf("   DESERT   ");break;
       }
     }else if(ptype==3){
       if(map[i-1][j][4]==1){
@@ -189,18 +216,22 @@ void map_print_slt(int8_t i,int8_t j,int8_t ptime,int8_t pmood){
         printf("          ");
       }
     }else if(ptype==4){
-      printf("   %02d   ",map[i][j][1]);
+      if(pmood==3){
+        printf("   %02d   ",map[i][j][1]);
+      }else{
+        printf("        ");
+      }
     }
     map_pk[map[i][j][1]] = map_pk[map[i][j][1]]+1;
   }else if(a==0){
     map_color_slt(a,0);
     int32_t temp = ocean_f[ptime];
     if(pmood==2){
-      if(ptime==11||ptime==17||ptime==23||ptime==26||ptime==29){
+      if(ptime==13||ptime==19||ptime==25||ptime==28||ptime==31){
         temp -= 1;
       }
     }else if(pmood==1){
-      if(ptime==10||ptime==16||ptime==22){
+      if(ptime==12||ptime==18||ptime==24){
         temp -= 1;
       }
     }
@@ -217,32 +248,31 @@ void map_print_slt(int8_t i,int8_t j,int8_t ptime,int8_t pmood){
 /*log printer detect&select*/
 void pd_print(int8_t ptime){
   if(ptime<29){
-    printf("%02d",ptime);BK_WIT;printf("  ");CCLEAR;
-  }
-  int8_t playerID=(ptime/7);
-  int8_t pd_line=ptime%7;
-  map_color_slt(2,playerID+1);
-  if(pd_line==0){
-    BK_WIT;
-    for(int8_t i=0;i<log_len;i++){
-      printf(" ");
+    BK_WIT;printf("  ");CCLEAR;
+    int8_t playerID=(ptime/7);
+    int8_t pd_line=ptime%7;
+    map_color_slt(2,playerID+1);
+    if(pd_line==0 && ptime<29){
+      BK_WIT;
+      for(int8_t i=0;i<log_len;i++){
+        printf(" ");
+      }
+      CCLEAR;
+    }else{
+      printf("%s",map_log[playerID][pd_line-1]);
+      for(int8_t i=strlen(map_log[playerID][pd_line-1]);i<log_len;i++){
+        printf(" ");
+      }
     }
-    CCLEAR;
-  }else{
-    printf("%s",map_log[playerID][pd_line-1]);
-    for(int8_t i=strlen(map_log[playerID][pd_line-1]);i<log_len;i++){
-      printf(" ");
-    }
-  }
-  if(ptime<29){
     BK_WIT;printf("  ");CCLEAR;
   }
-  CCLEAR;
+  
 }
 
 /*center of map and log*/
 void map_p_main2log(int8_t *ptime,int8_t pmood){
   CCLEAR;
+  printf("%02d",*ptime);
   if(pmood==0){
     pd_print(*ptime);
   }
@@ -256,35 +286,6 @@ void d3_pd(int32_t x,int32_t y){
     printf("%d:%d/",k,map[x][y][k]);
   }
   printf("\n");
-}
-
-/*resource switch*/
-int32_t resource_switch(int32_t region_ID){
-  switch(region_ID){
-    case 1:return 3;break;
-    case 2:return 0;break;
-    case 3:return 4;break;
-    case 4:return 1;break;
-    case 5:return 2;break;
-  }
-}
-
-/*village upgrade*/
-int32_t village_upgrade(int32_t point_ID,int32_t player_ID){
-  for(int8_t i=0;i<23;i++){
-    for(int8_t j=0;j<13;j++){
-      if(map[i][j][0]==1 && map[i][j][2]==point_ID){
-        if(map[i][j][1]==player_ID && map[i][j][3] == 1){
-          map[i][j][3] = 2;
-          printf("Upgrade success!\n");
-          return 0;
-        }else{
-          printf("Can't be upgrade!\n");
-          return -1;
-        }
-      }
-    }
-  }
 }
 
 /*Map initial*/
@@ -361,6 +362,8 @@ int32_t map_print(int8_t printer_mood){
   int8_t ptime=0;
   for(int8_t i=0;i<23;i++){
     if(i==0||i==22){
+      map_print_slt(i,0,ptime,printer_mood);map_p_main2log(&ptime,printer_mood);
+      map_print_slt(i,0,ptime,printer_mood);map_p_main2log(&ptime,printer_mood);
       map_print_slt(i,0,ptime,printer_mood);
     }
     if(i%2==0 && 0<i && i<22){
@@ -389,9 +392,13 @@ int32_t map_print(int8_t printer_mood){
   printf("\e[0m \n\e[0m");
 }
 
-int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t is_init){
+int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time){
   if(!(0 <= point_ID && point_ID < 54)){
     printf("Point ID is invalid!\n");
+    return -1;
+  }
+  if(!(1 <=player_ID && player_ID <=4)){
+    printf("No player exist!\n");
     return -1;
   }
   for(int8_t i=0;i<23;i++){
@@ -416,13 +423,39 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t is_init){
             if(map[i][j+2][1]!=0){near_no_player=false;}
             if(map[i][j+1][1]==player_ID){road_connected=true;}
           }
-          if(is_init==1){
+          if(init_time>=1){
             road_connected=true;
           }
           if(near_no_player && road_connected){
             map[i][j][1] = player_ID;
             map[i][j][3] = 1;
             printf("Build village %d %d success!\n",i,j);
+            if(init_time==2){
+              for(int8_t k=0;k<5;k++){
+                init_build_take[k]=0;
+              }
+              if(map[i][j-1][0]==2){
+                if(map[i][j+1][0]==3 && map[i][j+1][2]!=5){
+                  init_build_take[map[i][j+1][2]]++;
+                }
+                if(map[i-1][j-1][0]==3 && map[i-1][j-1][2]!=5){
+                  init_build_take[map[i-1][j-1][2]]++;
+                }
+                if(map[i+1][j-1][0]==3 && map[i+1][j-1][2]!=5){
+                  init_build_take[map[i+1][j-1][2]]++;
+                }
+              }else if(map[i][j+1][0]==2){
+                if(map[i][j-1][0]==3 && map[i][j-1][2]!=5){
+                  init_build_take[map[i][j-1][2]]++;
+                }
+                if(map[i-1][j+1][0]==3 && map[i-1][j+1][2]!=5){
+                  init_build_take[map[i-1][j+1][2]]++;
+                }
+                if(map[i+1][j+1][0]==3 && map[i+1][j+1][2]!=5){
+                  init_build_take[map[i+1][j+1][2]]++;
+                }
+              }
+            }
             return 0;
           }else if(!near_no_player){
             printf("This village is too close to others!\n");
@@ -440,6 +473,24 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t is_init){
   }
   printf("This point can't be build!\n");
   return -1;
+}
+
+/*village upgrade*/
+int32_t village_upgrade(int32_t player_ID,int32_t point_ID){
+  for(int8_t i=0;i<23;i++){
+    for(int8_t j=0;j<13;j++){
+      if(map[i][j][0]==1 && map[i][j][2]==point_ID){
+        if(map[i][j][1]==player_ID && map[i][j][3] == 1){
+          map[i][j][3] = 2;
+          printf("Upgrade success!\n");
+          return 0;
+        }else{
+          printf("Can't be upgrade!\n");
+          return -1;
+        }
+      }
+    }
+  }
 }
 
 int32_t build_road(int32_t player_ID, int32_t road_ID){
@@ -479,37 +530,168 @@ int32_t build_road(int32_t player_ID, int32_t road_ID){
   return -1;
 }
 
-int32_t harvest(int32_t dice_number,int32_t *harvest_resource){
+int32_t harvest(int32_t dice_number,int32_t *harvest_resource_2x5){
   int32_t temp=0;
   for(int8_t i=3;i<20;i=i+2){
     for(int8_t j=2;j<12;j=j+2){
-      if(map[i][j][0]==3 && map[i][j][3]==dice_number && map[i][j][4] != 1){
-        *(harvest_resource + temp*5) = resource_switch(map[i][j][2]);
-        if(map[i-2][j-1][1] != 0){//0
-          *(harvest_resource + temp*5 + map[i-2][j-1][1]) += map[i-2][j-1][3];
+      if(map[i][j][0]==3 && map[i][j][3]==dice_number){
+        *(harvest_resource_2x5 + temp*5) = map[i][j][2];
+        if(map[i-2][j-1][1] != 0  && map[i][j][4] != 1){//0
+          *(harvest_resource_2x5 + temp*5 + map[i-2][j-1][1]) += map[i-2][j-1][3];
         }
-        if(map[i-2][j+1][1] != 0){//1
-          *(harvest_resource + temp*5 + map[i-2][j+1][1]) += map[i-2][j+1][3];
+        if(map[i-2][j+1][1] != 0  && map[i][j][4] != 1){//1
+          *(harvest_resource_2x5 + temp*5 + map[i-2][j+1][1]) += map[i-2][j+1][3];
         }
-        if(map[i][j-1][1] != 0){//2
-          *(harvest_resource + temp*5 + map[i][j-1][1]) += map[i][j-1][3];
+        if(map[i][j-1][1] != 0  && map[i][j][4] != 1){//2
+          *(harvest_resource_2x5 + temp*5 + map[i][j-1][1]) += map[i][j-1][3];
         }
-        if(map[i][j+1][1] != 0){//3
-          *(harvest_resource + temp*5 + map[i][j+1][1]) += map[i][j+1][3];
+        if(map[i][j+1][1] != 0  && map[i][j][4] != 1){//3
+          *(harvest_resource_2x5 + temp*5 + map[i][j+1][1]) += map[i][j+1][3];
         }
-        if(map[i+2][j-1][1] != 0){//4
-          *(harvest_resource + temp*5 + map[i+2][j-1][1]) += map[i+2][j-1][3];
+        if(map[i+2][j-1][1] != 0  && map[i][j][4] != 1){//4
+          *(harvest_resource_2x5 + temp*5 + map[i+2][j-1][1]) += map[i+2][j-1][3];
         }
-        if(map[i+2][j+1][1] != 0){//5
-          *(harvest_resource + temp*5 + map[i+2][j+1][1]) += map[i+2][j+1][3];
+        if(map[i+2][j+1][1] != 0  && map[i][j][4] != 1){//5
+          *(harvest_resource_2x5 + temp*5 + map[i+2][j+1][1]) += map[i+2][j+1][3];
         }
         temp++;
         if(dice_number == 2 || dice_number == 12){
-          *(harvest_resource + temp*5) == -1;
+          *(harvest_resource_2x5 + temp*5) == -1;
           return 0;
         }
       }
     }
   }
   return 0;
+}
+
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1){
+  for(int8_t i=3;i<20;i=i+2){
+    for(int8_t j=2;j<12;j=j+2){
+      if(map[i][j][0]==3 && map[i][j][4]==1){
+        map[i][j][4]=0;
+      }
+    }
+  }
+  for(int8_t i=3;i<20;i=i+2){
+    for(int8_t j=2;j<12;j=j+2){
+      if(map[i][j][0]==3 && map[i][j][1]==block_id){
+        map[i][j][4]=1;
+        if(map[i-2][j-1][1] != 0){//0
+          *(nearby_player_5x1 + map[i-2][j-1][1]) = 1;
+        }
+        if(map[i-2][j+1][1] != 0){//1
+          *(nearby_player_5x1 + map[i-2][j+1][1]) = 1;
+        }
+        if(map[i][j-1][1] != 0){//2
+          *(nearby_player_5x1 + map[i][j-1][1]) = 1;
+        }
+        if(map[i][j+1][1] != 0){//3
+          *(nearby_player_5x1 + map[i][j+1][1]) = 1;
+        }
+        if(map[i+2][j-1][1] != 0){//4
+          *(nearby_player_5x1 + map[i+2][j-1][1]) = 1;
+        }
+        if(map[i+2][j+1][1] != 0){//5
+          *(nearby_player_5x1 + map[i+2][j+1][1]) = 1;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+// 深度優先搜索函式
+void DFS(int vertex, int length) {
+    visited[vertex] = 1; // 設定頂點為已訪問
+
+    // 檢查與該頂點相鄰的其他頂點
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        if (graph[vertex][i] == 1 && visited[i] == 0) {
+            DFS(i, length + 1); // 遞迴訪問相鄰頂點
+        }
+    }
+
+    // 更新最長道路的長度
+    if (length > max_length) {
+        max_length = length;
+    }
+
+    visited[vertex] = 0; // 重置頂點為未訪問
+}
+
+// 偵測最長道路
+int detectLongestPath(int vertices) {
+    max_length = 0;
+
+    // 對每個頂點進行深度優先搜索
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        for (int j = 0; j < vertices; j++) {
+            visited[j] = 0; // 重置頂點的訪問狀態
+        }
+        DFS(i, 1);
+    }
+
+    return max_length;
+}
+
+int32_t Longest_Path(int32_t player_ID){
+  int32_t edges=0;
+  int32_t vertices=0;
+  int32_t edgesArr[72][2];
+  for(int8_t i=0;i<72;i++){
+    edgesArr[i][0]=0;
+    edgesArr[i][1]=0;
+  }
+  for(int8_t i=0;i<72;i++){
+    vertices_array[i]=0;
+  }
+  for (int i = 0; i < vertices; i++) {
+      for (int j = 0; j < vertices; j++) {
+          graph[i][j] = 0;
+      }
+  }
+  for(int8_t i=0;i<23;i++){
+    for(int8_t j=0;j<13;j++){
+      if(map[i][j][0]==2 && map[i][j][1]==player_ID){
+        if(map[i][j][3]==0){
+          edgesArr[edges][0] = map[i][j-1][2];
+          edgesArr[edges][1] = map[i][j+1][2];
+          if(vertices_array[map[i][j-1][2]]==0){
+            vertices_array[map[i][j-1][2]]=1;
+            vertices++;
+          }
+          if(vertices_array[map[i][j+1][2]]==0){
+            vertices_array[map[i][j+1][2]]=1;
+            vertices++;
+          }
+        }else{
+          edgesArr[edges][0] = map[i-1][j][2];
+          edgesArr[edges][1] = map[i+1][j][2];
+          if(vertices_array[map[i-1][j][2]]==0){
+            vertices_array[map[i-1][j][2]]=1;
+            vertices++;
+          }
+          if(vertices_array[map[i+1][j][2]]==0){
+            vertices_array[map[i+1][j][2]]=1;
+            vertices++;
+          }
+        }
+        edges++;
+      }
+    }
+  }
+  for (int i = 0; i < edges; i++) {
+      int src = edgesArr[i][0];
+      int dest = edgesArr[i][1];
+      graph[src][dest] = 1;
+      graph[dest][src] = 1; // 無向圖，需設定雙向
+  }
+  for(int8_t i=0;i<12;i++){//D3rr0r
+    printf("%d %d\n",edgesArr[i][0],edgesArr[i][1]);
+  }
+  printf("%d %d\n",edges,vertices);
+  int longestPath = detectLongestPath(vertices);
+  printf("Lonest path: %d\n", longestPath);
+  
 }
