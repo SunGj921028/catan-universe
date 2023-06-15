@@ -16,6 +16,10 @@ void take_init_resource(int player_order){
 	uint8_t *temp[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
 	for(int i=0;i<5;i++){
 		*(temp[i]) += init_build_take[i];
+		resource[i] -= init_build_take[i];
+	}
+	for(int i=0;i<5;i++){
+		player->hand += init_build_take[i];
 	}
 	return;
 }
@@ -37,7 +41,11 @@ void first_sec_turn(){
 				while(1){
 					map_print(1);
 					printf("Which point you want to build Village ? (0-53): ");
-					scanf("%d",&vi_cho);
+					if((scanf("%d",&vi_cho)) == 0){
+						printf("Wrong Input!!\n");
+						while (getchar() != '\n');
+						continue;
+					}
 					if(build_village(1,vi_cho,1,0) == -1){
 						continue;
 					}
@@ -46,7 +54,11 @@ void first_sec_turn(){
 				while(1){
 					map_print(2);
 					printf("Which point you want to build Road ? (0-71): ");
-					scanf("%d",&r_cho);
+					if((scanf("%d",&r_cho)) == 0){
+						printf("Wrong Input!!\n");
+						while (getchar() != '\n');
+						continue;
+					}
 					if(build_road(1,r_cho,0) == -1){
 						continue;
 					}
@@ -57,6 +69,7 @@ void first_sec_turn(){
 				print_init(1);
 				player_order+=1;
 				count++;
+				sleep(2);
 				break;
 			case 1:
 				printf("First round player 2\n");
@@ -76,9 +89,10 @@ void first_sec_turn(){
 				}
 				CLEAR;
 				map_print(0);
-				print_init(2);
+				//print_init(2);
 				player_order+=1;
 				count++;
+				sleep(2);
 				break;
 			case 2:
 				printf("First round player 3\n");
@@ -98,9 +112,10 @@ void first_sec_turn(){
 				}
 				CLEAR;
 				map_print(0);
-				print_init(3);
+				//print_init(3);
 				player_order+=1;
 				count++;
+				sleep(2);
 				break;
 			case 3:
 				printf("First round player 4\n");
@@ -120,9 +135,10 @@ void first_sec_turn(){
 				}
 				CLEAR;
 				map_print(0);
-				print_init(4);
+				//print_init(4);
 				player_order=0;
 				count++;
+				sleep(2);
 				break;
 		}
 	}
@@ -142,7 +158,11 @@ void first_sec_turn(){
 				while(1){
 					map_print(1);
 					printf("Which point you want to build Village ? (0-53): ");
-					scanf("%d",&vi_cho);
+					if((scanf("%d",&vi_cho)) == 0){
+						printf("Wrong Input!!\n");
+						while (getchar() != '\n');
+						continue;
+					}
 					if(build_village(1,vi_cho,2,0) == -1){
 						continue;
 					}
@@ -151,10 +171,14 @@ void first_sec_turn(){
 				while(1){
 					map_print(2);
 					printf("Which point you want to build Road ? (0-71): ");
-					scanf("%d",&r_cho);
+					if((scanf("%d",&r_cho)) == 0){
+						printf("Wrong Input!!\n");
+						while (getchar() != '\n');
+						continue;
+					}
 					for(int i=1;i<=init_near_road[0];i++){
 						if(init_near_road[i]==r_cho){
-							if(build_road(1,r_cho,0)==0){
+							if(build_road(1,r_cho,0)){
 								check_road = true;
 								break;
 							}
@@ -172,6 +196,7 @@ void first_sec_turn(){
 				print_init(1);
 				player_order=3;
 				count++;
+				sleep(2);
 				break;
 			case 1:
 				printf("Second round player 2\n");
@@ -186,7 +211,7 @@ void first_sec_turn(){
 					r_cho = rand() % 72;
 					for(int i=1;i<=init_near_road[0];i++){
 						if(init_near_road[i]==r_cho){
-							if(build_road(2,r_cho,1)==0){
+							if(build_road(2,r_cho,1)){
 								check_road = true;
 								break;
 							}
@@ -199,9 +224,10 @@ void first_sec_turn(){
 				take_init_resource(player_order);
 				CLEAR;
 				map_print(0);
-				print_init(2);
+				//print_init(2);
 				player_order--;
 				count++;
+				sleep(2);
 				break;
 			case 2:
 				printf("Second round player 3\n");
@@ -216,7 +242,7 @@ void first_sec_turn(){
 					r_cho = rand() % 72;
 					for(int i=1;i<=init_near_road[0];i++){
 						if(init_near_road[i]==r_cho){
-							if(build_road(3,r_cho,1)==0){
+							if(build_road(3,r_cho,1)){
 								check_road = true;
 								break;
 							}
@@ -229,9 +255,10 @@ void first_sec_turn(){
 				take_init_resource(player_order);
 				CLEAR;
 				map_print(0);
-				print_init(3);
+				//print_init(3);
 				player_order--;
 				count++;
+				sleep(2);
 				break;
 			case 3:
 				printf("Second round player 4\n");
@@ -246,7 +273,7 @@ void first_sec_turn(){
 					r_cho = rand() % 72;
 					for(int i=1;i<=init_near_road[0];i++){
 						if(init_near_road[i]==r_cho){
-							if(build_road(4,r_cho,1)==0){
+							if(build_road(4,r_cho,1)){
 								check_road = true;
 								break;
 							}
@@ -259,9 +286,10 @@ void first_sec_turn(){
 				take_init_resource(player_order);
 				CLEAR;
 				map_print(0);
-				print_init(4);
+				//print_init(4);
 				player_order--;
 				count++;
+				sleep(2);
 				break;
 		}
 	}
@@ -271,5 +299,12 @@ void first_sec_turn(){
 		player_order++;
 	}//設回第二輪最後一個放的人開始
 	first_player = player_order;
+	sPlayer * player[4] = {p1,p2,p3,p4};
+	for(int i=0;i<4;i++){
+		(player[i])->road.road_build += 2;
+		(player[i])->road.road_hand -= 2;
+		(player[i])->village.village_build += 2;
+		(player[i])->village.village_hand -= 2;
+	}
 	return;
 }

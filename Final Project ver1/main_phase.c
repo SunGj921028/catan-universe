@@ -51,6 +51,13 @@ void score(uint8_t p){
 }
 
 void take_resource_dice(int32_t harvest_resource[2][5]){
+    for(int i=0;i<2;i++){
+        for(int j=0;j<5;j++){
+            printf("%d ",harvest_resource[i][j]);
+        }
+        printf("\n");
+    }
+    PASS;
     sPlayer * player;
     for(int i=0;i<2;i++){
         for(int j=0;j<5;j++){
@@ -100,7 +107,7 @@ void take_resource_dice(int32_t harvest_resource[2][5]){
                             player->hand += resource[3];
                             resource[3] = 0;
                         }
-                    }else{
+                    }else if(harvest_resource[i][0]==4){
                         if((resource[4]-harvest_resource[i][j])>=0){
                             player->sheep += harvest_resource[i][j];
                             resource[4] -= harvest_resource[i][j];
@@ -131,6 +138,7 @@ void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     show_dice_v2(dice_result);
     if(!is_ai){ printf("p1 throw %d points\n",dice_result);}
     else{ printf("p%d throw %d points\n",player_number,dice_result);}
+    sleep(1);
     //printf("%d\n",dice_result);
     //harvest resource array
     int32_t harvest_resource[2][5];
@@ -233,8 +241,14 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
     int32_t trade_cho = -1;
     uint8_t *temp[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
     if(!is_ai){
-        printf("Which resource you want to get ? (0-4): ");
-        scanf("%d",&trade_cho);
+        while(1){
+            printf("Which resource you want to get ? (0-4): ");
+            if((scanf("%d",&trade_cho)) == 0){
+                printf("Wrong Input!!\n");
+                while (getchar() != '\n');
+                continue;
+            }else{break;}
+        }
     }else{
         while(1){
             trade_cho = rand() % 5;

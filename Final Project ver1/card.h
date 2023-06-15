@@ -22,7 +22,7 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
 bool error_detect_use_card_state(sPlayer * player,int8_t card_serial_number, uint8_t is_ai);
 
 //判斷目前的最多騎士卡得分 尚未完成
-int32_t judge_the_U_knight(sPlayer * player,uint8_t player_number,uint8_t is_ai);
+int32_t judge_the_U_knight();
 
 //尚未完成
 int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai);

@@ -116,7 +116,7 @@ void develop_card_state(sPlayer * player, uint8_t player_number, uint8_t is_ai)
     return;
 }
 
-int32_t judge_the_U_knight(sPlayer * player,uint8_t player_number,uint8_t is_ai){
+int32_t judge_the_U_knight(){
     uint8_t *temp[4]={&(p1->U_knight),&(p2->U_knight),&(p3->U_knight),&(p4->U_knight)};
     int32_t count = *(temp[0]);
     int8_t max = 0;
@@ -149,8 +149,14 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
     if(!is_ai){
         map_print(3);
         //原本的點不能放
-        printf("Which region you want to place the robbor ? (0-18): ");
-        scanf("%d",&region_cho);
+        while(1){
+            printf("Which region you want to place the robbor ? (0-18): ");
+            if((scanf("%d",&region_cho)) == 0){
+                printf("Wrong Input!!\n");
+                while (getchar() != '\n');
+                continue;
+            }else{break;}
+        }
         move_robbor(region_cho, &nearby[0]);
         uint8_t player_can_steal[5] = {0};
         for(int i=2;i<5;i++){
@@ -162,7 +168,11 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
         while(1){
             player_cho = 0;
             printf("Which player's resource you want to steal? :");
-            scanf("%d",&player_cho);
+            if((scanf("%d",&player_cho)) == 0){
+                printf("Wrong Input!!\n");
+                while (getchar() != '\n');
+                continue;
+            }
             if(player_can_steal[player_cho]==1){
                 break;
             }else{
@@ -204,7 +214,11 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
                 printf("Please input the resource serial number you want to get(%dth resource)\n",count);
                 printf(GRAY"iron(0) "WHITE"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m");
                 printf("\n");
-                scanf("%d",&take_resource1);
+                if((scanf("%d",&take_resource1)) == 0){
+                    printf("Wrong Input!!\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
                 if((take_resource1>4)||(take_resource1<0))
                 {
                     printf("Error,you should check your input again\n");
@@ -274,7 +288,11 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
             {
                 map_print(2);
                 printf("Please input the road serial number you want to build\n");
-                scanf("%d",&road);
+                if((scanf("%d",&road)) == 0){
+                    printf("Wrong Input!!\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
                 if(build_road(player_number,road,is_ai)== -1)
                 {
                     break;
@@ -317,7 +335,11 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
         if(is_ai==0){
             printf("Please input the resource serial number you want to get\n");
             printf(GRAY"iron(0) "WHITE"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
-            scanf("%d",&take_resource2);
+            if((scanf("%d",&take_resource2)) == 0){
+                printf("Wrong Input!!\n");
+                while (getchar() != '\n');
+                continue;
+            }
             if((take_resource2>4)||(take_resource2<0))
             {
                 printf("Error,you should check your input again\n");
@@ -451,6 +473,7 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
         {
             player->knight--;
             knight_card(player,player_number,is_ai);
+            player->U_knight++;
             player->U_develop = 1;
             return 0;
         }

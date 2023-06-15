@@ -11,22 +11,6 @@ extern sPlayer * p3;
 extern sPlayer * p4;
 extern int resource[5];//sum is 95
 
-bool judge_build(sPlayer * player, uint8_t build_type){
-    //0->village
-    //1->road
-    //2->city
-    if(build_type==1){
-        if(player->wood>0 && player->brick>0){ return true;}
-        else{ return false;}
-    }else if(build_type==0){
-        if(player->wood>0 && player->sheep>0 && player->wheat>0 && player->brick>0 ){ return true;}
-        else {return false;}
-    }else if(build_type==2){
-        if(player->wheat>=2 && player->iron>=3){ return true;}
-        else{ return false;}
-    }
-}
-
 //判斷6個行為可不可以做
 bool judge_ai_action(uint8_t action, uint8_t player_number){
     sPlayer * player;
@@ -69,6 +53,8 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
             return true;
         }else{ return false;}
     }else if(action==5 || action==6 || action==7){
+        int port[6] = {0};
+        find_port(player_number,&port[0]);
         int32_t option = 0;
         if(action!=5){ option = (action==6) ? 2 : 3;}
         else { option = 1;}
@@ -81,7 +67,20 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
             resource_type[i] = temp;
         }
         for(int i=0;i<5;i++){
-            if(trade_judge(player,option,resource_type[i])){ trade(player,1,resource_type[i],option); return true;}
+            if(player->hand >= 7){
+                if(trade_judge(player,option,resource_type[i])){
+                    if(action==6){
+                        if(port[resource_type[i]] == 1){
+                            trade(player,1,resource_type[i],option);
+                        }
+                    }else if(action==7){
+                        if(port[5] == 1){
+                            trade(player,1,resource_type[i],option);
+                        }
+                    }
+                    return true;
+                }
+            }
         }
     }
     return false;
@@ -99,8 +98,8 @@ void ai_move(int p){
     throw_dice(player,1,p);     //dice -> take resource or thief
     //hard pattern:
     //run 6 action again
-    uint8_t again_action = 1;
-    while(again_action){
+    uint8_t again_action = 0;
+    while((again_action==0)){
         //random action order
         //can reset ai's hard
         uint8_t action[8] = {0,1,2,3,4,5,6,7};
@@ -131,7 +130,9 @@ void ai_move(int p){
                             if(build_road(p,road_rand,1)){
                                 player->wood--;
                                 player->brick--;
-                                player->hand++;
+                                player->hand -= 2;
+                                player->road.road_build++;
+                                player->road.road_hand--;
                                 printf("ai build road\n");
                                 break;
                             }
@@ -148,6 +149,8 @@ void ai_move(int p){
                                 player->wood--;
                                 player->sheep--;
                                 player->hand -= 4;
+                                player->village.village_build++;
+                                player->village.village_hand--;
                                 printf("ai build village\n");
                                 break;
                             }
@@ -155,7 +158,19 @@ void ai_move(int p){
                     }else if(i==4){
                         //upgrade
                         //Need to find which can be upgraded
-                        printf("ai upgrade its village to city\n");
+                        while(1){
+                            int32_t UP_vil = rand() % 54;
+                            if(village_upgrade(p,UP_vil,1)){
+                                player->wheat -= 2;
+                                player->iron -= 3;
+                                player->hand -= 5;
+                                player->city.city_build++;
+                                player->city.city_hand--;
+                                player->village.village_build--;
+                                player->village.village_hand++;
+                            }
+                        }
+                        printf(RED"ai upgrade its village to city\e[0m\n");
                     }else if(i==5){
                         printf(RED"Player %d chooses to trade with bank!!\e[0m\n",p);
                     }else if(i==6){
@@ -166,10 +181,12 @@ void ai_move(int p){
                 }
             }
         }
-        again_action = rand() % 2;
+        again_action = rand() % 3;
     }
     if(keep_index!=0){
         save_develop_card(p);
         player->U_develop = 0;
     }
+    sleep(2);
+    return;
 }

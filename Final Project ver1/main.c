@@ -97,19 +97,18 @@ int main(int argc, char *argv[]){
         build = false;
         uint8_t count = 0;
         while(1){
+            count = 0;
             if(!build) {first_sec_turn(), count = (first_player + 1), build = true;}
             printf("Start from player %d.\n",count);
-            return 0;
-            //test
-            count = 1;
             if((count%5) == 1){
                 printf("Player move\n");
                 player_move();
             }else{
-                //ai_move(count%5); //2 3 4
-                //sleep(2);
+                ai_move(count%5); //2 3 4
+                sleep(2);
             }
             //count += 1;
+            judge_the_U_knight();
             score(count%5);
             PASS;
             print_init(count%5);

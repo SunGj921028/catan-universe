@@ -1,4 +1,5 @@
 #pragma once
+#include"data.h"
 #include <stdint.h>
 
 extern int8_t map[23][13][5];
@@ -11,6 +12,8 @@ void d3_pd(int32_t x,int32_t y);
 void map_init();
 
 int32_t map_print(int8_t printer_mood);
+
+bool judge_build(sPlayer * player, uint8_t build_type);
 
 int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t is_init, uint8_t is_ai);
 

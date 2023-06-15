@@ -11,6 +11,9 @@
 #define PASS printf("----------------------------------->\n")
 #define CLEAR printf("\033[H\033[2J") //clear terminal
 
+#define REFRESH CLEAR; \
+                map_print(0);
+
 //first round and second round
 void first_sec_turn();
 

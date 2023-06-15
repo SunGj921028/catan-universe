@@ -37,6 +37,7 @@ void print_init(uint8_t p){
     // }
     // develop_index = 0;
     // printf("-------------\n");
+    printf("player %d\n",p);
     printf("iron = %u\n",player->iron);
     printf("wood = %u\n",player->wood);
     printf("wheat = %u\n",player->wheat);

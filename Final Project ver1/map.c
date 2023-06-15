@@ -6,7 +6,8 @@
 #include <time.h>
 #include <stdbool.h>
 #include "map.h"
-#include"init.h"
+#include "init.h"
+#include "data.h"
 
 #define BK_RED printf("\e[0;101m")
 #define BK_GRN printf("\e[0;102m")
@@ -47,6 +48,22 @@ int graph[MAX_VERTICES][MAX_VERTICES];
 int visited[MAX_VERTICES];
 
 bool is_slash;
+
+bool judge_build(sPlayer * player, uint8_t build_type){
+    //0->village
+    //1->road
+    //2->city
+    if(build_type==1){
+        if(player->wood>0 && player->brick>0){ return true;}
+        else{ return false;}
+    }else if(build_type==0){
+        if(player->wood>0 && player->sheep>0 && player->wheat>0 && player->brick>0 ){ return true;}
+        else {return false;}
+    }else if(build_type==2){
+        if(player->wheat>=2 && player->iron>=3){ return true;}
+        else{ return false;}
+    }
+}
 
 /*resource switch*/
 int32_t resource_switch(int32_t region_type){
@@ -478,7 +495,9 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
           if(near_no_player && road_connected){
             map[i][j][1] = player_ID;
             map[i][j][3] = 1;
-            printf("Build village %d %d success!\n",i,j);
+            if(!is_ai){
+              printf("Build village %d %d success!\n",i,j);
+            }
             if(init_time>=1){
               int32_t road_total_temp=0;
               for(int8_t i=0;i<4;i++){init_near_road[i] = -1;}
@@ -526,7 +545,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
                 }
               }
             }
-            return 0;
+            return 1;
           }else if(!near_no_player && (!is_ai)){
             printf("This village is too close to others!\n");
             return -1;
@@ -543,7 +562,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
       }
     }
   }
-  if(is_ai){
+  if(!is_ai){
     printf("This point can't be build!\n");
   }
   return -1;
@@ -556,8 +575,10 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
       if(map[i][j][0]==1 && map[i][j][2]==point_ID){
         if(map[i][j][1]==player_ID && map[i][j][3] == 1){
           map[i][j][3] = 2;
-          printf("Upgrade success!\n");
-          return 0;
+          if(!is_ai){
+            printf("Upgrade success!\n");
+          }
+          return 1;
         }else{
           if(!is_ai){
             printf("Can't be upgrade!\n");
@@ -592,10 +613,12 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
           if(map[i][j+1][0]==1 && map[i][j+1][1]==player_ID){near_point = true;}
           if(near_point || road_connected){
             map[i][j][1] = player_ID;
-            printf("Build road %d %d success!\n",i,j);
-            return 0;
+            if(!is_ai){
+              printf("Build road %d %d success!\n",i,j);
+            }
+            return 1;
           }else{
-            if(is_ai){
+            if(!is_ai){
               printf("No road or village connected!\n");
             }
             return -1;
@@ -604,7 +627,7 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
       }
     }
   }
-  if(is_ai){
+  if(!is_ai){
     printf("This road can't be build!\n");
   }
   return -1;
@@ -634,9 +657,9 @@ int32_t harvest(int32_t dice_number,int32_t *harvest_resource_2x5){
         if(map[i+2][j+1][1] != 0  && map[i][j][4] != 1){//5
           *(harvest_resource_2x5 + temp*5 + map[i+2][j+1][1]) += map[i+2][j+1][3];
         }
-        temp++;
+        //temp++;
         if(dice_number == 2 || dice_number == 12){
-          *(harvest_resource_2x5 + temp*5) == -1;
+          *(harvest_resource_2x5 + temp*5) = -1;
           return 0;
         }
       }
@@ -740,15 +763,15 @@ int32_t Longest_Path(int32_t player_ID){
 }
 
 int32_t find_port(int32_t player_ID,int32_t *port_array_1x6){
-  for(int32_t i=0;i<6;i++){
-    *(port_array_1x6 + i)=0;
-  }
-  for(int8_t i=1;i<23;i=i+2){
-    for(int8_t j=1;j<13;j=j+2){
-      if(map[i][j][0]==1 && map[i][j][1]==player_ID && map[i][j][4]!= -1){
-        *(port_array_1x6 + map[i][j][4])=1;
+    for(int32_t i=0;i<6;i++){
+      *(port_array_1x6 + i)=0;
+    }
+    for(int8_t i=1;i<23;i=i+2){
+      for(int8_t j=1;j<13;j=j+2){
+        if(map[i][j][0]==1 && map[i][j][1]==player_ID && map[i][j][4]!= -1){
+          *(port_array_1x6 + map[i][j][4])=1;
+        }
       }
     }
-  }
-  return 0;
+    return 0;
 }
