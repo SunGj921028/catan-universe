@@ -79,7 +79,13 @@ int main(int argc, char *argv[]){
     //build turn 1 and 2
     bool build = false;
     title();
-    if(startup()){
+    while(1){
+        startup();
+        if(difficulty()){
+            break;
+        }
+    }
+    //if(startup()){
         CLEAR;
         //map_init();
         //print_map();
@@ -112,6 +118,6 @@ int main(int argc, char *argv[]){
             return 0;
             if(count == 5) {count = 1;}
         }
-    }
+    //}
     return 0;
 }
