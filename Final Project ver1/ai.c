@@ -3,12 +3,29 @@
 #include"init.h"
 #include"color.h"
 #include"card.h"
+#include"map.h"
 
 extern sPlayer * p1;
 extern sPlayer * p2;
 extern sPlayer * p3;
 extern sPlayer * p4;
 extern int resource[5];//sum is 95
+
+bool judge_build(sPlayer * player, uint8_t build_type){
+    //0->village
+    //1->road
+    //2->city
+    if(build_type==1){
+        if(player->wood>0 && player->brick>0){ return true;}
+        else{ return false;}
+    }else if(build_type==0){
+        if(player->wood>0 && player->sheep>0 && player->wheat>0 && player->brick>0 ){ return true;}
+        else {return false;}
+    }else if(build_type==2){
+        if(player->wheat>=2 && player->iron>=3){ return true;}
+        else{ return false;}
+    }
+}
 
 //判斷6個行為可不可以做
 bool judge_ai_action(uint8_t action, uint8_t player_number){
@@ -17,6 +34,9 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
     else if(player_number==2) {player = p2;}
     else if(player_number==3) {player = p3;}
     else {player = p4;}
+    int32_t village_cho = 0;
+    int32_t road_cho = 0;
+    uint8_t chance = 0;
     //0->get        1->use         2->road
     //3->village    4->upgrade     5->trade(bank)
     //6->trade(harbor)(2:1)     7->trade(harbor)(3:1)
@@ -25,7 +45,6 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
     }else if(action==1){
         //can reset ai's hard
         //use
-        uint8_t chance = 0;
         uint8_t cho_of_card = 0;
         uint8_t cho_arr[4] = {0};
         while(chance<4){
@@ -36,16 +55,25 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         }
     }else if(action==2){
         //build road
+        if(judge_build(player,1)){
+            return true;
+        }else{ return false;}
     }else if(action==3){
         //build village
+        if(judge_build(player,0)){
+            return true;
+        }else{ return false;}
     }else if(action==4){
         //upgrade village
+        if(judge_build(player,2)){
+            return true;
+        }else{ return false;}
     }else if(action==5 || action==6 || action==7){
         int32_t option = 0;
         if(action!=5){ option = (action==6) ? 2 : 3;}
         else { option = 1;}
         printf("option is %d\n",option);
-        uint8_t resource_type[5] = {0};
+        uint8_t resource_type[5] = {0,1,2,3,4};
         for(int i=0;i<5;i++){
             int j = i + rand()/(RAND_MAX/(5-i)+1);
             int temp = resource_type[j];
@@ -56,7 +84,6 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
             if(trade_judge(player,option,resource_type[i])){ trade(player,1,resource_type[i],option); return true;}
         }
     }
-
     return false;
 }
 
@@ -93,23 +120,38 @@ void ai_move(int p){
                         printf("ai choose to get develop card\n");
                     }else if(i==1){
                         //use card
+                        //have done
                         printf("ai choose to use develop card\n");
                     }else if(i==2){
                         //build road
                         //random 0-71
                         printf("ai build road\n");
-                        /*while(1){
+                        while(1){
                             int32_t road_rand = rand() % 72;
-                            printf("ai build road\n");
-                        }*/
+                            if(build_road(p,road_rand,1)){
+                                player->wood--;
+                                player->brick--;
+                                player->hand++;
+                                printf("ai build road\n");
+                                break;
+                            }
+                        }
                     }else if(i==3){
                         //build village
                         //random 0-53
                         printf("ai build village\n");
-                        /*while(1){
+                        while(1){
                             int32_t V_ran = rand() % 54;
-                            printf("ai build village\n");
-                        }*/
+                            if(build_village(p,V_ran,0,1)){
+                                player->brick--;
+                                player->wheat--;
+                                player->wood--;
+                                player->sheep--;
+                                player->hand -= 4;
+                                printf("ai build village\n");
+                                break;
+                            }
+                        }
                     }else if(i==4){
                         //upgrade
                         //Need to find which can be upgraded

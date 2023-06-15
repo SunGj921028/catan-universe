@@ -2,6 +2,7 @@
 #include"data.h"
 #include"init.h"
 #include"color.h"
+#include"map.h"
 
 extern sPlayer * p1;
 extern sPlayer * p2;
@@ -169,17 +170,112 @@ void check_hand(){
     return;
 }
 
-void move_thief(sPlayer * player, uint8_t is_ai){
-    if(!is_ai){
-    }else{}
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1){
+  for(int8_t i=3;i<20;i=i+2){
+    for(int8_t j=2;j<12;j=j+2){
+      if(map[i][j][0]==3 && map[i][j][4]==1){
+        map[i][j][4]=0;
+      }
+    }
+  }
+  for(int8_t i=3;i<20;i=i+2){
+    for(int8_t j=2;j<12;j=j+2){
+      if(map[i][j][0]==3 && map[i][j][1]==block_id){
+        map[i][j][4]=1;
+        if(map[i-2][j-1][1] != 0){//0
+          *(nearby_player_5x1 + map[i-2][j-1][1]) = 1;
+        }
+        if(map[i-2][j+1][1] != 0){//1
+          *(nearby_player_5x1 + map[i-2][j+1][1]) = 1;
+        }
+        if(map[i][j-1][1] != 0){//2
+          *(nearby_player_5x1 + map[i][j-1][1]) = 1;
+        }
+        if(map[i][j+1][1] != 0){//3
+          *(nearby_player_5x1 + map[i][j+1][1]) = 1;
+        }
+        if(map[i+2][j-1][1] != 0){//4
+          *(nearby_player_5x1 + map[i+2][j-1][1]) = 1;
+        }
+        if(map[i+2][j+1][1] != 0){//5
+          *(nearby_player_5x1 + map[i+2][j+1][1]) = 1;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+void steal_resource(uint8_t player_cho, sPlayer * player){
+    sPlayer * ps;
+    if(player_cho==1) {ps = p1;}
+    else if(player_cho==2) {ps = p2;}
+    else if(player_cho==3) {ps = p3;}
+    else { ps = p4;}
+    uint8_t *temp[5]={&(ps->iron),&(ps->wood),&(ps->wheat),&(ps->brick),&(ps->sheep)};
+    uint8_t *temp2[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
+    uint8_t res_cho = rand() % 5;
+    *(temp2[res_cho])++;
+    *(temp[res_cho])--;
+    ps->hand--;
+    player->hand++;
     return;
 }
 
-void thief_action(sPlayer * player, uint8_t is_ai){
+void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     PASS;
     //throw resource card
     check_hand();
     //move thief
-    move_thief(player, is_ai);
+    //choose the position you want to place robbor first
+    int32_t nearby_player[5] = {0};//0->nothing
+    int region_cho = 0;
+    if(is_ai){
+        region_cho = rand() % 19;
+    }else{
+        map_print(3);
+        printf("Which region you want to place the robbor ? (0-18): ");
+        scanf("%d",&region_cho);
+    }
+    move_robbor(region_cho,&nearby_player[0]);
+    int player_cho = 0;
+    uint8_t *temp_hand[4] = {&(p1->hand),&(p2->hand),&(p3->hand),&(p4->hand)};
+    if(is_ai){
+        uint8_t temp_player[5] = {0};
+        for(int i=1;i<5;i++){
+            if(nearby_player[i]==1 && i!=player_number){
+                temp_player[i] = *(temp_hand[i-1]);
+            }
+        }
+        uint8_t max_player = 0;
+        uint8_t max_hand = 0;
+        for(int i=1;i<5;i++){
+            if(temp_player[i] >= max_hand){
+                max_hand = temp_player[i];
+                max_player = i;
+            }
+        }
+        player_cho = max_player;
+    }else{
+        uint8_t player_can_steal[5] = {0};
+        for(int i=2;i<5;i++){
+            if(nearby_player[i]!=0){
+                player_can_steal[i] = 1;
+                printf("--> You can take player %d's resource!!\n",i);
+            }
+        }
+        while(1){
+            player_cho = 0;
+            printf("Which player's resource you want to steal? :");
+            scanf("%d",&player_cho);
+            if(player_can_steal[player_cho]==1){
+                break;
+            }else{
+                printf("You can't steal resource from this player!!\n");
+                continue;
+            }
+        }
+    }
+    steal_resource(player_cho,player);
     return;
 }

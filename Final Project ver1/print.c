@@ -1,6 +1,7 @@
 #include"data.h"
 #include"init.h"
 #include"phase.h"
+#include"map.h"
 #include"card.h"
 
 extern int source_region[19];

@@ -3,6 +3,7 @@
 #include"choose.h"
 #include"color.h"
 #include"card.h"
+#include"map.h"
 #include"phase.h"
 #include<stdio.h>
 #include<stdint.h>
@@ -42,6 +43,9 @@ sPlayer * p2;
 sPlayer * p3;
 sPlayer * p4;
 //sPlayer *Player[4]={p1,p2,p3,p4};
+int8_t init_build_take[5] = {0,0,0,0,0};
+int8_t init_near_road[4] = {-1,-1,-1,-1};
+int8_t map[23][13][5];
 
 void title(){
     CLEAR;
@@ -81,21 +85,21 @@ int main(int argc, char *argv[]){
     title();
     if(startup()){
         CLEAR;
-        //map_init();
-        //print_map();
         init_region();
         region_num_initial();
+        map_init();
+        map_print(0);
         develop_card_init();
         p1 = player_init();
         p2 = player_init();
         p3 = player_init();
         p4 = player_init();
-        //throw_dice(p1,1);
         build = false;
         uint8_t count = 0;
         while(1){
             if(!build) {first_sec_turn(), count = (first_player + 1), build = true;}
             printf("Start from player %d.\n",count);
+            return 0;
             //test
             count = 1;
             if((count%5) == 1){

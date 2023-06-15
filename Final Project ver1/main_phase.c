@@ -2,6 +2,7 @@
 #include<stdint.h>
 #include"data.h"
 #include"phase.h"
+#include"map.h"
 #include"init.h"
 #include"color.h"
 
@@ -127,28 +128,29 @@ int32_t dice(){
 
 void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     int32_t dice_result = dice();
+    show_dice_v2(dice_result);
     if(!is_ai){ printf("p1 throw %d points\n",dice_result);}
     else{ printf("p%d throw %d points\n",player_number,dice_result);}
     //printf("%d\n",dice_result);
     //harvest resource array
     int32_t harvest_resource[2][5];
-    harvest_resource[0][0] = 0;
-    harvest_resource[0][1] = 1;
-    harvest_resource[0][2] = 1;
-    harvest_resource[0][3] = 1;
-    harvest_resource[0][4] = 1;
-    harvest_resource[1][0] = 4;
-    harvest_resource[1][1] = 2;
-    harvest_resource[1][2] = 4;
-    harvest_resource[1][3] = 5;
-    harvest_resource[1][4] = 2;
+    // harvest_resource[0][0] = 0;
+    // harvest_resource[0][1] = 1;
+    // harvest_resource[0][2] = 1;
+    // harvest_resource[0][3] = 1;
+    // harvest_resource[0][4] = 1;
+    // harvest_resource[1][0] = 4;
+    // harvest_resource[1][1] = 2;
+    // harvest_resource[1][2] = 4;
+    // harvest_resource[1][3] = 5;
+    // harvest_resource[1][4] = 2;
     //test
     //dice_result = 7;
     if(dice_result==7){
         //thief action
-        thief_action(player,is_ai);
+        thief_action(player,is_ai,player_number);
     }else{
-        //harvest(dice_result,&harvest_resource[0][0]);
+        harvest(dice_result,&harvest_resource[0][0]);
         take_resource_dice(harvest_resource);
     }
     return;

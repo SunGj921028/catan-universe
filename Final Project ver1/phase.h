@@ -22,6 +22,8 @@ void score(uint8_t p);
 void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number);
 //dice random
 int32_t dice();
+void show_dice_v1(int dice);
+void show_dice_v2(int dice);
 
 //search and judge to take the resource
 void take_resource_dice(int32_t harvest_resource[2][5]);
@@ -31,12 +33,13 @@ void ai_move(int p);
 bool judge_ai_action(uint8_t action, uint8_t player_number);
 
 //thief move
-void thief_action(sPlayer * player, uint8_t is_ai);
+void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number);
 void check_hand();
 void print_player_hands(sPlayer * player, uint8_t n);
 void input_key(sPlayer * player, uint8_t p_number, int num);
 void throw_card(sPlayer * player, uint8_t arr[], size_t n);
-void move_thief(sPlayer * player, uint8_t is_ai);
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1);
+void steal_resource(uint8_t player_cho, sPlayer * player);
 
 //real player
 void player_move();

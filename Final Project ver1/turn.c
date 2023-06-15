@@ -2,36 +2,125 @@
 #include "data.h"
 #include "color.h"
 #include"init.h"
+#include"map.h"
 
 int player_order = 0;
+extern int8_t init_build_take[5];
+
+void take_init_resource(int player_order){
+	sPlayer * player;
+	if(player_order==0){ player = p1;}
+	else if(player_order==1){ player = p2;}
+	else if(player_order==2){ player = p3;}
+	else { player = p4;}
+	uint8_t *temp[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
+	for(int i=0;i<5;i++){
+		*(temp[i]) += init_build_take[i];
+	}
+	return;
+}
+
 void first_sec_turn(){
 	player_order = rand() % 4;//first設全域 在phase.h
 	int count=0;
+	int vi_cho = 0;
+	int r_cho = 0;
+	player_order = 0;
 	while(count!=4){
+		vi_cho = 0;
+		r_cho = 0;
 		switch(player_order)
 		{
 			case 0:
 				//Temp message
-				printf("First round player 1\n");
-				//build(p1);
+				//printf("First round player 1\n");
+				while(1){
+					map_print(1);
+					printf("Which point you want to build Village ? (0-53): ");
+					scanf("%d",&vi_cho);
+					if(build_village(1,vi_cho,1,0) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					map_print(2);
+					printf("Which point you want to build Road ? (0-71): ");
+					scanf("%d",&r_cho);
+					if(build_road(1,r_cho,0) == -1){
+						continue;
+					}
+					break;
+				}
+				CLEAR;
+				map_print(0);
+				print_init(1);
 				player_order+=1;
 				count++;
 				break;
 			case 1:
 				printf("First round player 2\n");
-				//build(p2);
+				while(1){
+					vi_cho = rand() % 54;
+					if(build_village(2,vi_cho,1,1) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					r_cho = rand() % 72;
+					if(build_road(2,r_cho,1) == -1){
+						continue;
+					}
+					break;
+				}
+				CLEAR;
+				map_print(0);
+				print_init(2);
 				player_order+=1;
 				count++;
 				break;
 			case 2:
 				printf("First round player 3\n");
-				//build(p3);
+				while(1){
+					vi_cho = rand() % 54;
+					if(build_village(3,vi_cho,1,1) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					r_cho = rand() % 72;
+					if(build_road(3,r_cho,1) == -1){
+						continue;
+					}
+					break;
+				}
+				CLEAR;
+				map_print(0);
+				print_init(3);
 				player_order+=1;
 				count++;
 				break;
 			case 3:
 				printf("First round player 4\n");
-				//build(p4);
+				while(1){
+					vi_cho = rand() % 54;
+					if(build_village(4,vi_cho,1,1) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					r_cho = rand() % 72;
+					if(build_road(4,r_cho,1) == -1){
+						continue;
+					}
+					break;
+				}
+				CLEAR;
+				map_print(0);
+				print_init(4);
 				player_order=0;
 				count++;
 				break;
@@ -43,30 +132,134 @@ void first_sec_turn(){
 	}else{
 		player_order--;
 	}//找第一輪最後一個放的
-	
+
 	while(count!=4){
+		vi_cho = 0;
+		r_cho = 0;
+		bool check_road = false;
 		switch(player_order){
 			case 0:
-				printf("Second round player 1\n");
-				//build_and_take_surround(p1);
+				while(1){
+					map_print(1);
+					printf("Which point you want to build Village ? (0-53): ");
+					scanf("%d",&vi_cho);
+					if(build_village(1,vi_cho,2,0) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					map_print(2);
+					printf("Which point you want to build Road ? (0-71): ");
+					scanf("%d",&r_cho);
+					for(int i=1;i<=init_near_road[0];i++){
+						if(init_near_road[i]==r_cho){
+							if(build_road(1,r_cho,0)==0){
+								check_road = true;
+								break;
+							}
+						}
+					}
+					if(check_road){
+						break;
+					}else{
+						continue;
+					}
+				}
+				take_init_resource(player_order);
+				CLEAR;
+				map_print(0);
+				print_init(1);
 				player_order=3;
 				count++;
 				break;
 			case 1:
 				printf("Second round player 2\n");
-				//build_and_take_surround(p2);
+				while(1){
+					vi_cho = rand() % 54;
+					if(build_village(2,vi_cho,2,1) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					r_cho = rand() % 72;
+					for(int i=1;i<=init_near_road[0];i++){
+						if(init_near_road[i]==r_cho){
+							if(build_road(2,r_cho,1)==0){
+								check_road = true;
+								break;
+							}
+						}
+					}
+					if(check_road){
+						break;
+					}else{continue;}
+				}
+				take_init_resource(player_order);
+				CLEAR;
+				map_print(0);
+				print_init(2);
 				player_order--;
 				count++;
 				break;
 			case 2:
 				printf("Second round player 3\n");
-				//build_and_take_surround(p3);
+				while(1){
+					vi_cho = rand() % 54;
+					if(build_village(3,vi_cho,2,1) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					r_cho = rand() % 72;
+					for(int i=1;i<=init_near_road[0];i++){
+						if(init_near_road[i]==r_cho){
+							if(build_road(3,r_cho,1)==0){
+								check_road = true;
+								break;
+							}
+						}
+					}
+					if(check_road){
+						break;
+					}else{continue;}
+				}
+				take_init_resource(player_order);
+				CLEAR;
+				map_print(0);
+				print_init(3);
 				player_order--;
 				count++;
 				break;
 			case 3:
 				printf("Second round player 4\n");
-				//build_and_take_surround(p4);
+				while(1){
+					vi_cho = rand() % 54;
+					if(build_village(4,vi_cho,2,1) == -1){
+						continue;
+					}
+					break;
+				}
+				while(1){
+					r_cho = rand() % 72;
+					for(int i=1;i<=init_near_road[0];i++){
+						if(init_near_road[i]==r_cho){
+							if(build_road(4,r_cho,1)==0){
+								check_road = true;
+								break;
+							}
+						}
+					}
+					if(check_road){
+						break;
+					}else{continue;}
+				}
+				take_init_resource(player_order);
+				CLEAR;
+				map_print(0);
+				print_init(4);
 				player_order--;
 				count++;
 				break;
@@ -80,62 +273,3 @@ void first_sec_turn(){
 	first_player = player_order;
 	return;
 }
-
-/*void turn_process(sPlayer *p){//參數代Player[first] first是全域會自己變
-	int end=0;
-	throw_dice(p);
-	char action[2];
-	while(end!=1){
-		printf("What do you want to do?\n(0:end turn 1:trade 2:build 3:use develop card):");	
-		fgets(action,2,stdin);
-		switch(action[0]){
-			case '0':
-			  first--;
-			  end=1;
-			  break;
-			
-			case '1':
-			  trade(p);
-			  break;
-			
-			case '2':
-			  //build();
-			  break;
-			
-			case '3':
-			  printf("0:back 1:use card 2:buy card:");
-			  fgets(action,2,stdin);
-			  if(action[0]=='0'){
-			  	break;
-			  }
-			  else if(action[0]=='1'){
-			  	if(p->U_develop==1){
-				  	printf("You have used 1 before\n");
-			  	}
-			  	else{
-			  		//use_develop_card();
-			  	}
-		  	}
-			  else if(action[0]=='2'){
-			  	if(p->sheep==0 || p->wheat==0 || p->rock==0){
-			  		printf("You don't have enough resource\n");
-			  	}
-			  	else{
-			  		get_develop_card(p);
-			  		p->sheep--;
-			  		p->wheat--;
-			  		p->rock--;
-					p->hand-=3;
-			  	}
-			  }
-			  else{
-		  		printf("Invalid command\n");
-		  	}
-		  	break;
-			
-			default:
-			  printf("Invalid command\n");
-			  break;
-		}
-	}
-}*/
