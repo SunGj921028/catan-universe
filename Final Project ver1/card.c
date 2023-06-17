@@ -78,14 +78,14 @@ void get_develop_card(sPlayer * player, uint8_t player_number){
         develop_card_keep[keep_index] = 4;
         score_remain--;
     }
-    player->wheat--;
-    player->sheep--;
-    player->iron--;
+    player->wheat -= 1;
+    player->sheep -= 1;
+    player->iron -= 1;
     player->hand -= 3;
     //not sure
-    resource[0]++;
-    resource[2]++;
-    resource[4]++;
+    resource[0] += 1;
+    resource[2] += 1;
+    resource[4] += 1;
     printf("%u %u %u %u\n",player->knight,player->harvest_card,player->build_card,player->steal_card);
     printf(PURPLE"~~Player %d buy a develop card!!\e[0m\n",player_number);
     printf("---------------\n");
@@ -218,6 +218,7 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
             }
         }
         player_cho = max_player;
+        printf("ai use knight\n");
     }
     steal_resource(player_cho,player);
     return 0;

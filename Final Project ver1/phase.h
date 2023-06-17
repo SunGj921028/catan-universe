@@ -56,4 +56,4 @@ bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type);
 //trade type->bank(1) harbor2:1(2) harbor3:1(3)
 void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_type);
 void trade_player(uint8_t p, uint8_t is_ai);
-
+bool judge_player_trade(int32_t resource[5], sPlayer * p_com, uint8_t type, int32_t getfrom);

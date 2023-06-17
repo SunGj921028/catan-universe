@@ -304,6 +304,13 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                     printf("ERROR\n");
                     while (getchar() != '\n');
                     continue;
+                }else{
+                    if(region_cho<0 || region_cho>18){
+                        printf(RED"Wrong Input!!\e[0m\n");
+                        continue;
+                    }else{
+                        break;
+                    }
                 }
             }
             if(move_robbor(region_cho,&nearby_player[0],is_ai)){

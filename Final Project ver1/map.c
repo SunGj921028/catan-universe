@@ -33,6 +33,8 @@ int8_t c_map_deep = 5;
 //calc lonest road
 
 char player_log[40][LOG_LEN+1];
+char player_movement[9][67];
+int8_t player_m_pID[9];
 int8_t map_pk[19]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int32_t map_ok=0;
 int8_t ocean_f[38][2]={{31,31},{31,31},{29,29},{27,27},{26,26},{25,25},{17,17},{12,12},{15,15},{7,7},{6,6},{5,5},{4,4},{5,5},{6,6},{7,7},{2,2},{5,5},{4,4},{5,5},{6,6},{7,7},{6,6},{5,5},{4,4},{1,1},{6,6},{7,7},{15,15},{16,16},{17,17},{21,21},{26,26},{27,27},{31,31},{31,31},{31,31}};
@@ -347,6 +349,12 @@ void pdp0(int32_t len){
     printf(" ");
   }
 }
+void pdp1(int32_t len){
+  CCLEAR;
+  for(int8_t i=len;i<LOG_LEN*2+3;i++){
+    printf(" ");
+  }
+}
 
 int32_t pd_slt(int32_t player_ID, int32_t log_order){
   player_ID--;
@@ -355,29 +363,30 @@ int32_t pd_slt(int32_t player_ID, int32_t log_order){
 }
 
 void pd_builder(){
+  sPlayer *psa[4] = {p1,p2,p3,p4};
   for(int32_t i=0;i<4;i++){
     if(i==0){
-      sprintf(player_log[i*10+0],"1:player Name");
+      sprintf(player_log[i*10+0],"%s",player_name);
     }else{
-      sprintf(player_log[i*10+0],"1:My Name");
+      sprintf(player_log[i*10+0],"Player%d",i+1);
     }
-    sprintf(player_log[i*10+1],"2:Lonest road");
-    sprintf(player_log[i*10+2],"3:Knight card");
-    if(i==0){
-      sprintf(player_log[i*10+3]," %02d %02d %02d %02d %02d",1,2,3,4,5);
-    }else{
-      sprintf(player_log[i*10+3],"4:total card");
-    }
-    if(i==0){
-      sprintf(player_log[i*10+4],"5:z8 503 card");
-    }else{
-      sprintf(player_log[i*10+4],"5:total z8 503 card");
-    }
-    sprintf(player_log[i*10+5],"6:road card");
-    sprintf(player_log[i*10+6],"7:village card");
-    sprintf(player_log[i*10+7],"8:city card");
-    sprintf(player_log[i*10+8],"9:score card");
-    sprintf(player_log[i*10+9],"10:resss card");
+    sprintf(player_log[i*10+1],"Lonest road");
+    sprintf(player_log[i*10+2],"Knight used: %d",psa[i]->U_knight);
+    // if(i==0){
+      sprintf(player_log[i*10+3]," %02d %02d %02d %02d %02d", psa[i]->iron, psa[i]->wood, psa[i]->wheat, psa[i]->brick, psa[i]->sheep);
+    // }else{
+    //   sprintf(player_log[i*10+3],"Total resource card: %d", (psa[i]->iron)+(psa[i]->wood)+(psa[i]->wheat)+(psa[i]->brick)+(psa[i]->sheep));
+    // }
+    //if(i==0){
+      sprintf(player_log[i*10+4],"  %d  %d  %d  %d",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card);
+    // }else{
+    //   sprintf(player_log[i*10+4],"Total develop card: %d",(psa[i]->knight)+(psa[i]->harvest_card)+(psa[i]->build_card)+(psa[i]->steal_card));
+    // }
+    sprintf(player_log[i*10+5],"Remained road: %d",psa[i]->road.road_hand);
+    sprintf(player_log[i*10+6],"Remained village: %d",psa[i]->village.village_hand);
+    sprintf(player_log[i*10+7],"Remained city: %d",psa[i]->city.city_hand);
+    sprintf(player_log[i*10+8],"Score: %d",psa[i]->final_score);
+    sprintf(player_log[i*10+9],"EMPTY_PLACE");
   }
 }
 
@@ -409,7 +418,7 @@ void pd_print(int8_t ptime){
         }
         CCLEAR;pdp0(15);
       }else if(ptime==5){
-        pdp0(printf("c1 c2 c3"));
+        pdp0(printf("KNI HAR BUI STE"));
       }else{
         pdp0(pd_slt(1,(ptime-2)));
       }
@@ -421,6 +430,21 @@ void pd_print(int8_t ptime){
       map_color_slt(2,4);pdp0(pd_slt(4,(ptime%(u_h+1))-1));
     }
     BK_WIT;printf("  ");CCLEAR;
+  }else if(u_h+d_h+3<=ptime && ptime <=u_h+d_h+8){
+    if(ptime==u_h+d_h+3){
+      printf("-----------------------------------------------------------------");
+    }else if(ptime==u_h+d_h+4){
+      printf(" Road: Wood*1 Brick*1    Village: Wood*1 Brick*1 Sheep*1 Wheat*1 ");
+    }else if(ptime==u_h+d_h+5){
+      printf(" City: Wheat*2 Iron*3    Develop card: Sheep*1 Wheat*1 Iron*1    ");
+    }else if(ptime==u_h+d_h+6){
+      printf("-----------------------------------------------------------------");
+    }else if(ptime==u_h+d_h+8){
+      printf("----console.log--------------------------------------------------");
+    }
+  }else{
+    map_color_slt(2,player_m_pID[ptime%(u_h+d_h+9)]);
+    pdp1(printf("%s",player_movement[ptime%(u_h+d_h+9)]));
   }
   
 }
@@ -452,6 +476,11 @@ void map_init(){
         map[i][j][k]=0;
       }
     }
+  }for(int8_t i=0;i<9;i++){
+    for(int8_t j=0;j<67;j++){
+      player_movement[i][j]=0;
+    }
+    player_m_pID[i]=0;
   }
   for(int8_t i=0;i<23;i++){
     if(i<=6){
@@ -537,6 +566,15 @@ int32_t map_print(int8_t printer_mood){
   printf("\e[0m \n\e[0m");
 }
 
+int32_t map_log_update(int32_t player_ID, char *do_stuff){
+  for(int8_t i=1;i<9;i++){
+    strcpy(player_movement[i-1],player_movement[i]);
+    player_m_pID[i-1]=player_m_pID[i];
+  }
+  strcpy(player_movement[8],do_stuff);
+  player_m_pID[8]=player_ID;
+}
+
 int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uint8_t is_ai){
   if(!(0 <= point_ID && point_ID < 54) && (!is_ai)){
     printf("Point ID is invalid!\n");
@@ -589,6 +627,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
             if(!is_ai){
               printf("Build village %d %d success!\n",i,j);
             }
+            map_log_update(player_ID,"Player build the village");
             if(init_time>=1){
               int32_t road_total_temp=0;
               for(int8_t i=0;i<4;i++){init_near_road[i] = -1;}
@@ -682,10 +721,8 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
 }
 
 int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
-  if(!(0 <= road_ID && road_ID < 72)){
-    if(!is_ai){
-      printf("Road ID is invalid!\n");
-    }
+  if(!(0 <= road_ID && road_ID < 72)  && (!is_ai)){
+    printf("Road ID is invalid!\n");
     return -1;
   }
   for(int8_t i=0;i<23;i++){
@@ -709,6 +746,7 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
             if(!is_ai){
               printf("Build road %d %d success!\n",i,j);
             }
+            map_log_update(player_ID,"Player build the road");
             return 1;
           }else{
             if(!is_ai){
@@ -871,3 +909,4 @@ int32_t find_port(int32_t player_ID,int32_t *port_array_1x6){
     }
     return 0;
 }
+

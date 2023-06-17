@@ -280,18 +280,51 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
     return;
 }
 
+int32_t accept_or_not(int32_t resource_give, uint8_t is_ai, sPlayer * p_com){}
+
+bool judge_player_trade(int32_t resource[5], sPlayer * p_com, uint8_t type, int32_t getfrom){
+    //type==0 -> give
+    //type==1 -> get
+    uint8_t *temp[5] = {&(p_com->iron),&(p_com->wood),&(p_com->wheat),&(p_com->brick),&(p_com->sheep)};
+    if(type==0){
+        for(int i=0;i<5;i++){
+            if(resource[i]>*(temp[i])){
+                return false;
+            }
+        }
+    }else{
+        sPlayer * get;
+        if(getfrom==1){ get = p1;}
+        else if(getfrom==2){ get = p2;}
+        else if(getfrom==3){ get = p3;}
+        else { get = p4;}
+        uint8_t *p_r[5] = {&(get->iron),&(get->wood),&(get->wheat),&(get->brick),&(get->sheep)};
+        for(int j=0;j<5;j++){
+            if(resource[j]>*(p_r[j])){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void trade_player(uint8_t p, uint8_t is_ai){
     sPlayer * p_commit;
     if(p==1){ p_commit = p1;}
     else if(p==2){ p_commit = p2;}
     else if(p==3){ p_commit = p3;}
     else{ p_commit = p4;}
+    int p_cho = 0;
     char res_cho[30] = {0};
+    char res_get[30] = {0};
     int resource_give[5] = {0};
+    int resource_get[5] = {0};
     int count_get_char = 0;
+    int count = 0;
     if(is_ai==0){
-        printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
+        bool reset_trade = false;
         while(1){
+            printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
             if(count_get_char!=0){
                 getchar();
             }
@@ -301,11 +334,51 @@ void trade_player(uint8_t p, uint8_t is_ai){
             if(strlen(res_cho)>16) {printf("invalid input!!\n"); continue;}
             if(judge_five(res_cho)){
                 sscanf(res_cho,"%d %d %d %d %d",&resource_give[0],&resource_give[1],&resource_give[2],&resource_give[3],&resource_give[4]);
-                break;
+                if(judge_player_trade(resource_give,p_commit,0,0)){
+                    while(1){
+                        printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
+                        printf("How many resources do you want to get from trade? (input's pattern is like x x x x x)\n");
+                        fgets(res_get,30,stdin);
+                        if(strlen(res_get)>16) {printf("invalid input!!\n"); continue;}
+                        if(judge_five(res_get)){
+                            sscanf(res_get,"%d %d %d %d %d",&resource_get[0],&resource_get[1],&resource_get[2],&resource_get[3],&resource_get[4]);
+                            while(1){
+                                printf("Which player you want to trade with ? (2-4): ");
+                                if((scanf("%d",&p_cho)) == 0){
+                                    printf(RED"Wrong Input!!\e[0m\n");
+                                    while (getchar() != '\n');
+                                    continue;
+                                }else{
+                                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                                        printf(RED"ERROR\e[0m\n");
+                                        while (getchar() != '\n');
+                                        continue;
+                                    }else{
+                                        if(p_cho<2 || p_cho>4){
+                                            printf(RED"Wrong Input!!\e[0m\n");
+                                            continue;
+                                        }else{
+                                            accept_or_not();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }else{
+                            printf(RED"Wrong input format!!\e[0m\n");
+                            continue;
+                        }
+                    }
+                }else{
+                    printf(RED"You don't have enough resource!!\e[0m\n");
+                    continue;
+                }
             }else{
                 printf(RED"Wrong input format!!\e[0m\n");
                 continue;
             }
         }
+    }else{
     }
 }

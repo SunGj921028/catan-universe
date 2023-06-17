@@ -518,28 +518,7 @@ void player_move(){
                         printf(RED"You don't have any harbor!!\e[0m\n");
                     }
                 }else if(cho_move==3){
-                    int player_trade_cho = 0;
-                    while(1){
-                        printf("Which player you want to trade with ? (2-4): ");
-                        if((scanf("%d",&player_trade_cho)) == 0){
-                            printf("Wrong Input!!\n");
-                            while (getchar() != '\n');
-                            continue;
-                        }else{
-                            if(scanf("%c",&extra)==1 && extra != '\n'){
-                                printf("ERROR\n");
-                                while (getchar() != '\n');
-                                continue;
-                            }else{
-                                if(player_trade_cho<2 || player_trade_cho>4){
-                                    printf(RED"Wrong Input!!\e[0m\n");
-                                    continue;
-                                }else{
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    
                 }else{
                     printf(RED"Wrong Input!!\e[0m\n");
                 }
