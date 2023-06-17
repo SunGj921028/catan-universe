@@ -8,6 +8,7 @@
 #include "map.h"
 #include "init.h"
 #include "data.h"
+#include "color.h"
 
 #define BK_RED printf("\e[0;101m")
 #define BK_GRN printf("\e[0;102m")
@@ -432,19 +433,19 @@ void pd_print(int8_t ptime){
     BK_WIT;printf("  ");CCLEAR;
   }else if(u_h+d_h+3<=ptime && ptime <=u_h+d_h+8){
     if(ptime==u_h+d_h+3){
-      printf("-----------------------------------------------------------------");
+      CLR_F_256(0);CLR_B_256(223);printf("------------------------------------------------------------------");CCLEAR;
     }else if(ptime==u_h+d_h+4){
-      printf(" Road: Wood*1 Brick*1    Village: Wood*1 Brick*1 Sheep*1 Wheat*1 ");
+      CLR_F_256(0);CLR_B_256(223);printf("| Road: Wood*1 Brick*1   Village: Wood*1 Brick*1 Sheep*1 Wheat*1 |");CCLEAR;
     }else if(ptime==u_h+d_h+5){
-      printf(" City: Wheat*2 Iron*3    Develop card: Sheep*1 Wheat*1 Iron*1    ");
+      CLR_F_256(0);CLR_B_256(223);printf("| City: Wheat*2 Iron*3   Develop card: Sheep*1 Wheat*1 Iron*1    |");CCLEAR;
     }else if(ptime==u_h+d_h+6){
-      printf("-----------------------------------------------------------------");
+      CLR_F_256(0);CLR_B_256(223);printf("------------------------------------------------------------------");CCLEAR;
     }else if(ptime==u_h+d_h+8){
-      printf("----console.log--------------------------------------------------");
+      printf("----console.log---------------------------------------------------");
     }
   }else{
     map_color_slt(2,player_m_pID[ptime%(u_h+d_h+9)]);
-    pdp1(printf("%s",player_movement[ptime%(u_h+d_h+9)]));
+    printf("%s",player_movement[ptime%(u_h+d_h+9)]);
   }
   
 }
@@ -452,7 +453,7 @@ void pd_print(int8_t ptime){
 /*center of map and log*/
 void map_p_main2log(int8_t *ptime,int8_t pmood){
   CCLEAR;
-  printf("%02d",*ptime);
+  printf("  ");
   if(pmood==0){
     pd_print(*ptime);
   }
@@ -575,15 +576,15 @@ int32_t map_log_update(int32_t player_ID, char *do_stuff, int32_t build_in){
   for(int32_t i=0;i<66;i++){temp[i]=0;}
   if(build_in==-1){
     if(player_ID==1){
-      sprintf(temp,"%s %s",player_name,do_stuff);
+      sprintf(temp," %s %s",player_name,do_stuff);
     }else{
-      sprintf(temp,"Player %d %s",player_ID,do_stuff);
+      sprintf(temp," Player %d %s",player_ID,do_stuff);
     }
   }else{
     if(player_ID==1){
-      sprintf(temp,"%s %s %d",player_name,do_stuff,build_in);
+      sprintf(temp," %s %s %d",player_name,do_stuff,build_in);
     }else{
-      sprintf(temp,"Player %d %s %d",player_ID,do_stuff,build_in);
+      sprintf(temp," Player %d %s %d",player_ID,do_stuff,build_in);
     }
   }
   
@@ -716,6 +717,10 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
 
 /*village upgrade*/
 int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
+  if(point_ID<0 || point_ID>53){
+    printf(RED"Wrong ID input!!\e[0m\n");
+    return -1;
+  }
   for(int8_t i=0;i<23;i++){
     for(int8_t j=0;j<13;j++){
       if(map[i][j][0]==1 && map[i][j][2]==point_ID){
@@ -751,8 +756,8 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
           if(map[i-1][j+1][0]==2 && map[i-1][j+1][1]==player_ID){if((map[i-1][j][0]==1 && map[i-1][j][1]==0) || map[i][j+1][0]==1 && map[i][j+1][1]==0){road_connected = true;}}
           if(map[i+1][j-1][0]==2 && map[i+1][j-1][1]==player_ID){if((map[i+1][j][0]==1 && map[i+1][j][1]==0) || map[i][j-1][0]==1 && map[i][j-1][1]==0){road_connected = true;}}
           if(map[i+1][j+1][0]==2 && map[i+1][j+1][1]==player_ID){if((map[i+1][j][0]==1 && map[i+1][j][1]==0) || map[i][j-1][0]==1 && map[i][j-1][1]==0){road_connected = true;}}
-          if(map[i-2][j][0]==2 && map[i-2][j][1]==player_ID){if(map[i+1][j][0]==1 && map[i+1][j][1]==0){road_connected = true;}}
-          if(map[i+2][j][0]==2 && map[i+2][j][1]==player_ID){if(map[i-1][j][0]==1 && map[i-1][j][1]==0){road_connected = true;}}
+          if(map[i-2][j][0]==2 && map[i-2][j][1]==player_ID){if(map[i-1][j][0]==1 && map[i-1][j][1]==0){road_connected = true;}}
+          if(map[i+2][j][0]==2 && map[i+2][j][1]==player_ID){if(map[i+1][j][0]==1 && map[i+1][j][1]==0){road_connected = true;}}
           if(map[i-1][j][0]==1 && map[i-1][j][1]==player_ID){near_point = true;}
           if(map[i+1][j][0]==1 && map[i+1][j][1]==player_ID){near_point = true;}
           if(map[i][j-1][0]==1 && map[i][j-1][1]==player_ID){near_point = true;}

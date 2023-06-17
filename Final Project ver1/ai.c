@@ -11,6 +11,14 @@ extern sPlayer * p3;
 extern sPlayer * p4;
 extern int resource[5];//sum is 95
 
+void some_ai_logic(sPlayer * player, uint8_t type){
+    //0->village
+    //1->road
+    //2->upgrade
+    //3->buy
+    //4->hand check
+}
+
 //判斷6個行為可不可以做
 bool judge_ai_action(uint8_t action, uint8_t player_number){
     sPlayer * player;
@@ -83,12 +91,17 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
             }
         }
     }
+    // }else if(action==8){
+    //     // if(player->hand >= 5){
+    //     //     int32_t td = rand() % 
+    //     // }
+    // }
     return false;
 }
 
 void ai_move(int p){
-    print_init(p);
-    printf("#This is Player %d's turn.\n",p);
+    //print_init(p);
+    map_log_update(p,"'s turn.",-1);
     //which player
     sPlayer * player;
     if(p == 2) {player = p2;}
@@ -110,26 +123,27 @@ void ai_move(int p){
             action[j] = action[i];
             action[i] = temp;
         }
+        // for(int i=0;i<8;i++){
+        //     printf("%u ",action[i]);
+        // }
+        // printf("\n");
         for(int i=0;i<8;i++){
-            printf("%u ",action[i]);
-        }
-        printf("\n");
-        for(int i=0;i<8;i++){
-            sleep(2);
+            sleep(1);
             REFRESH
             if(judge_ai_action(action[i],p)){
                 uint8_t can = rand() % 3;
                 //2/3 will do this action
                 if(can==1||can==2){
+                    printf("B\n");
                     if(i==0){
                         get_develop_card(player,p);
-                        printf("ai choose to get develop card\n");
-                        sleep(2);
+                        map_log_update(p,"choose to get develop card",-1);
+                        sleep(1);
                     }else if(i==1){
                         //use card
                         //have done
-                        printf("ai choose to use develop card\n");
-                        sleep(2);
+                        map_log_update(p,"choose to use develop card",-1);
+                        sleep(1);
                     }else if(i==2){
                         //build road
                         //random 0-71
@@ -143,8 +157,8 @@ void ai_move(int p){
                                 resource[3]++;
                                 player->road.road_build++;
                                 player->road.road_hand--;
-                                printf("ai build road\n");
-                                sleep(2);
+                                map_log_update(p,"build a road",-1);
+                                sleep(1);
                                 break;
                             }
                         }
@@ -165,8 +179,8 @@ void ai_move(int p){
                                 player->hand -= 4;
                                 player->village.village_build++;
                                 player->village.village_hand--;
-                                printf("ai build village\n");
-                                sleep(2);
+                                map_log_update(p,"build a village",-1);
+                                sleep(1);
                                 break;
                             }
                         }
@@ -185,21 +199,20 @@ void ai_move(int p){
                                 player->city.city_hand--;
                                 player->village.village_build--;
                                 player->village.village_hand++;
+                                map_log_update(p,"upgrade its village to city.",-1);
                                 break;
                             }
                         }
-                        printf(RED"ai upgrade its village to city\e[0m\n");
-                        sleep(2);
+                        sleep(1);
                     }else if(i==5){
-                        printf(RED"Player %d chooses to trade with bank!!\e[0m\n",p);
-                        //map_log_update(p,"Player chooses to trade with bank!!")
-                        sleep(2);
+                        map_log_update(p,"chooses to trade with bank.",-1);
+                        sleep(1);
                     }else if(i==6){
-                        printf(RED"Player %d chooses to trade with harbor(2:1)!!\e[0m\n",p);
-                        sleep(2);
+                        map_log_update(p,"chooses to trade with harbor(2:1).",-1);
+                        sleep(1);
                     }else if(i==7){
-                        printf(RED"Player %d chooses to trade with harbor(3:1)!!\e[0m\n",p);
-                        sleep(2);
+                        map_log_update(p,"chooses to trade with harbor(3:1).",-1);
+                        sleep(1);
                     }
                 }
             }

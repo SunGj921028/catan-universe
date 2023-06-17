@@ -33,7 +33,7 @@
 }*/
 
 void gameover(char *name){
-  CLEAR;
+    CLEAR;
     char print[2000]="Player: ";
     char king[]=" has become the king\n";
     char con[]="Congradulations\n";

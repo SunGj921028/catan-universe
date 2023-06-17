@@ -55,13 +55,14 @@ void score(uint8_t p){
 }
 
 void take_resource_dice(int32_t harvest_resource[2][5]){
+    printf("harvest test\n");
     for(int i=0;i<2;i++){
         for(int j=0;j<5;j++){
             printf("%d ",harvest_resource[i][j]);
         }
         printf("\n");
     }
-    PASS;
+    REFRESH
     sPlayer * player;
     for(int i=0;i<2;i++){
         for(int j=0;j<5;j++){
@@ -126,10 +127,10 @@ void take_resource_dice(int32_t harvest_resource[2][5]){
             }
         }
     }
-    printf("%d %d %d %d %d\n",p1->iron,p1->wood,p1->wheat,p1->brick,p1->sheep);
-    printf("%d %d %d %d %d\n",p2->iron,p2->wood,p2->wheat,p2->brick,p2->sheep);
-    printf("%d %d %d %d %d\n",p3->iron,p3->wood,p3->wheat,p3->brick,p3->sheep);
-    printf("%d %d %d %d %d\n",p4->iron,p4->wood,p4->wheat,p4->brick,p4->sheep);
+    // printf("%d %d %d %d %d\n",p1->iron,p1->wood,p1->wheat,p1->brick,p1->sheep);
+    // printf("%d %d %d %d %d\n",p2->iron,p2->wood,p2->wheat,p2->brick,p2->sheep);
+    // printf("%d %d %d %d %d\n",p3->iron,p3->wood,p3->wheat,p3->brick,p3->sheep);
+    // printf("%d %d %d %d %d\n",p4->iron,p4->wood,p4->wheat,p4->brick,p4->sheep);
     return;
 }
 
@@ -139,11 +140,12 @@ int32_t dice(){
 
 void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     int32_t dice_result = dice();
-    dice_result = 7;
+    // dice_result = 7;
     show_dice_v2(dice_result);
     if(!is_ai){ printf("%s throw %d points\n",player_name,dice_result);}
     else{ printf("p%d throw %d points\n",player_number,dice_result);}
-    sleep(1);
+    sleep(2);
+    REFRESH
     //harvest resource array
     int32_t harvest_resource[2][5] = {0};
     //test
@@ -158,7 +160,7 @@ void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     return;
 }
 
-void list_can_trade(sPlayer * player, uint8_t trade_option){
+int32_t list_can_trade(sPlayer * player, uint8_t trade_option){
     //1->bank
     //2->harbor(2:1)
     //3->harbor(3:1)
@@ -171,13 +173,13 @@ void list_can_trade(sPlayer * player, uint8_t trade_option){
     if(player->iron >= number_you_need){
         line = true;
         printf("|");
-        printf(PURPLE"You can use iron to trade.\e[0m\t  ");
+        printf(CYAN"You can use iron to trade.\e[0m\t  ");
         printf("|\n");
     }
     if(player->wood >= number_you_need){
         line = true;
         printf("|");
-        printf(CYAN"You can use wood to trade.\e[0m\t  ");
+        printf(BROWN"You can use wood to trade.\e[0m\t  ");
         printf("|\n");
     }
     if(player->wheat >= number_you_need){
@@ -189,7 +191,7 @@ void list_can_trade(sPlayer * player, uint8_t trade_option){
     if(player->brick >= number_you_need){
         line = true;
         printf("|");
-        printf(RED"You can use brick to trade.\e[0m\t  ");
+        printf(L_RED"You can use brick to trade.\e[0m\t  ");
         printf("|\n");
     }
     if(player->sheep >= number_you_need){
@@ -200,15 +202,11 @@ void list_can_trade(sPlayer * player, uint8_t trade_option){
     }
     if(line){
         printf("-----------------------------------\n");
+    }else{
+        return -1;
     }
     //printf("------------------>\n");
-    printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
-    // printf(PURPLE"0 -> iron\n");
-    // printf(CYAN"1 -> wood\n");
-    // printf(YELLOW"2 -> wheat\n");
-    // printf(RED"3 -> brick\n");
-    // printf(L_GREEN"4 -> wool(sheep)\e[0m\n");
-    return;
+    return 1;
 }
 
 bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type){
@@ -236,14 +234,16 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
     uint8_t *temp[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
     if(!is_ai){
         while(1){
+            REFRESH
+            printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
             printf("Which resource you want to get ? (0-4): ");
             if((scanf("%d",&trade_cho)) == 0){
-                printf("Wrong Input!!\n");
+                printf(RED"Wrong Input!!\e[0m\n");
                 while (getchar() != '\n');
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf("ERROR\n");
+                    printf(RED"ERROR\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }else{break;}
@@ -275,8 +275,8 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
         resource[trade_cho] -= 1;
     }
 
-    printf("%d %d %d %d %d\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
-    printf("%d\n",player->hand);
+    // printf("%d %d %d %d %d\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
+    // printf("%d\n",player->hand);
     return;
 }
 
@@ -318,7 +318,10 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
     return true;
 }
 
-/*void trade_player(uint8_t p, uint8_t is_ai){
+void trade_player(uint8_t p, uint8_t is_ai){
+    //is_ai -> trade with is_ai
+    //1->trade with ai
+    //0->trade with player
     sPlayer * p_commit;
     if(p==1){ p_commit = p1;}
     else if(p==2){ p_commit = p2;}
@@ -331,9 +334,9 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
     int resource_get[5] = {0};
     int count_get_char = 0;
     int count = 0;
-    if(is_ai==0){
-        bool reset_trade = false;
+    if(is_ai==1){
         while(1){
+            REFRESH
             printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
             if(count_get_char!=0){
                 getchar();
@@ -344,7 +347,7 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
             if(strlen(res_cho)>16) {printf("invalid input!!\n"); continue;}
             if(judge_five(res_cho)){
                 sscanf(res_cho,"%d %d %d %d %d",&resource_give[0],&resource_give[1],&resource_give[2],&resource_give[3],&resource_give[4]);
-                if(judge_player_trade(resource_give,p_commit,0,0)){
+                if(judge_player_trade(resource_give,resource_get,p_commit,0,0)){
                     while(1){
                         printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
                         printf("How many resources do you want to get from trade? (input's pattern is like x x x x x)\n");
@@ -368,10 +371,16 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
                                             printf(RED"Wrong Input!!\e[0m\n");
                                             continue;
                                         }else{
-                                            //int result = accept_or_not(resource_give,resource_get,1,p_commit);
-                                            // if(==1){
-                                            //     printf(PURPLE"%s and player %d are traded!!\e[0m\n");
-                                            // }
+                                            int result = accept_or_not(resource_give,resource_get,is_ai,p_commit,p_cho);
+                                            if(result==1){
+                                                printf(PURPLE"player %d accept your trade request!!\e[0m\n",p);
+                                                //map_log_update();  
+                                                printf(PURPLE"%s and player %d are traded!!\e[0m\n",player_name,p);
+                                            }else if(result==0){
+                                                printf(PURPLE"player %d deny your trade request!!\e[0m\n",p);
+                                            }else if(result==-1){
+                                                printf(RED"The chosen player doesn't have enough resource to trade with you!!\e[0m\n");
+                                            }
                                             return;
                                         }
                                     }
@@ -394,5 +403,5 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
         }
     }else{
     }
-}*/
+}
 

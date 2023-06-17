@@ -32,6 +32,8 @@ extern char extra;
 
 extern char player_name[20];
 
+extern int ai_main_move;
+
 //初始頁面
 int32_t startup();
 //region

@@ -48,6 +48,7 @@ int8_t init_near_road[4] = {-1,-1,-1,-1};
 int8_t map[23][13][5];
 char extra;
 char player_name[20] = {0};
+int ai_main_move = 0;
 
 void title(){
     CLEAR;
