@@ -46,6 +46,8 @@ sPlayer * p4;
 int8_t init_build_take[5] = {0,0,0,0,0};
 int8_t init_near_road[4] = {-1,-1,-1,-1};
 int8_t map[23][13][5];
+char extra;
+char player_name[11] = {0};
 
 void title(){
     CLEAR;
@@ -68,6 +70,7 @@ int32_t startup(){
         }else if(a=='s' || a=='S'){
             return 1;
         }else if(a=='q' || a=='Q'){
+            printf("\n");
             printf(RED"Game End!!\e[0m\n");
             exit(0);
         }else{
@@ -88,7 +91,7 @@ int main(int argc, char *argv[]){
         init_region();
         region_num_initial();
         map_init();
-        map_print(0);
+        //map_print(0);
         develop_card_init();
         p1 = player_init();
         p2 = player_init();
@@ -96,23 +99,41 @@ int main(int argc, char *argv[]){
         p4 = player_init();
         build = false;
         uint8_t count = 0;
+        uint8_t count_name = 0;
         while(1){
-            count = 0;
+            if(count_name!=0){
+                getchar();
+            }
+            count_name++;
+            printf("Please input player's name (small than or equal to 10 letters): ");
+            fgets(player_name,11,stdin);
+            if(strlen(player_name)>10){
+                printf(RED"Wrong format of player's name!!\e[0m\n");
+                continue;
+            }else{
+                player_name[strlen(player_name)] = '\0';
+                break;
+            }
+        }
+        while(1){
             if(!build) {first_sec_turn(), count = (first_player + 1), build = true;}
-            printf("Start from player %d.\n",count);
+            // print_init(1);
+            // print_init(2);
+            // print_init(3);
+            // print_init(4);
+            // return 0;
+            //printf("Start from player %d.\n",count);
             if((count%5) == 1){
-                printf("Player move\n");
                 player_move();
             }else{
                 ai_move(count%5); //2 3 4
                 sleep(2);
             }
-            //count += 1;
             judge_the_U_knight();
             score(count%5);
             PASS;
-            print_init(count%5);
-            return 0;
+            count += 1;
+            //print_init(count%5);
             if(count == 5) {count = 1;}
         }
     }

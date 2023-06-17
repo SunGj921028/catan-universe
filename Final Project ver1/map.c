@@ -49,7 +49,7 @@ int visited[MAX_VERTICES];
 
 bool is_slash;
 
-bool judge_build(sPlayer * player, uint8_t build_type){
+bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p){
     //0->village
     //1->road
     //2->city
@@ -57,7 +57,44 @@ bool judge_build(sPlayer * player, uint8_t build_type){
         if(player->wood>0 && player->brick>0){ return true;}
         else{ return false;}
     }else if(build_type==0){
-        if(player->wood>0 && player->sheep>0 && player->wheat>0 && player->brick>0 ){ return true;}
+        if(player->wood>0 && player->sheep>0 && player->wheat>0 && player->brick>0 ){
+          bool something_can = false;
+          for(int m=0;m<54;m++){
+            for(int8_t i=0;i<23;i++){
+              for(int8_t j=0;j<13;j++){
+                if(map[i][j][0] == 1 && map[i][j][2]==m){
+                  if(map[i][j][1]==0){
+                    bool near_no_player=true;
+                    bool road_connected=false;
+                    if(map[i-1][j][0]==2){//up
+                      if(map[i-2][j][1]!=0){near_no_player=false;}
+                      if(map[i-1][j][1]==p){road_connected=true;}
+                    }
+                    if(map[i+1][j][0]==2){//down
+                      if(map[i+2][j][1]!=0){near_no_player=false;}
+                      if(map[i+1][j][1]==p){road_connected=true;}
+                    }
+                    if(map[i][j-1][0]==2){//left
+                      if(map[i][j-2][1]!=0){near_no_player=false;}
+                      if(map[i][j-1][1]==p){road_connected=true;}
+                    }
+                    if(map[i][j+1][0]==2){//right
+                      if(map[i][j+2][1]!=0){near_no_player=false;}
+                      if(map[i][j+1][1]==p){road_connected=true;}
+                    }
+                    if(near_no_player && road_connected){
+                      something_can = true;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if(!something_can){
+            return false;
+          }
+          return true;
+        }
         else {return false;}
     }else if(build_type==2){
         if(player->wheat>=2 && player->iron>=3){ return true;}
@@ -148,7 +185,7 @@ void map_color_slt(int8_t a,int8_t b){//a: type; b: playerID or block type
       case 1:CLR_F_256(9);break;
       case 2:CLR_F_256(15);break;
       case 3:CLR_F_256(51);break;
-      case 4:CLR_F_256(208);break;
+      case 4:CLR_F_256(165);break;//208
     }
   }else if(a==2){
     switch(b){
@@ -156,7 +193,7 @@ void map_color_slt(int8_t a,int8_t b){//a: type; b: playerID or block type
       case 1:CLR_F_256(9);break;
       case 2:CLR_F_256(15);break;
       case 3:CLR_F_256(51);break;
-      case 4:CLR_F_256(208);break;
+      case 4:CLR_F_256(165);break;//208
     }
   }else if(a==3){
     switch(b){
@@ -467,6 +504,9 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
     printf("No player exist!\n");
     return -1;
   }
+  for(int i=0;i<5;i++){
+    init_build_take[i] = 0;
+  }
   for(int8_t i=0;i<23;i++){
     for(int8_t j=0;j<13;j++){
       if(map[i][j][0] == 1 && map[i][j][2]==point_ID){
@@ -493,6 +533,15 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
             road_connected=true;
           }
           if(near_no_player && road_connected){
+            if(is_ai){
+              for(int8_t m=i-1;m<=i+1;m++){
+                for(int8_t n=j-1;n<=j+1;n++){
+                  if(map[m][n][0]==3 && map[m][n][2]==5){
+                    return 700;
+                  }
+                }
+              }
+            }
             map[i][j][1] = player_ID;
             map[i][j][3] = 1;
             if(!is_ai){
@@ -657,9 +706,16 @@ int32_t harvest(int32_t dice_number,int32_t *harvest_resource_2x5){
         if(map[i+2][j+1][1] != 0  && map[i][j][4] != 1){//5
           *(harvest_resource_2x5 + temp*5 + map[i+2][j+1][1]) += map[i+2][j+1][3];
         }
-        //temp++;
+        temp++;
+        // if(dice_number == 2 || dice_number == 12){
+        //   *(harvest_resource_2x5 + temp*5) = -1;
+        //   return 0;
+        // }
         if(dice_number == 2 || dice_number == 12){
           *(harvest_resource_2x5 + temp*5) = -1;
+          for(int32_t k=1;k<5;k++){
+            *(harvest_resource_2x5 + temp*5+k) = -1;
+          }
           return 0;
         }
       }

@@ -98,7 +98,7 @@ void develop_card_state(sPlayer * player, uint8_t player_number, uint8_t is_ai)
 {
     if(is_ai==0)
     {
-        printf("*Player %d :\n",player_number);
+        printf("*%s :\n",player_name);
         printf(GREEN"knight(0) "YELLOW"harvest_card(1) "L_BLUE"build_card(2) "RED"steal_card(3) ");
         printf("\n");
         printf(GREEN"%9d "YELLOW"%15d "L_BLUE"%13d "RED"%13d",player->knight,player->harvest_card,player->build_card,player->steal_card);
@@ -118,23 +118,31 @@ void develop_card_state(sPlayer * player, uint8_t player_number, uint8_t is_ai)
 
 int32_t judge_the_U_knight(){
     uint8_t *temp[4]={&(p1->U_knight),&(p2->U_knight),&(p3->U_knight),&(p4->U_knight)};
-    int32_t count = *(temp[0]);
-    int8_t max = 0;
-    for(int32_t i =0;i<4;i++)
-    {
-        if(*(temp[i])>count)
-        {
-            count=*(temp[i]);
-            max = i;
+    bool over_three = false;
+    for(int i=0;i<4;i++){
+        if((*(temp[i]))>=3){
+            over_three = true;
         }
     }
-    uint8_t *temp2[4]={&(p1->M_knight),&(p2->M_knight),&(p3->M_knight),&(p4->M_knight)};
-    for(int32_t i =0;i<4;i++)
-    {
-        *temp2[i] = 0;
-        if( i==max )
+    if(over_three){
+        int32_t count = *(temp[0]);
+        int8_t max = 0;
+        for(int32_t i =0;i<4;i++)
         {
-            *(temp2[i]) = 1;
+            if(*(temp[i])>count)
+            {
+                count = *(temp[i]);
+                max = i;
+            }
+        }
+        uint8_t *temp2[4]={&(p1->M_knight),&(p2->M_knight),&(p3->M_knight),&(p4->M_knight)};
+        for(int32_t i =0;i<4;i++)
+        {
+            *temp2[i] = 0;
+            if( i==max )
+            {
+                *(temp2[i]) = 1;
+            }
         }
     }
     return 0;
@@ -155,9 +163,17 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
                 printf("Wrong Input!!\n");
                 while (getchar() != '\n');
                 continue;
-            }else{break;}
+            }else{
+                if(scanf("%c",&extra)==1 && extra != '\n'){
+                    printf("ERROR\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
+            }
+            if(move_robbor(region_cho, &nearby[0],is_ai)){
+                break;
+            }else{continue;}
         }
-        move_robbor(region_cho, &nearby[0]);
         uint8_t player_can_steal[5] = {0};
         for(int i=2;i<5;i++){
             if(nearby[i]!=0){
@@ -172,6 +188,12 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
                 printf("Wrong Input!!\n");
                 while (getchar() != '\n');
                 continue;
+            }else{
+                if(scanf("%c",&extra)==1 && extra != '\n'){
+                    printf("ERROR\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
             }
             if(player_can_steal[player_cho]==1){
                 break;
@@ -205,7 +227,11 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
 {
     int32_t take_resource1 = 0;  
     int8_t count = 1;
-    printf(RED"*Player %d uses the harvest_card\e[0m\n",p);
+    if(is_ai){
+        printf(PURPLE"*Player %d uses the harvest_card\e[0m\n",p);
+    }else{
+        printf(PURPLE"*%s uses the harvest_card\e[0m\n",player_name);
+    }
     while(count<3)
     {
         while(1)
@@ -218,6 +244,12 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
                     printf("Wrong Input!!\n");
                     while (getchar() != '\n');
                     continue;
+                }else{
+                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                        printf("ERROR\n");
+                        while (getchar() != '\n');
+                        continue;
+                    }
                 }
                 if((take_resource1>4)||(take_resource1<0))
                 {
@@ -279,10 +311,16 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
 {
     int8_t count = 1;
     int32_t road = 0;
+    int32_t limit = 0;
+    if((player->road.road_hand) < 2){
+        limit = (player->road.road_hand) + 1;
+    }else{
+        limit = 3;
+    }
     if(is_ai==0)
     {
-        printf(RED"*Player 1 uses the build_card\e[0m\n");
-        while(count<3)
+        printf(PURPLE"*%s uses the build_card\e[0m\n",player_name);
+        while(count<limit)
         {
             while(1)
             {
@@ -292,6 +330,12 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
                     printf("Wrong Input!!\n");
                     while (getchar() != '\n');
                     continue;
+                }else{
+                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                        printf("ERROR\n");
+                        while (getchar() != '\n');
+                        continue;
+                    }
                 }
                 if(build_road(player_number,road,is_ai)== -1)
                 {
@@ -305,7 +349,7 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
     else if(is_ai==1)//ai的部份
     {
         printf(RED"*Player %d uses the build_card\e[0m\n",player_number);
-        while(count<3)
+        while(count<limit)
         {
             while(1)
             {
@@ -319,8 +363,8 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
             count++;
         }            
     }
-    player->road.road_build += 2;
-    player->road.road_hand -= 2;
+    player->road.road_build += (limit-1);
+    player->road.road_hand -= (limit-1);
     return;
 }
 
@@ -329,7 +373,11 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
 {
     int32_t take_resource2 = 0;
     int32_t get_resource = 0;
-    printf("*Player %d uses the steal_card\n",player_number);
+    if(is_ai){
+        printf(PURPLE"*Player %d uses the steal_card\e[0m\n",player_number);
+    }else{
+        printf(PURPLE"*%s uses the steal_card\e[0m\n",player_name);
+    }
     while(1)
     {
         if(is_ai==0){
@@ -339,6 +387,12 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
                 printf("Wrong Input!!\n");
                 while (getchar() != '\n');
                 continue;
+            }else{
+                if(scanf("%c",&extra)==1 && extra != '\n'){
+                    printf("ERROR\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
             }
             if((take_resource2>4)||(take_resource2<0))
             {
@@ -466,7 +520,6 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
     else if(player_number==2){player_steal = 2, player = p2;}
     else if(player_number==3){player_steal = 3, player = p3;}
     else if(player_number==4){player_steal = 4, player = p4;}
-    printf(L_PURPLE"->Player %d want to use develop card\e[0m\n",player_number);
     if(error_detect_use_card_state(player,card_serial_number,is_ai))
     {
         if((card_serial_number==0))
@@ -475,6 +528,11 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             knight_card(player,player_number,is_ai);
             player->U_knight++;
             player->U_develop = 1;
+            if(is_ai){
+                printf(L_PURPLE"->Player %d use a knight card\e[0m\n",player_number);
+            }else{
+                printf(L_PURPLE"->%s use a knight card\e[0m\n",player_name);
+            }
             return 0;
         }
         else if((card_serial_number==1))
@@ -482,13 +540,15 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             player->harvest_card--;
             harvest_card(player,player_number,is_ai);
             player->U_develop = 1;
+            //printf(L_PURPLE"->Player %d use a harvest card\e[0m\n",player_number);
             return 0;                       
         }
         else if((card_serial_number==2))
         {
             player->build_card--;
             build_card(player,player_number,is_ai);
-            player->U_develop = 1;                
+            player->U_develop = 1;
+            //printf(L_PURPLE"->Player %d use a build card\e[0m\n",player_number);
             return 0;                        
         }
         else if((card_serial_number==3))
@@ -499,6 +559,7 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             else if(player_steal==3){steal_card(player,p1,p2,p4,player_number,is_ai);}
             else if(player_steal==4){steal_card(player,p1,p2,p3,player_number,is_ai);}
             player->U_develop = 1;
+            //printf(L_PURPLE"->Player %d use a steal card\e[0m\n",player_number);
             return 0;
         }
     }

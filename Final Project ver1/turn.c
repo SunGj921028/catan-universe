@@ -1,8 +1,8 @@
 #include "phase.h"
 #include "data.h"
 #include "color.h"
-#include"init.h"
-#include"map.h"
+#include "init.h"
+#include "map.h"
 
 int player_order = 0;
 extern int8_t init_build_take[5];
@@ -40,13 +40,20 @@ void first_sec_turn(){
 				//printf("First round player 1\n");
 				while(1){
 					map_print(1);
+					//char extra;
 					printf("Which point you want to build Village ? (0-53): ");
 					if((scanf("%d",&vi_cho)) == 0){
 						printf("Wrong Input!!\n");
 						while (getchar() != '\n');
 						continue;
+					}else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}
 					}
-					if(build_village(1,vi_cho,1,0) == -1){
+					if(build_village(1,vi_cho,1,0) != 1){
 						continue;
 					}
 					break;
@@ -58,6 +65,12 @@ void first_sec_turn(){
 						printf("Wrong Input!!\n");
 						while (getchar() != '\n');
 						continue;
+					}else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}
 					}
 					if(build_road(1,r_cho,0) == -1){
 						continue;
@@ -66,7 +79,6 @@ void first_sec_turn(){
 				}
 				CLEAR;
 				map_print(0);
-				print_init(1);
 				player_order+=1;
 				count++;
 				sleep(2);
@@ -75,7 +87,7 @@ void first_sec_turn(){
 				printf("First round player 2\n");
 				while(1){
 					vi_cho = rand() % 54;
-					if(build_village(2,vi_cho,1,1) == -1){
+					if(build_village(2,vi_cho,1,1) != 1){
 						continue;
 					}
 					break;
@@ -98,7 +110,7 @@ void first_sec_turn(){
 				printf("First round player 3\n");
 				while(1){
 					vi_cho = rand() % 54;
-					if(build_village(3,vi_cho,1,1) == -1){
+					if(build_village(3,vi_cho,1,1) != 1){
 						continue;
 					}
 					break;
@@ -121,7 +133,7 @@ void first_sec_turn(){
 				printf("First round player 4\n");
 				while(1){
 					vi_cho = rand() % 54;
-					if(build_village(4,vi_cho,1,1) == -1){
+					if(build_village(4,vi_cho,1,1) != 1){
 						continue;
 					}
 					break;
@@ -162,8 +174,14 @@ void first_sec_turn(){
 						printf("Wrong Input!!\n");
 						while (getchar() != '\n');
 						continue;
+					}else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}
 					}
-					if(build_village(1,vi_cho,2,0) == -1){
+					if(build_village(1,vi_cho,2,0) != 1){
 						continue;
 					}
 					break;
@@ -175,6 +193,12 @@ void first_sec_turn(){
 						printf("Wrong Input!!\n");
 						while (getchar() != '\n');
 						continue;
+					}else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}
 					}
 					for(int i=1;i<=init_near_road[0];i++){
 						if(init_near_road[i]==r_cho){
@@ -193,16 +217,16 @@ void first_sec_turn(){
 				take_init_resource(player_order);
 				CLEAR;
 				map_print(0);
-				print_init(1);
 				player_order=3;
 				count++;
 				sleep(2);
 				break;
 			case 1:
 				printf("Second round player 2\n");
+				sleep(1);
 				while(1){
 					vi_cho = rand() % 54;
-					if(build_village(2,vi_cho,2,1) == -1){
+					if(build_village(2,vi_cho,2,1) != 1){
 						continue;
 					}
 					break;
@@ -233,7 +257,7 @@ void first_sec_turn(){
 				printf("Second round player 3\n");
 				while(1){
 					vi_cho = rand() % 54;
-					if(build_village(3,vi_cho,2,1) == -1){
+					if(build_village(3,vi_cho,2,1) != 1){
 						continue;
 					}
 					break;
@@ -264,7 +288,7 @@ void first_sec_turn(){
 				printf("Second round player 4\n");
 				while(1){
 					vi_cho = rand() % 54;
-					if(build_village(4,vi_cho,2,1) == -1){
+					if(build_village(4,vi_cho,2,1) != 1){
 						continue;
 					}
 					break;

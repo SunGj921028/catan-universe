@@ -28,6 +28,10 @@ extern int keep_index;
 //player order
 extern int first_player;
 
+extern char extra;
+
+extern char player_name[11];
+
 //初始頁面
 int32_t startup();
 //region

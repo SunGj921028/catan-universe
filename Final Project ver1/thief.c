@@ -13,7 +13,7 @@ extern int resource[5];//sum is 95
 //dice == 7
 //uint8_t count = 0;
 void throw_card(sPlayer * player, uint8_t arr[], size_t n){
-    PASS;
+    //PASS;
     for(int i = 0;i < n; i++){
         if(arr[i]!=0){
             if(i==0){
@@ -40,16 +40,26 @@ void throw_card(sPlayer * player, uint8_t arr[], size_t n){
 }
 //可能可以做改強度
 void input_key(sPlayer * player, uint8_t p_number, int num){
-    PASS;
-    char input[10] = {0};
+    //PASS;
+    char input[20] = {0};
     uint8_t in_arr[5] = {0};
     char message[20] = {0};
     bool can_throw = true;
+    uint8_t count_get_char = 0;
     if(p_number==1){
         while(1){
-            fgets(input,10,stdin);
+            if(count_get_char!=0){
+                getchar();
+            }
+            count_get_char++;
+            fgets(input,20,stdin);
             if(strlen(input)>10) {printf("invalid input!!\n"); continue;}
+            printf("%s\n",input);
             sscanf(input,"%hhd %hhd %hhd %hhd %hhd",&in_arr[0],&in_arr[1],&in_arr[2],&in_arr[3],&in_arr[4]);
+            for(int i=0;i<5;i++){
+                printf("%u ",in_arr[i]);
+            }
+            printf("\n");
             int sum = 0;
             for(int i=0;i<5;i++){
                 sum += in_arr[i];
@@ -58,15 +68,14 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
                 printf("Invalid number of cards you throw!!\n");
                 continue;
             }
-            uint8_t *ptr = &player->iron;
+            uint8_t *ptr[5] = {&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
             for(int i=0;i<5;i++){
                 //printf("%d\n",*ptr);
-                if(in_arr[i]<0 || in_arr[i]>(*ptr)){
-                    printf("invalid input!!\n");
+                if(in_arr[i]<0 || in_arr[i]>*(ptr[i])){
+                    printf(RED"invalid input!!\e[0m\n");
                     can_throw = false;
                     break;
                 }else{ can_throw = true;}
-                ptr++;
             }
             if(!can_throw) {
                 continue;
@@ -74,11 +83,10 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
                 throw_card(player,in_arr,5);
                 break;
             }
-            ptr = NULL;
         }
         //print
-        printf("Player 1 throw\n");
-        printf("%d irons, %d woods, %d wheats, %d bricks, %d wool",in_arr[0],in_arr[1],in_arr[2],in_arr[3],in_arr[4]);
+        printf("%s throw\n",player_name);
+        printf("%d irons, %d woods, %d wheats, %d bricks, %d wool\n",in_arr[0],in_arr[1],in_arr[2],in_arr[3],in_arr[4]);
     }else{
         //printf("ai throw turn\n");
         uint8_t choose[5] = {0};
@@ -116,17 +124,17 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
         //print
         sprintf(message,"Player %d throw",p_number);
         printf("%s\n",message);
-        printf("%d irons, %d woods, %d wheats, %d bricks, %d wool",choose[0],choose[1],choose[2],choose[3],choose[4]);
+        printf("%d irons, %d woods, %d wheats, %d bricks, %d wool\n",choose[0],choose[1],choose[2],choose[3],choose[4]);
     }
     return;
 }
 
 void print_player_hands(sPlayer * player, uint8_t n){
     PASS;
-    int num = lrint(( double )( (player->hand)/2.0) );
+    int num = floor(( double )( (player->hand)/2.0) );
     if(n==1){
         char state_with_player_number[60] = {0};
-        sprintf(state_with_player_number,"player %u's resource card in hand:",n);
+        sprintf(state_with_player_number,"%s resource card in hand:",player_name);
         printf("%s\n",state_with_player_number);
         printf(PURPLE"iron "CYAN"wood "YELLOW"wheat "RED"brick " L_GREEN"sheep");
         printf("\n");
@@ -170,40 +178,47 @@ void check_hand(){
     return;
 }
 
-int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1){
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai){
     for(int8_t i=3;i<20;i=i+2){
-    for(int8_t j=2;j<12;j=j+2){
-        if(map[i][j][0]==3 && map[i][j][4]==1){
-        map[i][j][4]=0;
+        for(int8_t j=2;j<12;j=j+2){
+            if(map[i][j][0]==3 && map[i][j][4]==1){
+                if(map[i][j][1]!=block_id){
+                    map[i][j][4]=0;
+                }else{
+                    if(!is_ai){
+                        printf("Can't move to same place!\n");
+                    }
+                    return -1;
+                }
+            }
         }
-    }
     }
     for(int8_t i=3;i<20;i=i+2){
-    for(int8_t j=2;j<12;j=j+2){
-        if(map[i][j][0]==3 && map[i][j][1]==block_id){
-        map[i][j][4]=1;
-        if(map[i-2][j-1][1] != 0){//0
-            *(nearby_player_5x1 + map[i-2][j-1][1]) = 1;
-        }
-        if(map[i-2][j+1][1] != 0){//1
-            *(nearby_player_5x1 + map[i-2][j+1][1]) = 1;
-        }
-        if(map[i][j-1][1] != 0){//2
-            *(nearby_player_5x1 + map[i][j-1][1]) = 1;
-        }
-        if(map[i][j+1][1] != 0){//3
-            *(nearby_player_5x1 + map[i][j+1][1]) = 1;
-        }
-        if(map[i+2][j-1][1] != 0){//4
-            *(nearby_player_5x1 + map[i+2][j-1][1]) = 1;
-        }
-        if(map[i+2][j+1][1] != 0){//5
-            *(nearby_player_5x1 + map[i+2][j+1][1]) = 1;
-        }
+        for(int8_t j=2;j<12;j=j+2){
+            if(map[i][j][0]==3 && map[i][j][1]==block_id){
+                map[i][j][4]=1;
+                if(map[i-2][j-1][1] != 0){//0
+                    *(nearby_player_5x1 + map[i-2][j-1][1]) = 1;
+                }
+                if(map[i-2][j+1][1] != 0){//1
+                    *(nearby_player_5x1 + map[i-2][j+1][1]) = 1;
+                }
+                if(map[i][j-1][1] != 0){//2
+                    *(nearby_player_5x1 + map[i][j-1][1]) = 1;
+                }
+                if(map[i][j+1][1] != 0){//3
+                    *(nearby_player_5x1 + map[i][j+1][1]) = 1;
+                }
+                if(map[i+2][j-1][1] != 0){//4
+                    *(nearby_player_5x1 + map[i+2][j-1][1]) = 1;
+                }
+                if(map[i+2][j+1][1] != 0){//5
+                    *(nearby_player_5x1 + map[i+2][j+1][1]) = 1;
+                }
+            }
         }
     }
-    }
-    return 0;
+    return 1;
 }
 
 void steal_resource(uint8_t player_cho, sPlayer * player){
@@ -214,11 +229,20 @@ void steal_resource(uint8_t player_cho, sPlayer * player){
     else { ps = p4;}
     uint8_t *temp[5]={&(ps->iron),&(ps->wood),&(ps->wheat),&(ps->brick),&(ps->sheep)};
     uint8_t *temp2[5]={&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
-    uint8_t res_cho = rand() % 5;
-    *(temp2[res_cho])++;
-    *(temp[res_cho])--;
+    int res_cho = 0;
+    while(1){
+        res_cho = rand() % 5;
+        //printf("steal %d\n",res_cho);
+        if((*(temp[res_cho])) <= 0){
+            continue;
+        }else{break;}
+    }
+    *(temp2[res_cho]) += 1;
+    //printf("*%u\n",*(temp2[res_cho]));
+    *(temp[res_cho]) -= 1;
     ps->hand--;
     player->hand++;
+    printf("%u %u %u %u %u\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
     return;
 }
 
@@ -231,7 +255,12 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     int32_t nearby_player[5] = {0};//0->nothing
     int region_cho = 0;
     if(is_ai){
-        region_cho = rand() % 19;
+        while(1){
+            region_cho = rand() % 19;
+            if(move_robbor(region_cho,&nearby_player[0],is_ai) != -1){
+                break;
+            }else{continue;}
+        }
     }else{
         while(1){
             map_print(3);
@@ -240,17 +269,27 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                 printf("Wrong Input!!\n");
                 while (getchar() != '\n');
                 continue;
-            }else{break;}
+            }else{
+                if(scanf("%c",&extra)==1 && extra != '\n'){
+                    printf("ERROR\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
+            }
+            if(move_robbor(region_cho,&nearby_player[0],is_ai)){
+                break;
+            }else{continue;}
         }
     }
-    move_robbor(region_cho,&nearby_player[0]);
     int player_cho = 0;
     uint8_t *temp_hand[4] = {&(p1->hand),&(p2->hand),&(p3->hand),&(p4->hand)};
+    bool have_people = false;
     if(is_ai){
         uint8_t temp_player[5] = {0};
         for(int i=1;i<5;i++){
-            if(nearby_player[i]==1 && i!=player_number){
+            if(nearby_player[i]!=0 && i!=player_number){
                 temp_player[i] = *(temp_hand[i-1]);
+                have_people = true;
             }
         }
         uint8_t max_player = 0;
@@ -272,11 +311,24 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
         }
         while(1){
             player_cho = 0;
+            for(int i=2;i<5;i++){
+                if(player_can_steal[i] == 1){
+                    have_people = true;
+                    break;
+                }
+            }
+            if(!have_people){printf("There are not any people around this region!!\n");break;}
             printf("Which player's resource you want to steal? :");
             if((scanf("%d",&player_cho)) == 0){
                 printf("Wrong Input!!\n");
                 while (getchar() != '\n');
                 continue;
+            }else{
+                if(scanf("%c",&extra)==1 && extra != '\n'){
+                    printf("ERROR\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
             }
             if(player_can_steal[player_cho]==1){
                 break;
@@ -286,6 +338,10 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
             }
         }
     }
-    steal_resource(player_cho,player);
+    PASS;
+    if(have_people){
+        print_init(player_cho);
+        steal_resource(player_cho,player);
+    }
     return;
 }

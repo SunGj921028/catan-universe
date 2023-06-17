@@ -14,11 +14,12 @@ extern sPlayer * p4;
 void player_move(){
     //print_map
     map_print(0);
-    printf(RED"#This is Player 1's turn.\e[0m\n");
+    printf(RED"#This is %s turn.\e[0m\n",player_name);
     sleep(1);
     //throw dice for player
     throw_dice(p1,0,1);
     REFRESH
+    print_init(1);
 
     while(1){
         //choose
@@ -34,9 +35,21 @@ void player_move(){
         int32_t cho_move = 0;
         int32_t village_number = 0;
         int32_t road_number = 0;
+        int32_t redo = 0;
         if((scanf("%d",&cho)) == 0){
             printf("Wrong Input!!\n");
             while (getchar() != '\n');
+            continue;
+        }else{
+            if(scanf("%c",&extra)==1 && extra != '\n'){
+                printf("ERROR\n");
+                while (getchar() != '\n');
+                continue;
+            }
+        }
+        if(cho<0 || cho>4){
+            REFRESH
+            printf(RED"Wrong Input!!\e[0m\n");
             continue;
         }
         switch(cho)
@@ -60,26 +73,69 @@ void player_move(){
                         printf("Wrong Input!!\n");
                         while (getchar() != '\n');
                         continue;
-                    }else{break;}
+                    }else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}else{
+                            if(cho_move<0 || cho_move>2){
+                                REFRESH
+                                printf(RED"Wrong Input!!\e[0m\n");
+                                continue;
+                            }
+                            break;
+                        }
+					}
                 }
                 if(cho_move==0){
                     printf(RED"Build Action End!!\e[0m\n");
                     sleep(1);
                     break;
                 }else if(cho_move==1){
-                    if(!judge_build(p1,0)){
+                    if(!judge_build(p1,0,1)){
                         printf(RED"You don't have enough resource to build village!!\e[0m\n");
                         break;
                     }
                     while(1){
+                        map_print(1);
                         printf("Which point you want to build Village ? (0-53): ");
                         if((scanf("%d",&village_number)) == 0){
                             printf("Wrong Input!!\n");
                             while (getchar() != '\n');
                             continue;
+                        }else{
+                            if(scanf("%c",&extra)==1 && extra != '\n'){
+                                printf("ERROR\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }
                         }
                         if(build_village(1,village_number,0,0) == -1){
-                            continue;
+                            while(1){
+                                printf("Do you want keep building village ? (0 or 1): ");
+                                if((scanf("%d",&redo)) == 0){
+                                    printf("Wrong Input!!\n");
+                                    while (getchar() != '\n');
+                                    continue;
+                                }else{
+                                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                                        printf("ERROR\n");
+                                        while (getchar() != '\n');
+                                        continue;
+                                    }else{
+                                        if(redo<0||redo>1){
+                                            REFRESH
+                                            printf(RED"Wrong Input!!\n");
+                                            continue;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if(redo==1){
+                                continue;
+                            }else{break;}
                         }else{
                             p1->wheat--;
                             p1->brick--;
@@ -92,19 +148,51 @@ void player_move(){
                         }
                     }
                 }else if(cho_move==2){
-                    if(!judge_build(p1,1)){
+                    if(!judge_build(p1,1,1)){
                         printf(RED"You don't have enough resource to build road!!\e[0m\n");
                         break;
                     }
                     while(1){
+                        map_print(2);
                         printf("Which point you want to build Road ? (0-71): ");
                         if((scanf("%d",&road_number)) == 0){
                             printf("Wrong Input!!\n");
                             while (getchar() != '\n');
                             continue;
+                        }else{
+                            if(scanf("%c",&extra)==1 && extra != '\n'){
+                                printf("ERROR\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }
                         }
                         if(build_road(1,road_number,0) == -1){
-                            continue;
+                            while(1){
+                                printf("Do you want keep building road ? (0 or 1): ");
+                                if((scanf("%d",&redo)) == 0){
+                                    printf("Wrong Input!!\n");
+                                    while (getchar() != '\n');
+                                    continue;
+                                }else{
+                                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                                        printf("ERROR\n");
+                                        while (getchar() != '\n');
+                                        continue;
+                                    }else{
+                                        if(redo<0||redo>1){
+                                            REFRESH
+                                            printf(RED"Wrong Input!!\n");
+                                            continue;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            if(redo==1){
+                                continue;
+                            }else{
+                                break;
+                            }
                         }else{
                             p1->wood--;
                             p1->brick--;
@@ -114,14 +202,12 @@ void player_move(){
                             break;
                         }
                     }
-                }else{
-                    printf(RED"Wrong Input!!\e[0m\n");
                 }
                 REFRESH
                 break;
             case 2:
                 //upgrade
-                if(!judge_build(p1,2)){
+                if(!judge_build(p1,2,1)){
                     printf(RED"You don't have enough resource to upgrade your village!!\e[0m\n");
                     break;
                 }
@@ -132,7 +218,13 @@ void player_move(){
                         printf("Wrong Input!!\n");
                         while (getchar() != '\n');
                         continue;
-                    }
+                    }else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}
+					}
                     if(village_upgrade(1,village_number,0) != -1){
                         p1->wheat -= 2;
                         p1->iron -= 3;
@@ -142,6 +234,33 @@ void player_move(){
                         p1->village.village_build--;
                         p1->village.village_hand++;
                         break;
+                    }else{
+                        while(1){
+                            printf("Do you want keep Updating Village ? (0 or 1): ");
+                            if((scanf("%d",&redo)) == 0){
+                                printf(RED"Wrong Input!!\e[0m\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }else{
+                                if(scanf("%c",&extra)==1 && extra != '\n'){
+                                    printf("ERROR\n");
+                                    while (getchar() != '\n');
+                                    continue;
+                                }else{
+                                    if(redo<0||redo>1){
+                                        REFRESH
+                                        printf(RED"Wrong Input!!\e[0m\n");
+                                        continue;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if(redo==1){
+                            continue;
+                        }else{
+                            break;
+                        }
                     }
                 }
                 break;
@@ -156,7 +275,21 @@ void player_move(){
                         printf("Wrong Input!!\n");
                         while (getchar() != '\n');
                         continue;
-                    }else{break;}
+                    }else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}else{
+                            if(cho_move<0 || cho_move>2){
+                                REFRESH
+                                printf("Wrong Input!!\n");
+                                continue;
+                            }else{
+                                break;
+                            }
+                        }
+					}
                 }
                 if(cho_move==0){
                     printf(RED"Develop Card Action End!!\e[0m\n");
@@ -178,17 +311,27 @@ void player_move(){
                             printf("Wrong Input!!\n");
                             while (getchar() != '\n');
                             continue;
-                        }else{break;}
+                        }else{
+                            if(scanf("%c",&extra)==1 && extra != '\n'){
+                                printf("ERROR\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }else{
+                                if(cho_card<0 || cho_card>3){
+                                    REFRESH
+                                    printf(RED"Wrong Input Of using card!!\e[0m\n");
+                                    continue;
+                                }else{
+                                    break;
+                                }
+                            }
+                        }
                     }
-                    if(cho_card<0 || cho_card>3){printf(RED"Wrong Input Of using card!!\e[0m\n"); break;}
                     if(use_card_state(1,cho_card,0)==-1){
                         printf("You can't use any card!!\n");
                         break;
                     }
-                }else{
-                    printf(RED"Wrong Input!!\e[0m\n");
                 }
-                //printf(RED"Develop Card Action End!!\e[0m\n");
                 break;
             case 4:
                 PASS;
@@ -201,7 +344,21 @@ void player_move(){
                         printf("Wrong Input!!\n");
                         while (getchar() != '\n');
                         continue;
-                    }else{break;}
+                    }else{
+						if(scanf("%c",&extra)==1 && extra != '\n'){
+							printf("ERROR\n");
+							while (getchar() != '\n');
+							continue;
+						}else{
+                            if(cho_move<0 || cho_move>2){
+                                REFRESH
+                                printf("Wrong Input!!\n");
+                                continue;
+                            }else{
+                                break;
+                            }
+                        }
+					}
                 }
                 int32_t trade_cho_give = 0;
                 if(cho_move==0){
@@ -218,6 +375,16 @@ void player_move(){
                             printf("Wrong Input!!\n");
                             while (getchar() != '\n');
                             continue;
+                        }else{
+                            if(scanf("%c",&extra)==1 && extra != '\n'){
+                                printf("ERROR\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }
+                        }
+                        if(trade_cho_give<0 || trade_cho_give>4){
+                            printf("Wrong Input!!\n");
+                            continue;
                         }
                         if(trade_judge(p1,1,trade_cho_give)){
                             trade(p1,0,trade_cho_give,1);
@@ -230,7 +397,7 @@ void player_move(){
                             char cyn[2] = {0};
                             while(1){
                                 printf("Do you want to keep trading with Bank ? (y or n): ");
-                                scanf("%s",cyn);
+                                fgets(cyn,2,stdin);
                                 if(strlen(cyn)!=1){ printf("Wrong Input!!\n"); continue;}
                                 if(cyn[0]=='n'||cyn[0]=='N') {break;}
                                 if(cyn[0]=='y'||cyn[0]=='Y') {break;}
@@ -256,6 +423,12 @@ void player_move(){
                             printf("Wrong Input!!\n");
                             while (getchar() != '\n');
                             continue;
+                        }else{
+                            if(scanf("%c",&extra)==1 && extra != '\n'){
+                                printf("ERROR\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }
                         }
                         if(harbor_cho!=1 && harbor_cho!=2){ printf("Wrong Input!!\n"); continue;}
                         else{ break;}
@@ -290,6 +463,16 @@ void player_move(){
                                     printf("Wrong Input!!\n");
                                     while (getchar() != '\n');
                                     continue;
+                                }else{
+                                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                                        printf("ERROR\n");
+                                        while (getchar() != '\n');
+                                        continue;
+                                    }
+                                }
+                                if(res_cho<0 || res_cho>4){
+                                    printf("Wrong Input!!\n");
+                                    continue;
                                 }
                                 if(port[res_cho]!=1 || (trade_judge(p1,2,res_cho))==false){
                                     printf("You can't use this resource to trade!!\n");
@@ -306,6 +489,16 @@ void player_move(){
                                     printf("Wrong Input!!\n");
                                     while (getchar() != '\n');
                                     continue;
+                                }else{
+                                    if(scanf("%c",&extra)==1 && extra != '\n'){
+                                        printf("ERROR\n");
+                                        while (getchar() != '\n');
+                                        continue;
+                                    }
+                                }
+                                if(res_cho<0 || res_cho>4){
+                                    printf("Wrong Input!!\n");
+                                    continue;
                                 }
                                 if((trade_judge(p1,3,res_cho))==false){
                                     printf("You can't use this resource to trade!!\n");
@@ -316,11 +509,12 @@ void player_move(){
                             }
                         }
                         trade(p1,0,res_cho,harbor_cho+1);
+                    }else{
+                        printf(RED"You don't have any harbor!!\e[0m\n");
                     }
                 }else{
                     printf(RED"Wrong Input!!\e[0m\n");
                 }
-                //printf(RED"*Trade End*\e[0m\n");
                 break;
             default:
                 printf(RED"Wrong Input!!\e[0m\n");

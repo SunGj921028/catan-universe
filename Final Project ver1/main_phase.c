@@ -45,7 +45,11 @@ void score(uint8_t p){
 
     //judge
     if((player->final_score) >= 10){
-        printf(RED"Player %d win this game!!!\e[0m\n",p);
+        if(p==1){
+            printf(RED"You win this game!!\e[0m\n");
+        }else{
+            printf(RED"Player %d win this game!!!\e[0m\n",p);
+        }
     }
     return;
 }
@@ -135,23 +139,13 @@ int32_t dice(){
 
 void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     int32_t dice_result = dice();
+    //dice_result = 7;
     show_dice_v2(dice_result);
-    if(!is_ai){ printf("p1 throw %d points\n",dice_result);}
+    if(!is_ai){ printf("%s throw %d points\n",player_name,dice_result);}
     else{ printf("p%d throw %d points\n",player_number,dice_result);}
     sleep(1);
-    //printf("%d\n",dice_result);
     //harvest resource array
-    int32_t harvest_resource[2][5];
-    // harvest_resource[0][0] = 0;
-    // harvest_resource[0][1] = 1;
-    // harvest_resource[0][2] = 1;
-    // harvest_resource[0][3] = 1;
-    // harvest_resource[0][4] = 1;
-    // harvest_resource[1][0] = 4;
-    // harvest_resource[1][1] = 2;
-    // harvest_resource[1][2] = 4;
-    // harvest_resource[1][3] = 5;
-    // harvest_resource[1][4] = 2;
+    int32_t harvest_resource[2][5] = {0};
     //test
     //dice_result = 7;
     if(dice_result==7){
@@ -247,7 +241,13 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
                 printf("Wrong Input!!\n");
                 while (getchar() != '\n');
                 continue;
-            }else{break;}
+            }else{
+                if(scanf("%c",&extra)==1 && extra != '\n'){
+                    printf("ERROR\n");
+                    while (getchar() != '\n');
+                    continue;
+                }else{break;}
+            }
         }
     }else{
         while(1){

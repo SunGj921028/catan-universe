@@ -39,17 +39,17 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         }
     }else if(action==2){
         //build road
-        if(judge_build(player,1)){
+        if(judge_build(player,1,player_number)){
             return true;
         }else{ return false;}
     }else if(action==3){
         //build village
-        if(judge_build(player,0)){
+        if(judge_build(player,0,player_number)){
             return true;
         }else{ return false;}
     }else if(action==4){
         //upgrade village
-        if(judge_build(player,2)){
+        if(judge_build(player,2,player_number)){
             return true;
         }else{ return false;}
     }else if(action==5 || action==6 || action==7){
@@ -58,7 +58,7 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         int32_t option = 0;
         if(action!=5){ option = (action==6) ? 2 : 3;}
         else { option = 1;}
-        printf("option is %d\n",option);
+        //printf("option is %d\n",option);
         uint8_t resource_type[5] = {0,1,2,3,4};
         for(int i=0;i<5;i++){
             int j = i + rand()/(RAND_MAX/(5-i)+1);
@@ -87,6 +87,7 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
 }
 
 void ai_move(int p){
+    print_init(p);
     printf("#This is Player %d's turn.\n",p);
     //which player
     sPlayer * player;
@@ -110,6 +111,12 @@ void ai_move(int p){
             action[i] = temp;
         }
         for(int i=0;i<8;i++){
+            printf("%u ",action[i]);
+        }
+        printf("\n");
+        for(int i=0;i<8;i++){
+            sleep(2);
+            REFRESH
             if(judge_ai_action(action[i],p)){
                 uint8_t can = rand() % 3;
                 //2/3 will do this action
@@ -117,30 +124,33 @@ void ai_move(int p){
                     if(i==0){
                         get_develop_card(player,p);
                         printf("ai choose to get develop card\n");
+                        sleep(2);
                     }else if(i==1){
                         //use card
                         //have done
                         printf("ai choose to use develop card\n");
+                        sleep(2);
                     }else if(i==2){
                         //build road
                         //random 0-71
-                        printf("ai build road\n");
                         while(1){
                             int32_t road_rand = rand() % 72;
                             if(build_road(p,road_rand,1)){
                                 player->wood--;
                                 player->brick--;
                                 player->hand -= 2;
+                                resource[1]++;
+                                resource[3]++;
                                 player->road.road_build++;
                                 player->road.road_hand--;
                                 printf("ai build road\n");
+                                sleep(2);
                                 break;
                             }
                         }
                     }else if(i==3){
                         //build village
                         //random 0-53
-                        printf("ai build village\n");
                         while(1){
                             int32_t V_ran = rand() % 54;
                             if(build_village(p,V_ran,0,1)){
@@ -148,10 +158,15 @@ void ai_move(int p){
                                 player->wheat--;
                                 player->wood--;
                                 player->sheep--;
+                                resource[1]++;
+                                resource[2]++;
+                                resource[3]++;
+                                resource[5]++;
                                 player->hand -= 4;
                                 player->village.village_build++;
                                 player->village.village_hand--;
                                 printf("ai build village\n");
+                                sleep(2);
                                 break;
                             }
                         }
@@ -163,30 +178,38 @@ void ai_move(int p){
                             if(village_upgrade(p,UP_vil,1)){
                                 player->wheat -= 2;
                                 player->iron -= 3;
+                                resource[2] += 2;
+                                resource[0] += 3;
                                 player->hand -= 5;
                                 player->city.city_build++;
                                 player->city.city_hand--;
                                 player->village.village_build--;
                                 player->village.village_hand++;
+                                break;
                             }
                         }
                         printf(RED"ai upgrade its village to city\e[0m\n");
+                        sleep(2);
                     }else if(i==5){
                         printf(RED"Player %d chooses to trade with bank!!\e[0m\n",p);
+                        sleep(2);
                     }else if(i==6){
                         printf(RED"Player %d chooses to trade with harbor(2:1)!!\e[0m\n",p);
+                        sleep(2);
                     }else if(i==7){
                         printf(RED"Player %d chooses to trade with harbor(3:1)!!\e[0m\n",p);
+                        sleep(2);
                     }
                 }
             }
         }
-        again_action = rand() % 3;
+        //again_action = rand() % 3;
+        again_action = 1;
     }
     if(keep_index!=0){
         save_develop_card(p);
         player->U_develop = 0;
     }
-    sleep(2);
+    sleep(1);
     return;
 }
