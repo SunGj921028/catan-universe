@@ -18,7 +18,7 @@
 #define CLR_F_256(N) printf("\e[38;5;"#N"m")
 #define CLR_B_256(N) printf("\e[48;5;"#N"m")
 #define MAX_VERTICES 100
-
+#define LOG_LEN 30
 //int8_t map[23][13][5];
 int8_t c_map_deep = 5;
 
@@ -32,12 +32,9 @@ int8_t c_map_deep = 5;
 
 //calc lonest road
 
-char map_log[4][6][80];
-int8_t log_len=50;
+char player_log[40][LOG_LEN+1];
 int8_t map_pk[19]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int32_t map_ok=0;
-//int8_t source_region[19] = {1,3,2,0,5,5,4,2,3,1,4,3,4,1,5,4,3,2,5};
-//int8_t region[19] = {5,2,6,0,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11};
 int8_t ocean_f[38][2]={{31,31},{31,31},{29,29},{27,27},{26,26},{25,25},{17,17},{12,12},{15,15},{7,7},{6,6},{5,5},{4,4},{5,5},{6,6},{7,7},{2,2},{5,5},{4,4},{5,5},{6,6},{7,7},{6,6},{5,5},{4,4},{1,1},{6,6},{7,7},{15,15},{16,16},{17,17},{21,21},{26,26},{27,27},{31,31},{31,31},{31,31}};
 int8_t map_block_i=0;
 int8_t map_line_i=0;
@@ -125,7 +122,7 @@ void map_point_init(int8_t i,int8_t j,int8_t map_p_type){
     map[i][j][1]=0;
     map[i][j][2]=map_point_i;
     map[i][j][3]=0;
-    map[i][j][4]=9;
+    map[i][j][4]=-1;
     if((i==1 && j==5) || (i==1 && j==7) || (i==15 && j==1) || (i==17 && j==1) || (i==15 && j==11) || (i==17 && j==11) || (i==19 && j==3) || (i==19 && j==5) || (i==19 && j==7) || (i==19 && j==9)){
       map[i][j][4]=5;
     }else if((i==9 && j==11) || (i==11 && j==11)){
@@ -159,13 +156,13 @@ void map_point_init(int8_t i,int8_t j,int8_t map_p_type){
       }
     }
     map[i-1][j][1]=map_block_i;
-    map[i-1][j][2]=resource_switch(source_region[map_block_i]);//region
+    map[i-1][j][2]=resource_switch(re_t[map_block_i]);//region
     map[i][j][1]=map_block_i;
-    map[i][j][2]=resource_switch(source_region[map_block_i]);//region
+    map[i][j][2]=resource_switch(re_t[map_block_i]);//region
     map[i+1][j][1]=map_block_i;
-    map[i+1][j][2]=resource_switch(source_region[map_block_i]);//region
-    map[i][j][3]=region[map_block_i];//point
-    if(resource_switch(source_region[map_block_i])==5){
+    map[i+1][j][2]=resource_switch(re_t[map_block_i]);//region
+    map[i][j][3]=pt_t[map_block_i];//point
+    if(resource_switch(re_t[map_block_i])==5){
       map[i][j][4]=1;
     }
     map_block_i++;
@@ -344,26 +341,84 @@ void map_print_slt(int8_t i,int8_t j,int8_t ptime,int8_t pmood){
   }
 }
 
+void pdp0(int32_t len){
+  CCLEAR;
+  for(int8_t i=len;i<LOG_LEN;i++){
+    printf(" ");
+  }
+}
+
+int32_t pd_slt(int32_t player_ID, int32_t log_order){
+  player_ID--;
+  printf("%s",player_log[player_ID*10+log_order]);
+  return strlen(player_log[player_ID*10+log_order]);
+}
+
+void pd_builder(){
+  for(int32_t i=0;i<4;i++){
+    if(i==0){
+      sprintf(player_log[i*10+0],"1:player Name\0");
+    }else{
+      sprintf(player_log[i*10+0],"1:My Name\0");
+    }
+    sprintf(player_log[i*10+1],"2:Lonest road\0");
+    sprintf(player_log[i*10+2],"3:Knight card\0");
+    if(i==0){
+      sprintf(player_log[i*10+3]," %02d %02d %02d %02d %02d\0",1,2,3,4,5);
+    }else{
+      sprintf(player_log[i*10+3],"4:total card\0");
+    }
+    if(i==0){
+      sprintf(player_log[i*10+4],"5:z8 503 card\0");
+    }else{
+      sprintf(player_log[i*10+4],"5:total z8 503 card\0");
+    }
+    sprintf(player_log[i*10+5],"6:road card\0");
+    sprintf(player_log[i*10+6],"7:village card\0");
+    sprintf(player_log[i*10+7],"8:city card\0");
+    sprintf(player_log[i*10+8],"9:score card\0");
+    sprintf(player_log[i*10+9],"10:resss card\0");
+  }
+}
+
 //me card type,knight used, latest move;
 //oth card total,knight used, latest move;
 /*log printer detect&select*/
 void pd_print(int8_t ptime){
-  if(ptime<29){
+  char temp[100];
+  int8_t u_h=10;
+  int8_t d_h=9;
+  for(int8_t i=0;i<100;i++){
+    temp[i] = 0;
+  }
+  if(ptime<u_h+d_h+3){
     BK_WIT;printf("  ");CCLEAR;
-    int8_t playerID=(ptime/7);
-    int8_t pd_line=ptime%7;
-    map_color_slt(2,playerID+1);
-    if(pd_line==0 && ptime<29){
-      BK_WIT;
-      for(int8_t i=0;i<log_len;i++){
-        printf(" ");
+    if(ptime==0 || ptime==u_h+1 || ptime==u_h+d_h+2){
+      for(int8_t i=0;i<LOG_LEN*2+2;i++){
+        sprintf(&(temp[i])," ");
       }
-      CCLEAR;
-    }else{
-      printf("%s",map_log[playerID][pd_line-1]);
-      for(int8_t i=strlen(map_log[playerID][pd_line-1]);i<log_len;i++){
-        printf(" ");
+      BK_WIT;printf("%s",temp);CCLEAR;
+    }else if(ptime<u_h+1){
+      map_color_slt(2,1);
+      if(ptime<4){
+        pdp0(pd_slt(1,ptime-1));
+      }else if(ptime==4){
+        for(int8_t i=0;i<15;i++){
+          if(i%3==0){map_color_slt(3,i/3);}
+          printf("%c",player_log[3][i]);
+        }
+        CCLEAR;pdp0(15);
+      }else if(ptime==5){
+        pdp0(printf("c1 c2 c3\0"));
+      }else{
+        pdp0(pd_slt(1,(ptime-2)));
       }
+      BK_WIT;printf("  ");CCLEAR;
+      map_color_slt(2,2);pdp0(ptime<u_h ? pd_slt(2,(ptime-1)):0);
+    }else if(u_h+1<ptime && ptime<u_h+d_h+2){
+      map_color_slt(2,3);pdp0(pd_slt(3,(ptime%(u_h+1))-1));
+      BK_WIT;printf("  ");CCLEAR;
+      map_color_slt(2,4);pdp0(pd_slt(4,(ptime%(u_h+1))-1));
     }
     BK_WIT;printf("  ");CCLEAR;
   }
@@ -395,20 +450,6 @@ void map_init(){
     for(int8_t j=0;j<13;j++){
       for(int8_t k=0;k<c_map_deep;k++){
         map[i][j][k]=0;
-      }
-    }
-  }
-  for(int8_t i=0;i<4;i++){//D3rr0r
-    for(int8_t j=0;j<6;j++){
-      for(int8_t k=0;k<80;k++){
-        map_log[i][j][k]=0;
-      }
-    }
-  }
-  for(int8_t i=0;i<4;i++){//D3rr0r
-    for(int8_t j=0;j<6;j++){
-      for(int8_t k=0;k<26+j;k++){
-        map_log[i][j][k]=65+k;
       }
     }
   }
@@ -460,6 +501,7 @@ void map_init(){
 
 /*Map printer*/
 int32_t map_print(int8_t printer_mood){
+  pd_builder();
   int8_t ptime=0;
   for(int8_t i=0;i<23;i++){
     if(i==0||i==22){
@@ -707,10 +749,6 @@ int32_t harvest(int32_t dice_number,int32_t *harvest_resource_2x5){
           *(harvest_resource_2x5 + temp*5 + map[i+2][j+1][1]) += map[i+2][j+1][3];
         }
         temp++;
-        // if(dice_number == 2 || dice_number == 12){
-        //   *(harvest_resource_2x5 + temp*5) = -1;
-        //   return 0;
-        // }
         if(dice_number == 2 || dice_number == 12){
           *(harvest_resource_2x5 + temp*5) = -1;
           for(int32_t k=1;k<5;k++){

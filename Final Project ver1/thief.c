@@ -10,6 +10,31 @@ extern sPlayer * p3;
 extern sPlayer * p4;
 extern int resource[5];//sum is 95
 
+bool judge_five(char input[30]){
+    char temp[30] = {0};
+    strncpy(temp,input,strlen(input));
+    temp[strlen(input)-1] = '\0';
+    int count = 0;
+    char *tok = NULL;
+    int number = 0;
+    tok = strtok(temp," ");
+    number = (*tok) - '0';
+    while(tok!=NULL){
+        if(number>12 || number<0){
+            return false;
+        }
+        tok = strtok(NULL," ");
+        if(tok!=NULL){
+            number = *tok - '0';
+        }
+        count++;
+    }
+    if(count>5){
+        return false;
+    }
+    return true;
+}
+
 //dice == 7
 //uint8_t count = 0;
 void throw_card(sPlayer * player, uint8_t arr[], size_t n){
@@ -41,47 +66,52 @@ void throw_card(sPlayer * player, uint8_t arr[], size_t n){
 //可能可以做改強度
 void input_key(sPlayer * player, uint8_t p_number, int num){
     //PASS;
-    char input[20] = {0};
-    uint8_t in_arr[5] = {0};
+    char input[30] = {0};
+    int in_arr[5] = {0};
     char message[20] = {0};
     bool can_throw = true;
-    uint8_t count_get_char = 0;
+    int count_get_char = 0;
     if(p_number==1){
         while(1){
             if(count_get_char!=0){
                 getchar();
             }
             count_get_char++;
-            fgets(input,20,stdin);
-            if(strlen(input)>10) {printf("invalid input!!\n"); continue;}
-            printf("%s\n",input);
-            sscanf(input,"%hhd %hhd %hhd %hhd %hhd",&in_arr[0],&in_arr[1],&in_arr[2],&in_arr[3],&in_arr[4]);
-            for(int i=0;i<5;i++){
-                printf("%u ",in_arr[i]);
-            }
-            printf("\n");
-            int sum = 0;
-            for(int i=0;i<5;i++){
-                sum += in_arr[i];
-            }
-            if(sum!=num){
-                printf("Invalid number of cards you throw!!\n");
-                continue;
-            }
-            uint8_t *ptr[5] = {&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
-            for(int i=0;i<5;i++){
-                //printf("%d\n",*ptr);
-                if(in_arr[i]<0 || in_arr[i]>*(ptr[i])){
-                    printf(RED"invalid input!!\e[0m\n");
-                    can_throw = false;
+            fgets(input,30,stdin);
+            if(strlen(input)>16) {printf("invalid input!!\n"); continue;}
+            if(judge_five(input)){
+                printf("%s\n",input);
+                sscanf(input,"%d %d %d %d %d",&in_arr[0],&in_arr[1],&in_arr[2],&in_arr[3],&in_arr[4]);
+                for(int i=0;i<5;i++){
+                    printf("%u ",in_arr[i]);
+                }
+                printf("\n");
+                int sum = 0;
+                for(int i=0;i<5;i++){
+                    sum += in_arr[i];
+                }
+                if(sum!=num){
+                    printf("Invalid number of cards you throw!!\n");
+                    continue;
+                }
+                uint8_t *ptr[5] = {&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
+                for(int i=0;i<5;i++){
+                    //printf("%d\n",*ptr);
+                    if(in_arr[i]<0 || in_arr[i]>*(ptr[i])){
+                        printf(RED"invalid input!!\e[0m\n");
+                        can_throw = false;
+                        break;
+                    }else{ can_throw = true;}
+                }
+                if(!can_throw) {
+                    continue;
+                }else{
+                    throw_card(player,in_arr,5);
                     break;
-                }else{ can_throw = true;}
-            }
-            if(!can_throw) {
-                continue;
+                }
             }else{
-                throw_card(player,in_arr,5);
-                break;
+                printf(RED"Wrong format of input!!\e[0m\n");
+                continue;
             }
         }
         //print

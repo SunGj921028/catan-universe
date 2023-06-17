@@ -47,7 +47,7 @@ int8_t init_build_take[5] = {0,0,0,0,0};
 int8_t init_near_road[4] = {-1,-1,-1,-1};
 int8_t map[23][13][5];
 char extra;
-char player_name[11] = {0};
+char player_name[20] = {0};
 
 void title(){
     CLEAR;
@@ -62,8 +62,8 @@ void title(){
 
 int32_t startup(){
     printf("\033[3CSTART(PRESS S)             HOW TO PLAY(PRESS H)             QUIT(PRESS Q)\n");
+    printf("Which one do you choose : ");
     while(1){
-        printf("Which one do you choose : ");
         char a=getch();
         if(a=='h' || a=='H'){
             system("xdg-open https://andyventure.com/boardgame-catan/");
@@ -99,29 +99,22 @@ int main(int argc, char *argv[]){
         p4 = player_init();
         build = false;
         uint8_t count = 0;
-        uint8_t count_name = 0;
         while(1){
-            if(count_name!=0){
-                getchar();
-            }
-            count_name++;
             printf("Please input player's name (small than or equal to 10 letters): ");
-            fgets(player_name,11,stdin);
+            fgets(player_name,20,stdin);
+            //printf("%s\n",player_name);
             if(strlen(player_name)>10){
                 printf(RED"Wrong format of player's name!!\e[0m\n");
                 continue;
             }else{
-                player_name[strlen(player_name)] = '\0';
+                player_name[strlen(player_name) - 1] = '\0';
+                //printf("%s\n",player_name);
                 break;
             }
         }
+        CLEAR;
         while(1){
             if(!build) {first_sec_turn(), count = (first_player + 1), build = true;}
-            // print_init(1);
-            // print_init(2);
-            // print_init(3);
-            // print_init(4);
-            // return 0;
             //printf("Start from player %d.\n",count);
             if((count%5) == 1){
                 player_move();

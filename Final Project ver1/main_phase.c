@@ -279,3 +279,33 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
     printf("%d\n",player->hand);
     return;
 }
+
+void trade_player(uint8_t p, uint8_t is_ai){
+    sPlayer * p_commit;
+    if(p==1){ p_commit = p1;}
+    else if(p==2){ p_commit = p2;}
+    else if(p==3){ p_commit = p3;}
+    else{ p_commit = p4;}
+    char res_cho[30] = {0};
+    int resource_give[5] = {0};
+    int count_get_char = 0;
+    if(is_ai==0){
+        printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
+        while(1){
+            if(count_get_char!=0){
+                getchar();
+            }
+            count_get_char++;
+            printf("How many resources do you want to give for trade? (input's pattern is like x x x x x)\n");
+            fgets(res_cho,30,stdin);
+            if(strlen(res_cho)>16) {printf("invalid input!!\n"); continue;}
+            if(judge(res_cho)){
+                sscanf(res_cho,"%d %d %d %d %d",&resource_give[0],&resource_give[1],&resource_give[2],&resource_give[3],&resource_give[4]);
+                break;
+            }else{
+                printf(RED"Wrong input format!!\e[0m\n");
+                continue;
+            }
+        }
+    }
+}

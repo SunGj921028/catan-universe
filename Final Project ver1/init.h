@@ -30,7 +30,7 @@ extern int first_player;
 
 extern char extra;
 
-extern char player_name[11];
+extern char player_name[20];
 
 //初始頁面
 int32_t startup();

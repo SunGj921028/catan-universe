@@ -36,6 +36,7 @@ void ai_move(int p);
 bool judge_ai_action(uint8_t action, uint8_t player_number);
 
 //thief move
+bool judge_five(char input[30]);
 void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number);
 void check_hand();
 void print_player_hands(sPlayer * player, uint8_t n);
@@ -54,3 +55,4 @@ void list_can_trade(sPlayer * player, uint8_t trade_option);
 bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type);
 //trade type->bank(1) harbor2:1(2) harbor3:1(3)
 void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_type);
+void trade_player();

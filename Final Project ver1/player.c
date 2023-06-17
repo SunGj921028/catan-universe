@@ -338,8 +338,9 @@ void player_move(){
                 while(1){
                     printf(BLUE"0 -> Cancel\n");
                     printf("1 -> Trade with Bank!!\n");
-                    printf("2 -> Trade with Harbor!!\e[0m\n");
-                    printf("Which move do you want to do ? (0-2): ");
+                    printf("2 -> Trade with Harbor!!\n");
+                    printf("3 -> Trade with Player!!\e[0m\n");
+                    printf("Which move do you want to do ? (0-3): ");
                     if((scanf("%d",&cho_move)) == 0){
                         printf("Wrong Input!!\n");
                         while (getchar() != '\n');
@@ -350,7 +351,7 @@ void player_move(){
 							while (getchar() != '\n');
 							continue;
 						}else{
-                            if(cho_move<0 || cho_move>2){
+                            if(cho_move<0 || cho_move>3){
                                 REFRESH
                                 printf("Wrong Input!!\n");
                                 continue;
@@ -511,6 +512,29 @@ void player_move(){
                         trade(p1,0,res_cho,harbor_cho+1);
                     }else{
                         printf(RED"You don't have any harbor!!\e[0m\n");
+                    }
+                }else if(cho_move==3){
+                    int player_trade_cho = 0;
+                    while(1){
+                        printf("Which player you want to trade with ? (2-4): ");
+                        if((scanf("%d",&player_trade_cho)) == 0){
+                            printf("Wrong Input!!\n");
+                            while (getchar() != '\n');
+                            continue;
+                        }else{
+                            if(scanf("%c",&extra)==1 && extra != '\n'){
+                                printf("ERROR\n");
+                                while (getchar() != '\n');
+                                continue;
+                            }else{
+                                if(player_trade_cho<2 || player_trade_cho>4){
+                                    printf(RED"Wrong Input!!\e[0m\n");
+                                    continue;
+                                }else{
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }else{
                     printf(RED"Wrong Input!!\e[0m\n");
