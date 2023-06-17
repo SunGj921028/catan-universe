@@ -436,7 +436,6 @@ void player_move(){
                             }
                         }
                         if(harbor_cho!=1 && harbor_cho!=2){ printf("Wrong Input!!\n"); continue;}
-                        else{ break;}
                         //judge
                         bool can_trade = false;
                         if(harbor_cho==1){

@@ -139,7 +139,7 @@ int32_t dice(){
 
 void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     int32_t dice_result = dice();
-    //dice_result = 7;
+    dice_result = 7;
     show_dice_v2(dice_result);
     if(!is_ai){ printf("%s throw %d points\n",player_name,dice_result);}
     else{ printf("p%d throw %d points\n",player_number,dice_result);}
@@ -358,7 +358,7 @@ void trade_player(uint8_t p, uint8_t is_ai){
                                             printf(RED"Wrong Input!!\e[0m\n");
                                             continue;
                                         }else{
-                                            accept_or_not();
+                                            //accept_or_not();
                                             return;
                                         }
                                     }
