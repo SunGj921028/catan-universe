@@ -156,13 +156,13 @@ void map_point_init(int8_t i,int8_t j,int8_t map_p_type){
       }
     }
     map[i-1][j][1]=map_block_i;
-    map[i-1][j][2]=resource_switch(re_t[map_block_i]);//region
+    map[i-1][j][2]=resource_switch(source_region[map_block_i]);//region
     map[i][j][1]=map_block_i;
-    map[i][j][2]=resource_switch(re_t[map_block_i]);//region
+    map[i][j][2]=resource_switch(source_region[map_block_i]);//region
     map[i+1][j][1]=map_block_i;
-    map[i+1][j][2]=resource_switch(re_t[map_block_i]);//region
-    map[i][j][3]=pt_t[map_block_i];//point
-    if(resource_switch(re_t[map_block_i])==5){
+    map[i+1][j][2]=resource_switch(source_region[map_block_i]);//region
+    map[i][j][3]=region[map_block_i];//point
+    if(resource_switch(source_region[map_block_i])==5){
       map[i][j][4]=1;
     }
     map_block_i++;
@@ -357,27 +357,27 @@ int32_t pd_slt(int32_t player_ID, int32_t log_order){
 void pd_builder(){
   for(int32_t i=0;i<4;i++){
     if(i==0){
-      sprintf(player_log[i*10+0],"1:player Name\0");
+      sprintf(player_log[i*10+0],"1:player Name");
     }else{
-      sprintf(player_log[i*10+0],"1:My Name\0");
+      sprintf(player_log[i*10+0],"1:My Name");
     }
-    sprintf(player_log[i*10+1],"2:Lonest road\0");
-    sprintf(player_log[i*10+2],"3:Knight card\0");
+    sprintf(player_log[i*10+1],"2:Lonest road");
+    sprintf(player_log[i*10+2],"3:Knight card");
     if(i==0){
-      sprintf(player_log[i*10+3]," %02d %02d %02d %02d %02d\0",1,2,3,4,5);
+      sprintf(player_log[i*10+3]," %02d %02d %02d %02d %02d",1,2,3,4,5);
     }else{
-      sprintf(player_log[i*10+3],"4:total card\0");
+      sprintf(player_log[i*10+3],"4:total card");
     }
     if(i==0){
-      sprintf(player_log[i*10+4],"5:z8 503 card\0");
+      sprintf(player_log[i*10+4],"5:z8 503 card");
     }else{
-      sprintf(player_log[i*10+4],"5:total z8 503 card\0");
+      sprintf(player_log[i*10+4],"5:total z8 503 card");
     }
-    sprintf(player_log[i*10+5],"6:road card\0");
-    sprintf(player_log[i*10+6],"7:village card\0");
-    sprintf(player_log[i*10+7],"8:city card\0");
-    sprintf(player_log[i*10+8],"9:score card\0");
-    sprintf(player_log[i*10+9],"10:resss card\0");
+    sprintf(player_log[i*10+5],"6:road card");
+    sprintf(player_log[i*10+6],"7:village card");
+    sprintf(player_log[i*10+7],"8:city card");
+    sprintf(player_log[i*10+8],"9:score card");
+    sprintf(player_log[i*10+9],"10:resss card");
   }
 }
 
@@ -409,7 +409,7 @@ void pd_print(int8_t ptime){
         }
         CCLEAR;pdp0(15);
       }else if(ptime==5){
-        pdp0(printf("c1 c2 c3\0"));
+        pdp0(printf("c1 c2 c3"));
       }else{
         pdp0(pd_slt(1,(ptime-2)));
       }

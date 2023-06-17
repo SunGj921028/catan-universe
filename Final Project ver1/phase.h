@@ -41,7 +41,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number);
 void check_hand();
 void print_player_hands(sPlayer * player, uint8_t n);
 void input_key(sPlayer * player, uint8_t p_number, int num);
-void throw_card(sPlayer * player, uint8_t arr[], size_t n);
+void throw_card(sPlayer * player, int arr[], size_t n);
 int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai);
 void steal_resource(uint8_t player_cho, sPlayer * player);
 
@@ -55,4 +55,5 @@ void list_can_trade(sPlayer * player, uint8_t trade_option);
 bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type);
 //trade type->bank(1) harbor2:1(2) harbor3:1(3)
 void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_type);
-void trade_player();
+void trade_player(uint8_t p, uint8_t is_ai);
+

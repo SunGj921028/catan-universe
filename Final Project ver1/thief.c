@@ -37,7 +37,7 @@ bool judge_five(char input[30]){
 
 //dice == 7
 //uint8_t count = 0;
-void throw_card(sPlayer * player, uint8_t arr[], size_t n){
+void throw_card(sPlayer * player, int arr[], size_t n){
     //PASS;
     for(int i = 0;i < n; i++){
         if(arr[i]!=0){
@@ -119,7 +119,7 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
         printf("%d irons, %d woods, %d wheats, %d bricks, %d wool\n",in_arr[0],in_arr[1],in_arr[2],in_arr[3],in_arr[4]);
     }else{
         //printf("ai throw turn\n");
-        uint8_t choose[5] = {0};
+        int choose[5] = {0};
         uint8_t player_resource[5] = {0};
         player_resource[0] = player->iron;
         player_resource[1] = player->wood;

@@ -299,7 +299,7 @@ void trade_player(uint8_t p, uint8_t is_ai){
             printf("How many resources do you want to give for trade? (input's pattern is like x x x x x)\n");
             fgets(res_cho,30,stdin);
             if(strlen(res_cho)>16) {printf("invalid input!!\n"); continue;}
-            if(judge(res_cho)){
+            if(judge_five(res_cho)){
                 sscanf(res_cho,"%d %d %d %d %d",&resource_give[0],&resource_give[1],&resource_give[2],&resource_give[3],&resource_give[4]);
                 break;
             }else{
