@@ -29,7 +29,6 @@ void player_move(){
         printf("2 -> Upgrade the Village to City!!\n");
         printf("3 -> Develop Card\n");
         printf("4 -> Trade\e[0m\n");
-        //printf("Trade with Player\n");
         printf("Which move do you want to do ? (0-4): ");
         int32_t cho = 0;
         int32_t cho_move = 0;
@@ -37,12 +36,14 @@ void player_move(){
         int32_t road_number = 0;
         int32_t redo = 0;
         if((scanf("%d",&cho)) == 0){
-            printf("Wrong Input!!\n");
+            REFRESH
+            printf(RED"Wrong Input!!\e[0m\n");
             while (getchar() != '\n');
             continue;
         }else{
             if(scanf("%c",&extra)==1 && extra != '\n'){
-                printf("ERROR\n");
+                REFRESH
+                printf(RED"ERROR\e[0m\n");
                 while (getchar() != '\n');
                 continue;
             }
@@ -70,11 +71,13 @@ void player_move(){
                     printf("2 -> Build the Road!!\e[0m\n");
                     printf("Which move do you want to do ? (0-2): ");
                     if((scanf("%d",&cho_move)) == 0){
+                        REFRESH
                         printf("Wrong Input!!\n");
                         while (getchar() != '\n');
                         continue;
                     }else{
 						if(scanf("%c",&extra)==1 && extra != '\n'){
+                            REFRESH
 							printf("ERROR\n");
 							while (getchar() != '\n');
 							continue;
@@ -170,18 +173,18 @@ void player_move(){
                             while(1){
                                 printf("Do you want keep building road ? (0 or 1): ");
                                 if((scanf("%d",&redo)) == 0){
-                                    printf("Wrong Input!!\n");
+                                    printf(RED"Wrong Input!!\e[0m\n");
                                     while (getchar() != '\n');
                                     continue;
                                 }else{
                                     if(scanf("%c",&extra)==1 && extra != '\n'){
-                                        printf("ERROR\n");
+                                        printf(RED"ERROR\e[0m\n");
                                         while (getchar() != '\n');
                                         continue;
                                     }else{
                                         if(redo<0||redo>1){
                                             REFRESH
-                                            printf(RED"Wrong Input!!\n");
+                                            printf(RED"Wrong Input!!\e[0m\n");
                                             continue;
                                         }
                                         break;
@@ -303,9 +306,9 @@ void player_move(){
                     }
                 }else if(cho_move==2){
                     //use card
-                    develop_card_state(p1,1,0);
                     int cho_card = 0;
                     while(1){
+                        develop_card_state(p1,1,0);
                         printf("Which develop card you want to use ? (0-3): ");
                         if((scanf("%d",&cho_card)) == 0){
                             printf("Wrong Input!!\n");
@@ -373,18 +376,18 @@ void player_move(){
                         //printf("-------------------->\n");
                         printf("Which 4 same resource do you want to give ? (0-4): ");
                         if((scanf("%d",&trade_cho_give)) == 0){
-                            printf("Wrong Input!!\n");
+                            printf(RED"Wrong Input!!\e[0m\n");
                             while (getchar() != '\n');
                             continue;
                         }else{
                             if(scanf("%c",&extra)==1 && extra != '\n'){
-                                printf("ERROR\n");
+                                printf(RED"ERROR\e[0m\n");
                                 while (getchar() != '\n');
                                 continue;
                             }
                         }
                         if(trade_cho_give<0 || trade_cho_give>4){
-                            printf("Wrong Input!!\n");
+                            printf(RED"Wrong Input!!\e[0m\n");
                             continue;
                         }
                         if(trade_judge(p1,1,trade_cho_give)){
@@ -395,11 +398,12 @@ void player_move(){
                             printf("   You can press y to redo your choice,\n");
                             printf("   Or press n to end this action!\n");
                             PASS;
-                            char cyn[2] = {0};
+                            char cyn[20] = {0};
                             while(1){
                                 printf("Do you want to keep trading with Bank ? (y or n): ");
-                                fgets(cyn,2,stdin);
-                                if(strlen(cyn)!=1){ printf("Wrong Input!!\n"); continue;}
+                                fgets(cyn,20,stdin);
+                                cyn[strlen(cyn)-1] = '\0';
+                                if(strlen(cyn)!=1){ printf("Wrong Input!!\n");fflush(stdout);continue;}
                                 if(cyn[0]=='n'||cyn[0]=='N') {break;}
                                 if(cyn[0]=='y'||cyn[0]=='Y') {break;}
                             }

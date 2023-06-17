@@ -682,8 +682,10 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
 }
 
 int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
-  if(!(0 <= road_ID && road_ID < 72)  && (!is_ai)){
-    printf("Road ID is invalid!\n");
+  if(!(0 <= road_ID && road_ID < 72)){
+    if(!is_ai){
+      printf("Road ID is invalid!\n");
+    }
     return -1;
   }
   for(int8_t i=0;i<23;i++){

@@ -211,6 +211,7 @@ void first_sec_turn(){
 					if(check_road){
 						break;
 					}else{
+						printf(RED"Wrong Input!!\e[0m\n");
 						continue;
 					}
 				}

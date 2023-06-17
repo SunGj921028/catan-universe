@@ -45,8 +45,8 @@ typedef struct _sPlayer{
     uint8_t steal_card;  //壟斷市場(3)
 	uint8_t score_card;  //分數卡(4)
     uint8_t U_develop;   //(<=1 per one turn)
-    uint8_t M_knight;    //(>=5)
-    uint8_t M_road;      //(>=3)
+    uint8_t M_knight;    //(>=3)
+    uint8_t M_road;      //(>=5)
     sRoad road;
     sCity city;
     sVillage village;
