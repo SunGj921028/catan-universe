@@ -331,7 +331,7 @@ void player_move(){
                         }
                     }
                     if(use_card_state(1,cho_card,0)==-1){
-                        printf("You can't use any card!!\n");
+                        printf("You can't use any card in this round!!\n");
                         break;
                     }
                 }

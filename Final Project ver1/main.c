@@ -118,6 +118,7 @@ int main(int argc, char *argv[]){
             //printf("Start from player %d.\n",count);
             if((count%5) == 1){
                 player_move();
+                p1->U_develop = 0;
             }else{
                 ai_move(count%5); //2 3 4
                 sleep(2);

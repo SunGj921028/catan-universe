@@ -731,12 +731,12 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
         if(map[i][j][1]==0){
           bool road_connected = false;
           bool near_point = false;
-          if(map[i-1][j-1][0]==2 && map[i-1][j-1][1]==player_ID){if(map[i][j-1][0]==1 && map[i][j-1][1]==0){road_connected = true;}}
-          if(map[i-1][j+1][0]==2 && map[i-1][j+1][1]==player_ID){if(map[i][j-1][0]==1 && map[i][j-1][1]==0){road_connected = true;}}
-          if(map[i+1][j-1][0]==2 && map[i+1][j-1][1]==player_ID){if(map[i][j+1][0]==1 && map[i][j+1][1]==0){road_connected = true;}}
-          if(map[i+1][j+1][0]==2 && map[i+1][j+1][1]==player_ID){if(map[i][j+1][0]==1 && map[i][j+1][1]==0){road_connected = true;}}
-          if(map[i-2][j][0]==2 && map[i-2][j][1]==player_ID){if(map[i-1][j][0]==1 && map[i-1][j][1]==0){road_connected = true;}}
-          if(map[i+2][j][0]==2 && map[i+2][j][1]==player_ID){if(map[i+1][j][0]==1 && map[i+1][j][1]==0){road_connected = true;}}
+          if(map[i-1][j-1][0]==2 && map[i-1][j-1][1]==player_ID){if((map[i-1][j][0]==1 && map[i-1][j][1]==0) || (map[i][j-1][0]==1 && map[i][j-1][1]==0)){road_connected=true;}}
+          if(map[i-1][j+1][0]==2 && map[i-1][j+1][1]==player_ID){if((map[i-1][j][0]==1 && map[i-1][j][1]==0) || map[i][j+1][0]==1 && map[i][j+1][1]==0){road_connected = true;}}
+          if(map[i+1][j-1][0]==2 && map[i+1][j-1][1]==player_ID){if((map[i+1][j][0]==1 && map[i+1][j][1]==0) || map[i][j-1][0]==1 && map[i][j-1][1]==0){road_connected = true;}}
+          if(map[i+1][j+1][0]==2 && map[i+1][j+1][1]==player_ID){if((map[i+1][j][0]==1 && map[i+1][j][1]==0) || map[i][j-1][0]==1 && map[i][j-1][1]==0){road_connected = true;}}
+          if(map[i-2][j][0]==2 && map[i-2][j][1]==player_ID){if(map[i+1][j][0]==1 && map[i+1][j][1]==0){road_connected = true;}}
+          if(map[i+2][j][0]==2 && map[i+2][j][1]==player_ID){if(map[i-1][j][0]==1 && map[i-1][j][1]==0){road_connected = true;}}
           if(map[i-1][j][0]==1 && map[i-1][j][1]==player_ID){near_point = true;}
           if(map[i+1][j][0]==1 && map[i+1][j][1]==player_ID){near_point = true;}
           if(map[i][j-1][0]==1 && map[i][j-1][1]==player_ID){near_point = true;}

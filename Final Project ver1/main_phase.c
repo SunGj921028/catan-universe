@@ -280,7 +280,13 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
     return;
 }
 
-int32_t accept_or_not(int32_t resource_give, uint8_t is_ai, sPlayer * p_com){}
+int32_t accept_or_not(int32_t resource_give[5], int32_t resource_get, uint8_t is_ai, sPlayer * p_com, uint8_t player_number){
+    //1 ->accept
+    //0 ->deny
+    //-1 ->judge no pass
+    if(is_ai){
+    }else{}
+}
 
 bool judge_player_trade(int32_t resource[5], sPlayer * p_com, uint8_t type, int32_t getfrom){
     //type==0 -> give

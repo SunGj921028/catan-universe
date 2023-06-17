@@ -192,6 +192,7 @@ void ai_move(int p){
                         sleep(2);
                     }else if(i==5){
                         printf(RED"Player %d chooses to trade with bank!!\e[0m\n",p);
+                        //map_log_update(p,"Player chooses to trade with bank!!")
                         sleep(2);
                     }else if(i==6){
                         printf(RED"Player %d chooses to trade with harbor(2:1)!!\e[0m\n",p);
@@ -208,8 +209,8 @@ void ai_move(int p){
     }
     if(keep_index!=0){
         save_develop_card(p);
-        player->U_develop = 0;
     }
+    player->U_develop = 0;
     sleep(1);
     return;
 }
