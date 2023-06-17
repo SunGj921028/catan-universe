@@ -371,21 +371,21 @@ void pd_builder(){
       sprintf(player_log[i*10+0],"Player%d",i+1);
     }
     sprintf(player_log[i*10+1],"Lonest road");
-    sprintf(player_log[i*10+2],"Knight used: %d",psa[i]->U_knight);
+    sprintf(player_log[i*10+2],"Knight used: %u",psa[i]->U_knight);
     // if(i==0){
-      sprintf(player_log[i*10+3]," %02d %02d %02d %02d %02d", psa[i]->iron, psa[i]->wood, psa[i]->wheat, psa[i]->brick, psa[i]->sheep);
+    sprintf(player_log[i*10+3]," %02u %02u %02u %02u %02u", psa[i]->iron, psa[i]->wood, psa[i]->wheat, psa[i]->brick, psa[i]->sheep);
     // }else{
     //   sprintf(player_log[i*10+3],"Total resource card: %d", (psa[i]->iron)+(psa[i]->wood)+(psa[i]->wheat)+(psa[i]->brick)+(psa[i]->sheep));
     // }
     //if(i==0){
-      sprintf(player_log[i*10+4],"  %d  %d  %d  %d",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card);
+    sprintf(player_log[i*10+4],"  %u  %u  %u  %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card);
     // }else{
     //   sprintf(player_log[i*10+4],"Total develop card: %d",(psa[i]->knight)+(psa[i]->harvest_card)+(psa[i]->build_card)+(psa[i]->steal_card));
     // }
-    sprintf(player_log[i*10+5],"Remained road: %d",psa[i]->road.road_hand);
-    sprintf(player_log[i*10+6],"Remained village: %d",psa[i]->village.village_hand);
-    sprintf(player_log[i*10+7],"Remained city: %d",psa[i]->city.city_hand);
-    sprintf(player_log[i*10+8],"Score: %d",psa[i]->final_score);
+    sprintf(player_log[i*10+5],"Remained road: %u",psa[i]->road.road_hand);
+    sprintf(player_log[i*10+6],"Remained village: %u",psa[i]->village.village_hand);
+    sprintf(player_log[i*10+7],"Remained city: %u",psa[i]->city.city_hand);
+    sprintf(player_log[i*10+8],"Score: %u ",psa[i]->final_score);
     sprintf(player_log[i*10+9],"EMPTY_PLACE");
   }
 }
@@ -566,12 +566,28 @@ int32_t map_print(int8_t printer_mood){
   printf("\e[0m \n\e[0m");
 }
 
-int32_t map_log_update(int32_t player_ID, char *do_stuff){
+int32_t map_log_update(int32_t player_ID, char *do_stuff, int32_t build_in){
   for(int8_t i=1;i<9;i++){
     strcpy(player_movement[i-1],player_movement[i]);
     player_m_pID[i-1]=player_m_pID[i];
   }
-  strcpy(player_movement[8],do_stuff);
+  char temp[67];
+  for(int32_t i=0;i<66;i++){temp[i]=0;}
+  if(build_in==-1){
+    if(player_ID==1){
+      sprintf(temp,"%s %s",player_name,do_stuff);
+    }else{
+      sprintf(temp,"Player %d %s",player_ID,do_stuff);
+    }
+  }else{
+    if(player_ID==1){
+      sprintf(temp,"%s %s %d",player_name,do_stuff,build_in);
+    }else{
+      sprintf(temp,"Player %d %s %d",player_ID,do_stuff,build_in);
+    }
+  }
+  
+  strcpy(player_movement[8],temp);
   player_m_pID[8]=player_ID;
 }
 
@@ -627,7 +643,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
             if(!is_ai){
               printf("Build village %d %d success!\n",i,j);
             }
-            map_log_update(player_ID,"Player build the village");
+            map_log_update(player_ID,"build village in",point_ID);
             if(init_time>=1){
               int32_t road_total_temp=0;
               for(int8_t i=0;i<4;i++){init_near_road[i] = -1;}
@@ -746,7 +762,7 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
             if(!is_ai){
               printf("Build road %d %d success!\n",i,j);
             }
-            map_log_update(player_ID,"Player build the road");
+            map_log_update(player_ID,"build road in",road_ID);
             return 1;
           }else{
             if(!is_ai){

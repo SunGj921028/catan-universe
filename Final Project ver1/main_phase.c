@@ -280,7 +280,7 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
     return;
 }
 
-int32_t accept_or_not(int32_t resource_give[5], int32_t resource_get, uint8_t is_ai, sPlayer * p_com, uint8_t player_number){
+int32_t accept_or_not(int32_t resource_give[5], int32_t resource_get[5], uint8_t is_ai, sPlayer * p_com, uint8_t player_number){
     //1 ->accept
     //0 ->deny
     //-1 ->judge no pass
@@ -288,7 +288,7 @@ int32_t accept_or_not(int32_t resource_give[5], int32_t resource_get, uint8_t is
     }else{}
 }
 
-bool judge_player_trade(int32_t resource[5], sPlayer * p_com, uint8_t type, int32_t getfrom){
+bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlayer * p_com, uint8_t type, int32_t getfrom){
     //type==0 -> give
     //type==1 -> get
     uint8_t *temp[5] = {&(p_com->iron),&(p_com->wood),&(p_com->wheat),&(p_com->brick),&(p_com->sheep)};
@@ -299,14 +299,18 @@ bool judge_player_trade(int32_t resource[5], sPlayer * p_com, uint8_t type, int3
             }
         }
     }else{
-        sPlayer * get;
-        if(getfrom==1){ get = p1;}
-        else if(getfrom==2){ get = p2;}
-        else if(getfrom==3){ get = p3;}
-        else { get = p4;}
-        uint8_t *p_r[5] = {&(get->iron),&(get->wood),&(get->wheat),&(get->brick),&(get->sheep)};
+        // sPlayer * get;
+        // if(getfrom==1){ get = p1;}
+        // else if(getfrom==2){ get = p2;}
+        // else if(getfrom==3){ get = p3;}
+        // else { get = p4;}
+        // uint8_t *p_r[5] = {&(get->iron),&(get->wood),&(get->wheat),&(get->brick),&(get->sheep)};
+        uint8_t temp_res[5] = {0};
+        for(int i=0;i<5;i++){
+            temp_res[i] += resource_give[i];
+        }
         for(int j=0;j<5;j++){
-            if(resource[j]>*(p_r[j])){
+            if(resource[j]>temp_res[j]){
                 return false;
             }
         }
@@ -314,7 +318,7 @@ bool judge_player_trade(int32_t resource[5], sPlayer * p_com, uint8_t type, int3
     return true;
 }
 
-void trade_player(uint8_t p, uint8_t is_ai){
+/*void trade_player(uint8_t p, uint8_t is_ai){
     sPlayer * p_commit;
     if(p==1){ p_commit = p1;}
     else if(p==2){ p_commit = p2;}
@@ -364,7 +368,10 @@ void trade_player(uint8_t p, uint8_t is_ai){
                                             printf(RED"Wrong Input!!\e[0m\n");
                                             continue;
                                         }else{
-                                            //accept_or_not();
+                                            //int result = accept_or_not(resource_give,resource_get,1,p_commit);
+                                            // if(==1){
+                                            //     printf(PURPLE"%s and player %d are traded!!\e[0m\n");
+                                            // }
                                             return;
                                         }
                                     }
@@ -387,4 +394,5 @@ void trade_player(uint8_t p, uint8_t is_ai){
         }
     }else{
     }
-}
+}*/
+
