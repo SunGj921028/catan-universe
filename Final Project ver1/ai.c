@@ -104,11 +104,6 @@ bool judge_ai_action(uint8_t action, uint8_t player_number, int32_t can_build[54
             }
         }
     }
-    // }else if(action==8){
-    //     // if(player->hand >= 5){
-    //     //     int32_t td = rand() % 
-    //     // }
-    // }
     return false;
 }
 
@@ -139,10 +134,6 @@ void ai_move(int p){
             action[i] = temp;
         }
         int32_t can_build_V[54] = {0};
-        // for(int i=0;i<8;i++){
-        //     printf("%u ",action[i]);
-        // }
-        // printf("\n");
         for(int i=0;i<8;i++){
             sleep(1);
             if(judge_ai_action(action[i],p,can_build_V)){
@@ -150,11 +141,11 @@ void ai_move(int p){
                 uint8_t can = 1;
                 //2/3 will do this action
                 if(can==1||can==2){
-                    printf("ai's action is %u ",action[i]);
-                    printf("\n");
+                    // printf("ai's action is %u ",action[i]);
+                    // printf("\n");
                     if(action[i]==0){
                         get_develop_card(player,p);
-                        map_log_update(p,"choose to get develop card",-1);
+                        //map_log_update(p,"choose to get develop card",-1);
                         REFRESH
                         //sleep(1);
                         usleep(500000);

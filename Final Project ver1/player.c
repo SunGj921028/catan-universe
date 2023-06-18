@@ -100,7 +100,7 @@ void player_move(){
                 }else if(cho_move==1){
                     if(!judge_build(p1,0,1,&can_build[0])){
                         REFRESH
-                        printf(RED"You cna't build village!!\e[0m\n");
+                        printf(RED"You can't build village!!\e[0m\n");
                         break;
                     }
                     while(1){
@@ -240,7 +240,14 @@ void player_move(){
 							printf(RED"Wrong Input!!\e[0m\n");
 							while (getchar() != '\n');
 							continue;
-						}
+						}else{
+                            if(village_number<0 || village_number>53){
+                                printf(RED"Wrong Input!!\e[0m\n");
+                                continue;
+                            }else{
+                                break;
+                            }
+                        }
 					}
                     if(village_upgrade(1,village_number,0) != -1){
                         (p1->wheat) -= 2;

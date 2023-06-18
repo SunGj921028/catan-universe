@@ -437,7 +437,7 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
     uint8_t *temp[5] = {&(p_com->iron),&(p_com->wood),&(p_com->wheat),&(p_com->brick),&(p_com->sheep)};
     if(type==0){
         for(int i=0;i<5;i++){
-            if(resource[i]>*(temp[i])){
+            if(resource_give[i]>*(temp[i])){
                 return false;
             }
         }
@@ -453,7 +453,7 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
             temp_res[i] += resource_give[i];
         }
         for(int j=0;j<5;j++){
-            if(resource[j]>temp_res[j]){
+            if(resource_get[j]>temp_res[j]){
                 return false;
             }
         }

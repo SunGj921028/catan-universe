@@ -119,12 +119,11 @@ int main(int argc, char *argv[]){
             printf("Please input player's name (small than or equal to 10 letters): ");
             fgets(player_name,20,stdin);
             //printf("%s\n",player_name);
-            if(strlen(player_name)>10){
+            if(strlen(player_name)>10 || strlen(player_name)<=0){
                 printf(RED"Wrong format of player's name!!\e[0m\n");
                 continue;
             }else{
                 player_name[strlen(player_name) - 1] = '\0';
-                //printf("%s\n",player_name);
                 break;
             }
         }
