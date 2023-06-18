@@ -353,7 +353,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                 }
             }
             if(!have_people){printf(RED"There are not any people around this region!!\e[0m\n");break;}
-            printf("Which player's resource you want to steal? :");
+            printf("Which player's resource you want to steal ? (2:4): ");
             if((scanf("%d",&player_cho)) == 0){
                 printf(RED"Wrong Input!!\e[0m\n");
                 while (getchar() != '\n');
@@ -363,6 +363,13 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                     printf(RED"ERROR\e[0m\n");
                     while (getchar() != '\n');
                     continue;
+                }else{
+                    if(player_cho<2 || player_cho>4){
+                        printf(RED"Wrong Input!!\e[0m\n");
+                        continue;
+                    }else{
+                        break;
+                    }
                 }
             }
             if(player_can_steal[player_cho]==1){

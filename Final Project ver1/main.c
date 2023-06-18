@@ -126,6 +126,7 @@ int main(int argc, char *argv[]){
             }
             judge_the_U_knight();
             score(count%5);
+            REFRESH
             PASS;
             count += 1;
             //print_init(count%5);
