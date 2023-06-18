@@ -746,6 +746,7 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
       }
     }
   }
+  return -1;
 }
 
 int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){

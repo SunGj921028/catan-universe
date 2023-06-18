@@ -160,8 +160,8 @@ void ai_move(int p){
                     }else if(i==2){
                         //build road
                         //random 0-71
-                        uint8_t count = 0;
-                        while(count<30){
+                        //uint8_t count = 0;
+                        while(1){
                             int32_t road_rand = rand() % 72;
                             if(build_road(p,road_rand,1)!=-1){
                                 player->wood -= 1;
@@ -175,15 +175,16 @@ void ai_move(int p){
                                 sleep(1);
                                 break;
                             }
-                            count++;
+                            //count++;
                         }
                     }else if(i==3){
                         //build village
                         //random 0-53
-                        uint8_t count_V = 0;
-                        while(count_V<25){
+                        //uint8_t count_V = 0;
+                        while(1){
                             int32_t V_ran = rand() % 54;
-                            if(build_village(p,V_ran,0,1)!=-1){
+                            int32_t result = build_village(p,V_ran,0,1);
+                            if(result!=-1 && result!=700){
                                 (player->brick) -= 1;
                                 (player->wheat) -= 1;
                                 (player->wood) -= 1;
@@ -199,15 +200,15 @@ void ai_move(int p){
                                 sleep(1);
                                 break;
                             }
-                            count_V++;
+                            //count_V++;
                         }
                     }else if(i==4){
                         //upgrade
                         //Need to find which can be upgraded
-                        uint8_t count_u = 0;
-                        while(count_u<25){
+                        //uint8_t count_u = 0;
+                        while(1){
                             int32_t UP_vil = rand() % 54;
-                            if(village_upgrade(p,UP_vil,1)){
+                            if(village_upgrade(p,UP_vil,1)!= -1){
                                 player->wheat -= 2;
                                 player->iron -= 3;
                                 resource[2] += 2;
@@ -220,7 +221,7 @@ void ai_move(int p){
                                 //map_log_update(p,"upgrade its village to city.",-1);
                                 break;
                             }
-                            count_u++;
+                            //count_u++;
                         }
                         sleep(1);
                     }else if(i==5){

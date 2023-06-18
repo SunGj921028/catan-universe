@@ -207,21 +207,27 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
             }
         }
     }else{
-        uint8_t temp_player[5] = {0};
-        for(int i=1;i<5;i++){
-            if(nearby[i]==1 && i!=player_number){
-                temp_player[i] = *(temp_hand[i-1]);
+        while(1){
+            region_cho = rand() % 18;
+            if(move_robbor(region_cho, &nearby[0],is_ai)){
+                break;
+            }else{continue;}
+            uint8_t temp_player[5] = {0};
+            for(int i=1;i<5;i++){
+                if(nearby[i]==1 && i!=player_number){
+                    temp_player[i] = *(temp_hand[i-1]);
+                }
             }
-        }
-        uint8_t max_player = 0;
-        uint8_t max_hand = 0;
-        for(int i=1;i<5;i++){
-            if(temp_player[i] >= max_hand){
-                max_hand = temp_player[i];
-                max_player = i;
+            uint8_t max_player = 0;
+            uint8_t max_hand = 0;
+            for(int i=1;i<5;i++){
+                if(temp_player[i] >= max_hand){
+                    max_hand = temp_player[i];
+                    max_player = i;
+                }
             }
+            player_cho = max_player;
         }
-        player_cho = max_player;
     }
     steal_resource(player_cho,player);
     return 0;
