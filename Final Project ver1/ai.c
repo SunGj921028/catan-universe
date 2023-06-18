@@ -25,7 +25,7 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
     if(player_number==1) {player = p1;}
     else if(player_number==2) {player = p2;}
     else if(player_number==3) {player = p3;}
-    else {player = p4;}
+    else if(player_number==4) {player = p4;}
     int32_t village_cho = 0;
     int32_t road_cho = 0;
     uint8_t chance = 0;
@@ -102,6 +102,7 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
 void ai_move(int p){
     //print_init(p);
     map_log_update(p,"'s turn.",-1);
+    REFRESH
     //which player
     sPlayer * player;
     if(p == 2) {player = p2;}
@@ -134,60 +135,67 @@ void ai_move(int p){
                 uint8_t can = rand() % 3;
                 //2/3 will do this action
                 if(can==1||can==2){
-                    printf("B\n");
+                    //printf("B\n");
                     if(i==0){
                         get_develop_card(player,p);
                         map_log_update(p,"choose to get develop card",-1);
+                        REFRESH
                         sleep(1);
                     }else if(i==1){
                         //use card
                         //have done
                         map_log_update(p,"choose to use develop card",-1);
+                        REFRESH
                         sleep(1);
                     }else if(i==2){
                         //build road
                         //random 0-71
-                        while(1){
+                        uint8_t count = 0;
+                        while(count<30){
                             int32_t road_rand = rand() % 72;
-                            if(build_road(p,road_rand,1)){
-                                player->wood--;
-                                player->brick--;
+                            if(build_road(p,road_rand,1)!=-1){
+                                player->wood -= 1;
+                                player->brick -= 1;
                                 player->hand -= 2;
-                                resource[1]++;
-                                resource[3]++;
-                                player->road.road_build++;
-                                player->road.road_hand--;
-                                map_log_update(p,"build a road",-1);
+                                resource[1] += 1;
+                                resource[3] += 1;
+                                player->road.road_build += 1;
+                                player->road.road_hand -= 1;
+                                //map_log_update(p,"build a road",-1);
                                 sleep(1);
                                 break;
                             }
+                            count++;
                         }
                     }else if(i==3){
                         //build village
                         //random 0-53
-                        while(1){
+                        uint8_t count_V = 0;
+                        while(count_V<25){
                             int32_t V_ran = rand() % 54;
-                            if(build_village(p,V_ran,0,1)){
-                                player->brick--;
-                                player->wheat--;
-                                player->wood--;
-                                player->sheep--;
-                                resource[1]++;
-                                resource[2]++;
-                                resource[3]++;
-                                resource[5]++;
+                            if(build_village(p,V_ran,0,1)!=-1){
+                                (player->brick) -= 1;
+                                (player->wheat) -= 1;
+                                (player->wood) -= 1;
+                                (player->sheep) -= 1;
+                                resource[1] += 1;
+                                resource[2] += 1;
+                                resource[3] += 1;
+                                resource[5] += 1;
                                 player->hand -= 4;
-                                player->village.village_build++;
-                                player->village.village_hand--;
-                                map_log_update(p,"build a village",-1);
+                                (player->village.village_build) += 1;
+                                (player->village.village_hand) -= 1;
+                                //map_log_update(p,"build a village",-1);
                                 sleep(1);
                                 break;
                             }
+                            count_V++;
                         }
                     }else if(i==4){
                         //upgrade
                         //Need to find which can be upgraded
-                        while(1){
+                        uint8_t count_u = 0;
+                        while(count_u<25){
                             int32_t UP_vil = rand() % 54;
                             if(village_upgrade(p,UP_vil,1)){
                                 player->wheat -= 2;
@@ -199,19 +207,23 @@ void ai_move(int p){
                                 player->city.city_hand--;
                                 player->village.village_build--;
                                 player->village.village_hand++;
-                                map_log_update(p,"upgrade its village to city.",-1);
+                                //map_log_update(p,"upgrade its village to city.",-1);
                                 break;
                             }
+                            count_u++;
                         }
                         sleep(1);
                     }else if(i==5){
                         map_log_update(p,"chooses to trade with bank.",-1);
+                        REFRESH
                         sleep(1);
                     }else if(i==6){
                         map_log_update(p,"chooses to trade with harbor(2:1).",-1);
+                        REFRESH
                         sleep(1);
                     }else if(i==7){
                         map_log_update(p,"chooses to trade with harbor(3:1).",-1);
+                        REFRESH
                         sleep(1);
                     }
                 }

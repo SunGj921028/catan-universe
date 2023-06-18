@@ -593,12 +593,12 @@ int32_t map_log_update(int32_t player_ID, char *do_stuff, int32_t build_in){
 }
 
 int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uint8_t is_ai){
-  if(!(0 <= point_ID && point_ID < 54) && (!is_ai)){
-    printf("Point ID is invalid!\n");
+  if(!(0 <= point_ID && point_ID < 54)){
+    printf(RED"Point ID is invalid!\e[0m\n");
     return -1;
   }
-  if(!(1 <=player_ID && player_ID <=4) && (!is_ai)){
-    printf("No player exist!\n");
+  if(!(1 <=player_ID && player_ID <=4)){
+    printf(RED"No player exist!\e[0m\n");
     return -1;
   }
   for(int i=0;i<5;i++){
@@ -670,7 +670,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
               for(int8_t k=0;k<5;k++){
                 init_build_take[k]=0;
               }
-              if(map[i][j-1][0]==2){
+              if(map[i][j-1][0]==2 || map[i][j+1][0]==3){
                 if(map[i][j+1][0]==3 && map[i][j+1][2]!=5){
                   init_build_take[map[i][j+1][2]]++;
                 }
@@ -680,7 +680,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
                 if(map[i+1][j-1][0]==3 && map[i+1][j-1][2]!=5){
                   init_build_take[map[i+1][j-1][2]]++;
                 }
-              }else if(map[i][j+1][0]==2){
+              }else if(map[i][j+1][0]==2 || map[i][j-1][0]==3){
                 if(map[i][j-1][0]==3 && map[i][j-1][2]!=5){
                   init_build_take[map[i][j-1][2]]++;
                 }
@@ -693,16 +693,20 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
               }
             }
             return 1;
-          }else if(!near_no_player && (!is_ai)){
-            printf("This village is too close to others!\n");
+          }else if(!near_no_player){
+            if(!is_ai){
+              printf(RED"This village is too close to others!\e[0m\n");
+            }
             return -1;
-          }else if(!road_connected && (!is_ai)){
-            printf("No road connected!\n");
+          }else if(!road_connected){
+            if(!is_ai){
+              printf(RED"No road connected!\e[0m\n");
+            }
             return -1;
           }
         }else{
           if(!is_ai){
-            printf("This village is owned by other players!\n");
+            printf(RED"This village is owned by other players!\e[0m\n");
           }
           return -1;
         }
@@ -710,7 +714,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
     }
   }
   if(!is_ai){
-    printf("This point can't be build!\n");
+    printf(RED"This point can't be build!\e[0m\n");
   }
   return -1;
 }
@@ -729,6 +733,7 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
           if(!is_ai){
             printf("Upgrade success!\n");
           }
+          map_log_update(player_ID,"upgrade its village to city.",-1);
           return 1;
         }else{
           if(!is_ai){
@@ -742,7 +747,7 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
 }
 
 int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
-  if(!(0 <= road_ID && road_ID < 72)  && (!is_ai)){
+  if(!(0 <= road_ID && road_ID < 72)){
     printf("Road ID is invalid!\n");
     return -1;
   }
@@ -909,10 +914,10 @@ int32_t Longest_Path(int32_t player_ID){
       graph[src][dest] = 1;
       graph[dest][src] = 1; // 無向圖，需設定雙向
   }
-  for(int8_t i=0;i<12;i++){//D3rr0r
-    printf("%d %d\n",edgesArr[i][0],edgesArr[i][1]);
-  }
-  printf("%d %d\n",edges,vertices);
+  // for(int8_t i=0;i<12;i++){//D3rr0r
+  //   printf("%d %d\n",edgesArr[i][0],edgesArr[i][1]);
+  // }
+  // printf("%d %d\n",edges,vertices);
   int longestPath = detectLongestPath(vertices);
   printf("Lonest path: %d\n", longestPath);
 }

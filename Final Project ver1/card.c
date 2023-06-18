@@ -91,6 +91,7 @@ void get_develop_card(sPlayer * player, uint8_t player_number){
     PASS;
     keep_index++;
     develop_index++;
+    REFRESH
     return;
 }
 //顯示當下的手牌種類及數量
@@ -151,7 +152,6 @@ int32_t judge_the_U_knight(){
 
 int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
     //move thief
-    map_log_update(player_number,"uses knight card.",-1);
     int nearby[5] = {0};
     int region_cho = 0;
     int player_cho = 0;
@@ -234,7 +234,6 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
     // }else{
     //     printf(PURPLE"*%s uses the harvest_card\e[0m\n",player_name);
     // }
-    map_log_update(p,"uses harvest card.",-1);
     while(count<3)
     {
         while(1)
@@ -261,7 +260,6 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
                 }
             }else{
                 take_resource1 = rand() % 5;
-                break;
             }
 
             if(resource[take_resource1]==0)
@@ -274,33 +272,33 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
             {
                 if(take_resource1==0)
                 {
-                    player->iron++;
-                    player->hand++;
-                    resource[take_resource1]--;
+                    player->iron += 1;
+                    player->hand += 1;
+                    resource[take_resource1] -= 1;
                 }
                 else if(take_resource1==1)
                 {
-                    player->wood++;
-                    player->hand++;
-                    resource[take_resource1]--;
+                    player->wood += 1;
+                    player->hand += 1;
+                    resource[take_resource1] -= 1;
                 }            
                 else if(take_resource1==2)
                 {
-                    player->wheat++;
-                    player->hand++;
-                    resource[take_resource1]--;
+                    player->wheat += 1;
+                    player->hand += 1;
+                    resource[take_resource1] -= 1;
                 }            
                 else if(take_resource1==3)
                 {
-                    player->brick++;
-                    player->hand++;
-                    resource[take_resource1]--;
+                    player->brick += 1;
+                    player->hand +=1;
+                    resource[take_resource1] -= 1;
                 }            
                 else if(take_resource1==4)
                 {
-                    player->sheep++;
-                    player->hand++;
-                    resource[take_resource1]--;
+                    player->sheep += 1;
+                    player->hand += 1;
+                    resource[take_resource1] -= 1;
                 }
                 take_resource1 = 0;
                 count++;
@@ -308,6 +306,7 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
             }
         }
     }
+    return;
 }
 
 void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
@@ -320,7 +319,6 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
     }else{
         limit = 3;
     }
-    map_log_update(player_number,"uses build card.",-1);
     if(is_ai==0)
     {
         while(count<limit)
@@ -375,12 +373,6 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
 {
     int32_t take_resource2 = 0;
     int32_t get_resource = 0;
-    // if(is_ai){
-    //     printf(PURPLE"*Player %d uses the steal_card\e[0m\n",player_number);
-    // }else{
-    //     printf(PURPLE"*%s uses the steal_card\e[0m\n",player_name);
-    // }
-    map_log_update(player_number,"uses the steal card.",-1);
     while(1)
     {
         REFRESH
@@ -532,6 +524,8 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             knight_card(player,player_number,is_ai);
             player->U_knight++;
             player->U_develop = 1;
+            REFRESH
+            map_log_update(player_number,"uses knight card.",-1);
             return 0;
         }
         else if((card_serial_number==1))
@@ -539,14 +533,18 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             player->harvest_card--;
             harvest_card(player,player_number,is_ai);
             player->U_develop = 1;
-            return 0;                       
+            REFRESH
+            map_log_update(player_number,"uses harvest card.",-1);
+            return 0;
         }
         else if((card_serial_number==2))
         {
             player->build_card--;
             build_card(player,player_number,is_ai);
             player->U_develop = 1;
-            return 0;                        
+            REFRESH
+            map_log_update(player_number,"uses build card.",-1);
+            return 0;
         }
         else if((card_serial_number==3))
         {
@@ -556,6 +554,8 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
             else if(player_steal==3){steal_card(player,p1,p2,p4,player_number,is_ai);}
             else if(player_steal==4){steal_card(player,p1,p2,p3,player_number,is_ai);}
             player->U_develop = 1;
+            REFRESH
+            map_log_update(player_number,"uses the steal card.",-1);
             return 0;
         }
     }
