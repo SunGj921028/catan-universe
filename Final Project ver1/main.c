@@ -50,20 +50,20 @@ char extra;
 char player_name[20] = {0};
 int ai_main_move = 0;
 
-void print_surprise(uint8_t player){
-    sPlayer * play;
-    if(player==2){ play = p2;}
-    else if(player==3){ play = p3;}
-    else if(player==4){ play = p4;}
+// void print_surprise(uint8_t player){
+//     sPlayer * play;
+//     if(player==2){ play = p2;}
+//     else if(player==3){ play = p3;}
+//     else if(player==4){ play = p4;}
 
-    if(play->final_score >= 5){
-        printf(PURPLE"Ha Ha I'm going to win by player %d",player);
-    }
-    if(play->score_card == 0){
-        printf(PURPLE"You think I only have %u point ? ^_^",play->final_score);
-    }
-    return;
-}
+//     if(play->final_score >= 5){
+//         printf(PURPLE"Ha Ha I'm going to win by player %d",player);
+//     }
+//     if(play->score_card == 0){
+//         printf(PURPLE"You think I only have %u point ? ^_^",play->final_score);
+//     }
+//     return;
+// }
 
 void title(){
     CLEAR;
@@ -118,6 +118,7 @@ int main(int argc, char *argv[]){
         while(1){
             printf("Please input player's name (small than or equal to 10 letters): ");
             fgets(player_name,20,stdin);
+            fflush(stdout);
             //printf("%s\n",player_name);
             if(strlen(player_name)>10 || strlen(player_name)<=0){
                 printf(RED"Wrong format of player's name!!\e[0m\n");
@@ -138,10 +139,11 @@ int main(int argc, char *argv[]){
                 ai_move(count%5); //2 3 4
                 sleep(2);
             }
-            judge_the_U_knight();
+            //judge_the_U_knight();
             Longest_Player();
+            fflush(stdout);
             REFRESH
-            print_surprise(count%5);
+            //print_surprise(count%5);
             //PASS;
             count += 1;
             //print_init(count%5);

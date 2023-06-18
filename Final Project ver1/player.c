@@ -457,12 +457,16 @@ void player_move(){
                     find_port(1,&port[0]);
                     bool ok = false;
                     for(int i=0;i<6;i++){
-                        if(port[i]==1){ok = true; break;}
+                        if(port[i]==1){
+                            ok = true;
+                            break;
+                        }
                     }
                     while(ok){
+                        printf("0 -> cancel\n");
                         printf("1 -> Trade by 2:1\n");
                         printf("2 -> Trade by 3:1\n");
-                        printf("Which harbor you want to trade with ? (1 or 2): ");
+                        printf("Which harbor you want to trade with ? (0 or 1 or 2): ");
                         if((scanf("%d",&harbor_cho)) == 0){
                             printf(RED"Wrong Input!!\e[0m\n");
                             while (getchar() != '\n');
@@ -474,7 +478,11 @@ void player_move(){
                                 continue;
                             }
                         }
-                        if(harbor_cho!=1 && harbor_cho!=2){ printf(RED"Wrong Input!!\e[0m\n"); continue;}
+                        if(harbor_cho==0){
+                            ok = false;
+                            break;
+                        }
+                        if(harbor_cho!=1 && harbor_cho!=2 && harbor_cho!=0){ printf(RED"Wrong Input!!\e[0m\n"); continue;}
                         //judge
                         bool can_trade = false;
                         if(harbor_cho==1){
@@ -566,7 +574,7 @@ void player_move(){
                         REFRESH
                     }else{
                         REFRESH
-                        printf(RED"You don't have any harbor!!\e[0m\n");
+                        printf(RED"You can't use harbor to trade!!\e[0m\n");
                     }
                     sleep(1);
                     REFRESH

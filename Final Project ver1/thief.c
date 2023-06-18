@@ -71,22 +71,12 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
     int in_arr[5] = {0};
     char message[20] = {0};
     bool can_throw = true;
-    int count_get_char = 0;
     if(p_number==1){
         while(1){
-            // if(count_get_char!=0){
-            //     getchar();
-            // }
-            // count_get_char++;
             fgets(input,30,stdin);
             if(strlen(input)>16) {printf(RED"invalid input!!\e[0m\n"); continue;}
             if(judge_five(input)){
-                //printf("%s\n",input);
                 sscanf(input,"%d %d %d %d %d",&in_arr[0],&in_arr[1],&in_arr[2],&in_arr[3],&in_arr[4]);
-                /*for(int i=0;i<5;i++){
-                    printf("%u ",in_arr[i]);
-                }
-                printf("\n");*/
                 int sum = 0;
                 for(int i=0;i<5;i++){
                     sum += in_arr[i];

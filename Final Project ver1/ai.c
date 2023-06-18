@@ -141,8 +141,8 @@ void ai_move(int p){
                 uint8_t can = 1;
                 //2/3 will do this action
                 if(can==1||can==2){
-                    // printf("ai's action is %u ",action[i]);
-                    // printf("\n");
+                    printf("ai's action is %u ",action[i]);
+                    printf("\n");
                     if(action[i]==0){
                         get_develop_card(player,p);
                         //map_log_update(p,"choose to get develop card",-1);
@@ -159,8 +159,8 @@ void ai_move(int p){
                     }else if(action[i]==2){
                         //build road
                         //random 0-71
-                        //uint8_t count = 0;
-                        while(1){
+                        uint8_t count = 0;
+                        while(count<=20){
                             int32_t road_rand = rand() % 72;
                             if(build_road(p,road_rand,1)!=-1){
                                 (player->wood) -= 1;
@@ -174,7 +174,7 @@ void ai_move(int p){
                                 //sleep(1);
                                 break;
                             }
-                            //count++;
+                            count++;
                         }
                     }else if(action[i]==3){
                         //build village
@@ -258,10 +258,10 @@ void ai_move(int p){
         //again_action = rand() % 3;
         again_action = 1;
     }
-    int tp = rand() % 10;
-    if(tp==1 || tp==2){
-        trade_player(p,1);
-    }
+    //int tp = rand() % 10;
+    // if(tp==1 || tp==2){
+    //     trade_player(p,1);
+    // }
     if(keep_index!=0){
         save_develop_card(p);
     }
