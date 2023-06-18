@@ -382,7 +382,7 @@ void pd_builder(){
     sprintf(player_log[i*10+5],"Remained road: %u",psa[i]->road.road_hand);
     sprintf(player_log[i*10+6],"Remained village: %u",psa[i]->village.village_hand);
     sprintf(player_log[i*10+7],"Remained city: %u",psa[i]->city.city_hand);
-    sprintf(player_log[i*10+8],"Score: %u ",psa[i]->final_score);
+    sprintf(player_log[i*10+8],"Score: %u ",((psa[i]->final_score)-(psa[i]->score_card)));
     sprintf(player_log[i*10+9],"EMPTY_PLACE");
   }
 }

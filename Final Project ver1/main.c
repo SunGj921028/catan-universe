@@ -51,7 +51,18 @@ char player_name[20] = {0};
 int ai_main_move = 0;
 
 void print_surprise(uint8_t player){
-    if(){}
+    sPlayer * play;
+    if(player==2){ play = p2;}
+    else if(player==3){ play = p3;}
+    else if(player==4){ play = p4;}
+
+    if(play->final_score >= 5){
+        printf(PURPLE"Ha Ha I'm going to win by player %d",player);
+    }
+    if(play->score_card == 0){
+        printf(PURPLE"You think I only have %u point ? ^_^",play->final_score);
+    }
+    return;
 }
 
 void title(){
