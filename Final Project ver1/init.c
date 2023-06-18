@@ -73,9 +73,9 @@ sPlayer * player_init(){
     pPlayer->U_develop = 0;
     pPlayer->M_knight = 0;
     pPlayer->M_road = 0;
-    pPlayer->city.city_hand = 5;
+    pPlayer->city.city_hand = 4;
     pPlayer->city.city_build = 0;
-    pPlayer->village.village_hand = 4;
+    pPlayer->village.village_hand = 5;
     pPlayer->village.village_build = 0;
     pPlayer->road.road_hand = 15;
     pPlayer->road.road_build = 0;
