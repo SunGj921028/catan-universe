@@ -80,10 +80,10 @@ void get_develop_card(sPlayer * player, uint8_t player_number){
         develop_card_keep[keep_index] = 4;
         score_remain--;
     }
-    player->wheat -= 1;
-    player->sheep -= 1;
-    player->iron -= 1;
-    player->hand -= 3;
+    (player->wheat) -= 1;
+    (player->sheep) -= 1;
+    (player->iron) -= 1;
+    (player->hand) -= 3;
     //not sure
     resource[0] += 1;
     resource[2] += 1;
@@ -174,7 +174,7 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
                     continue;
                 }
             }
-            if(move_robbor(region_cho, &nearby[0],is_ai,player_number)){
+            if(move_robbor(region_cho, &nearby[0],is_ai,player_number)!=-1){
                 break;
             }else{continue;}
         }
@@ -208,8 +208,9 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
         }
     }else{
         while(1){
+            usleep(500000);
             region_cho = rand() % 18;
-            if(move_robbor(region_cho, &nearby[0],is_ai,player_number)){
+            if(move_robbor(region_cho, &nearby[0],is_ai,player_number)!=-1){
                 break;
             }else{continue;}
             uint8_t temp_player[5] = {0};
@@ -528,7 +529,7 @@ int32_t use_card_state(uint8_t player_number,int8_t card_serial_number,uint8_t i
     {
         if((card_serial_number==0))
         {
-            player->knight--;
+            (player->knight) -= 1;
             knight_card(player,player_number,is_ai);
             player->U_knight++;
             player->U_develop = 1;

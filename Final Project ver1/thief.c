@@ -188,7 +188,6 @@ void check_hand(){
             if(p1->hand >= 7){
                 print_player_hands(p1,1);
             }
-            //printf("player throw card\n");
         }else{
             if(player_number == 2){
                 if(p2->hand >= 7){
@@ -312,7 +311,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                     }
                 }
             }
-            if(move_robbor(region_cho,&nearby_player[0],is_ai,player_number)){
+            if(move_robbor(region_cho,&nearby_player[0],is_ai,player_number) != -1){
                 break;
             }else{continue;}
         }
@@ -354,7 +353,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                 }
             }
             if(!have_people){printf(RED"There are not any people around this region!!\e[0m\n");break;}
-            printf("Which player's resource you want to steal ? (2:4): ");
+            printf("Which player's resource you want to steal ? (2-4): ");
             if((scanf("%d",&player_cho)) == 0){
                 printf(RED"Wrong Input!!\e[0m\n");
                 while (getchar() != '\n');

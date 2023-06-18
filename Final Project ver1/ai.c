@@ -131,6 +131,7 @@ void ai_move(int p){
         //random action order
         //can reset ai's hard
         uint8_t action[8] = {0,1,2,3,4,5,6,7};
+        //uint8_t action[5] = {0,1,2,3,4};
         for(int i=0;i<8;i++){
             int j = i + rand()/(RAND_MAX/(8-i)+1);
             int temp = action[j];
@@ -143,7 +144,7 @@ void ai_move(int p){
         // }
         // printf("\n");
         for(int i=0;i<8;i++){
-            //sleep(1);
+            sleep(1);
             if(judge_ai_action(action[i],p,can_build_V)){
                 //uint8_t can = rand() % 3;
                 uint8_t can = 1;
@@ -152,16 +153,18 @@ void ai_move(int p){
                     printf("ai's action is %u ",action[i]);
                     printf("\n");
                     if(action[i]==0){
-                        // get_develop_card(player,p);
-                        // map_log_update(p,"choose to get develop card",-1);
-                        // REFRESH
-                        // sleep(1);
+                        get_develop_card(player,p);
+                        map_log_update(p,"choose to get develop card",-1);
+                        REFRESH
+                        //sleep(1);
+                        usleep(500000);
                     }else if(action[i]==1){
                         //use card
                         //have done
                         map_log_update(p,"choose to use develop card",-1);
                         REFRESH
                         //sleep(1);
+                        usleep(500000);
                     }else if(action[i]==2){
                         //build road
                         //random 0-71
@@ -241,18 +244,22 @@ void ai_move(int p){
                         }
                         //count_u++;
                         //sleep(1);
+                        usleep(500000);
                     }else if(action[i]==5){
                         map_log_update(p,"chooses to trade with bank.",-1);
                         REFRESH
                         //sleep(1);
+                        usleep(500000);
                     }else if(action[i]==6){
                         map_log_update(p,"chooses to trade with harbor(2:1).",-1);
                         REFRESH
                         //sleep(1);
+                        usleep(500000);
                     }else if(action[i]==7){
                         map_log_update(p,"chooses to trade with harbor(3:1).",-1);
                         REFRESH
                         //sleep(1);
+                        usleep(500000);
                     }
                 }
             }
@@ -260,10 +267,15 @@ void ai_move(int p){
         //again_action = rand() % 3;
         again_action = 1;
     }
+    int tp = rand() % 10;
+    if(tp==1 || tp==2){
+        trade_player(p,1);
+    }
     if(keep_index!=0){
         save_develop_card(p);
     }
     player->U_develop = 0;
     //sleep(1);
+    usleep(500000);
     return;
 }

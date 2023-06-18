@@ -55,13 +55,13 @@ void score(uint8_t p){
 }
 
 void take_resource_dice(int32_t harvest_resource[2][5]){
-    printf("harvest test\n");
-    for(int i=0;i<2;i++){
-        for(int j=0;j<5;j++){
-            printf("%d ",harvest_resource[i][j]);
-        }
-        printf("\n");
-    }
+    // printf("harvest test\n");
+    // for(int i=0;i<2;i++){
+    //     for(int j=0;j<5;j++){
+    //         printf("%d ",harvest_resource[i][j]);
+    //     }
+    //     printf("\n");
+    // }
     REFRESH
     sPlayer * player;
     for(int i=0;i<2;i++){
@@ -144,7 +144,7 @@ void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     show_dice_v2(dice_result);
     if(!is_ai){ printf("%s throw %d points\n",player_name,dice_result);}
     else{ printf("p%d throw %d points\n",player_number,dice_result);}
-    sleep(2);
+    sleep(1);
     REFRESH
     //harvest resource array
     int32_t harvest_resource[2][5] = {0};
@@ -265,7 +265,14 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
                     printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
-                }else{break;}
+                }else{
+                    if(trade_cho<0||trade_cho>4){
+                        printf(RED"Wrong Input!!\e[0m\n");
+                        continue;
+                    }else{
+                        break;
+                    }
+                }
             }
         }
     }else{
@@ -470,7 +477,7 @@ void trade_player(uint8_t p, uint8_t is_ai){
     int resource_get[5] = {0};
     int count_get_char = 0;
     int count = 0;
-    if(is_ai==1){
+    if(is_ai==0){
         while(1){
             REFRESH
             printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
@@ -503,11 +510,11 @@ void trade_player(uint8_t p, uint8_t is_ai){
                                             printf(RED"Wrong Input!!\e[0m\n");
                                             continue;
                                         }else{
-                                            int result = accept_or_not(resource_give,resource_get,is_ai,p_commit,p_cho);
+                                            int result = accept_or_not(resource_give,resource_get,1,p_commit,p_cho);
                                             if(result==1){
                                                 printf(PURPLE"player %d accept your trade request!!\e[0m\n",p);
-                                                //map_log_update();  
-                                                printf(PURPLE"%s and player %d are traded!!\e[0m\n",player_name,p);
+                                                map_log_update(1,"trade with player",p);
+                                                //printf(PURPLE"%s and player %d are traded!!\e[0m\n",player_name,p);
                                             }else if(result==0){
                                                 printf(PURPLE"player %d deny your trade request!!\e[0m\n",p);
                                             }else if(result==-1){
@@ -534,9 +541,43 @@ void trade_player(uint8_t p, uint8_t is_ai){
             }
         }
     }else{
+        while(1){
+            for(int i=0;i<5;i++){
+                resource_give[i] = rand() % 1;
+            }
+            if(judge_player_trade(resource_give,resource_get,p_commit,0,0)){
+                break;
+            }else{
+                printf(RED"You don't have enough resource!!\e[0m\n");
+                continue;
+            }
+        }
         for(int i=0;i<5;i++){
-            resource_give[i] = rand() % 2;
+            resource_get[i] = rand() % 1;
+        }
+        int32_t player_cho = 0;
+        while(1){
+            player_cho = (rand() % 4) + 1;
+            if(player_cho==p){
+                continue;
+            }else{
+                break;
+            }
+        }
+        int result = 0;
+        if(player_cho==1){
+            result = accept_or_not(resource_give,resource_get,0,p_commit,player_cho);
+        }else{
+            result = accept_or_not(resource_give,resource_get,1,p_commit,player_cho);
+        }
+        if(result==1){
+            if(player_cho==1){
+                map_log_update(1,"trade with player",p);
+            }else{
+                map_log_update(p,"trade with player",player_cho);
+            }
         }
     }
+    return;
 }
 

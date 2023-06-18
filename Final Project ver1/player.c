@@ -100,7 +100,7 @@ void player_move(){
                 }else if(cho_move==1){
                     if(!judge_build(p1,0,1,&can_build[0])){
                         REFRESH
-                        printf(RED"You don't have enough resource to build village!!\e[0m\n");
+                        printf(RED"You cna't build village!!\e[0m\n");
                         break;
                     }
                     while(1){
@@ -134,8 +134,9 @@ void player_move(){
                                             REFRESH
                                             printf(RED"Wrong Input!!\n");
                                             continue;
+                                        }else{
+                                            break;
                                         }
-                                        break;
                                     }
                                 }
                             }
@@ -143,13 +144,13 @@ void player_move(){
                                 continue;
                             }else{break;}
                         }else{
-                            p1->wheat--;
-                            p1->brick--;
-                            p1->wood--;
-                            p1->sheep--;
-                            p1->hand -= 4;
-                            p1->village.village_build++;
-                            p1->village.village_hand--;
+                            (p1->wheat) -= 1;
+                            (p1->brick) -= 1;
+                            (p1->wood) -= 1;
+                            (p1->sheep) -= 1;
+                            (p1->hand) -= 4;
+                            (p1->village.village_build) += 1;
+                            (p1->village.village_hand) -= 1;
                             break;
                         }
                     }
@@ -157,7 +158,7 @@ void player_move(){
                 }else if(cho_move==2){
                     if(!judge_build(p1,1,1,&can_build[0])){
                         REFRESH
-                        printf(RED"You don't have enough resource to build road!!\e[0m\n");
+                        printf(RED"You can't build road!!\e[0m\n");
                         break;
                     }
                     while(1){
@@ -191,8 +192,9 @@ void player_move(){
                                             REFRESH
                                             printf(RED"Wrong Input!!\e[0m\n");
                                             continue;
+                                        }else{
+                                            break;
                                         }
-                                        break;
                                     }
                                 }
                             }
@@ -202,11 +204,11 @@ void player_move(){
                                 break;
                             }
                         }else{
-                            p1->wood--;
-                            p1->brick--;
-                            p1->hand -= 2;
-                            p1->road.road_build++;
-                            p1->road.road_hand--;
+                            (p1->wood) -= 2;
+                            (p1->brick) -= 1;
+                            (p1->hand) -= 2;
+                            (p1->road.road_build) += 1;
+                            (p1->road.road_hand) -= 1;
                             break;
                         }
                     }
@@ -217,7 +219,7 @@ void player_move(){
                 //upgrade
                 if(!judge_build(p1,2,1,&can_build[0])){
                     REFRESH
-                    printf(RED"You don't have enough resource to upgrade your village!!\e[0m\n");
+                    printf(RED"You can't upgrade your village!!\e[0m\n");
                     break;
                 }
                 while(1){
@@ -235,13 +237,13 @@ void player_move(){
 						}
 					}
                     if(village_upgrade(1,village_number,0) != -1){
-                        p1->wheat -= 2;
-                        p1->iron -= 3;
-                        p1->hand -= 5;
-                        p1->city.city_build++;
-                        p1->city.city_hand--;
-                        p1->village.village_build--;
-                        p1->village.village_hand++;
+                        (p1->wheat) -= 2;
+                        (p1->iron) -= 3;
+                        (p1->hand) -= 5;
+                        (p1->city.city_build) += 1;
+                        (p1->city.city_hand) -= 1;
+                        (p1->village.village_build) -= 1;
+                        (p1->village.village_hand) += 1;
                         break;
                     }else{
                         while(1){
@@ -389,6 +391,8 @@ void player_move(){
                         break;
                     }
                     while(1){
+                        REFRESH
+                        printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"sheep(4)\e[0m\n");
                         printf("Which 4 same resource do you want to give ? (0-4): ");
                         if((scanf("%d",&trade_cho_give)) == 0){
                             printf(RED"Wrong Input!!\e[0m\n");
@@ -399,11 +403,12 @@ void player_move(){
                                 printf(RED"Wrong Input!!\e[0m\n");
                                 while (getchar() != '\n');
                                 continue;
+                            }else{
+                                if(trade_cho_give<0 || trade_cho_give>4){
+                                    printf(RED"Wrong Input!!\e[0m\n");
+                                    continue;
+                                }
                             }
-                        }
-                        if(trade_cho_give<0 || trade_cho_give>4){
-                            printf(RED"Wrong Input!!\e[0m\n");
-                            continue;
                         }
                         if(trade_judge(p1,1,trade_cho_give)){
                             trade(p1,0,trade_cho_give,1);
@@ -462,7 +467,7 @@ void player_move(){
                             }
                         }else if(harbor_cho==2){
                             if(port[5]==1){
-                                break;
+                                can_trade = true;
                             }
                         }
                         if(!can_trade){
@@ -481,6 +486,10 @@ void player_move(){
                         if(harbor_cho==1){
                             while(1){
                                 REFRESH
+                                if(list_can_trade(p1,2,1) == -1){
+                                    printf(RED"You don't have any resource over 2\e[0m\n");
+                                    break;
+                                }
                                 printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
                                 printf("Which same resource do you want to give for 2 to 1 trade? (0-4): ");
                                 if((scanf("%d",&res_cho)) == 0){
@@ -508,6 +517,10 @@ void player_move(){
                         }else{
                             while(1){
                                 REFRESH
+                                if(list_can_trade(p1,3,1) == -1){
+                                    printf(RED"You don't have any resource over 3\e[0m\n");
+                                    break;
+                                }
                                 printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
                                 printf("Which same resource do you want to give for 3 to 1 trade? (0-4): ");
                                 if((scanf("%d",&res_cho)) == 0){
@@ -542,6 +555,8 @@ void player_move(){
                     sleep(1);
                     REFRESH
                 }else if(cho_move==3){
+                    REFRESH
+                    trade_player(1,0);
                 }else{
                     printf(RED"Wrong Input!!\e[0m\n");
                 }

@@ -92,7 +92,7 @@ bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p, int32_t *can_b
         if(player->wheat>=2 && player->iron>=3){ 
             for(int8_t i=0;i<23;i++){
               for(int8_t j=0;j<13;j++){
-                if(map[i][j][0] == 1 && map[i][j][1]==p){
+                if(map[i][j][0] == 1 && map[i][j][1]==p && map[i][j][3]==1){
                   can_build_bool=true;
                   *(can_build_1x54 + map[i][j][2]) = 1;
                 }
