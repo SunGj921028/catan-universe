@@ -34,6 +34,7 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
     //6->trade(harbor)(2:1)     7->trade(harbor)(3:1)
     if(action==0){
         if(judge_buy_card(player)){ return true;}
+        else{ return false;}
     }else if(action==1){
         //can reset ai's hard
         //use
@@ -135,12 +136,12 @@ void ai_move(int p){
         for(int i=0;i<8;i++){
             sleep(1);
             if(judge_ai_action(action[i],p)){
-                uint8_t can = rand() % 3;
+                //uint8_t can = rand() % 3;
+                uint8_t can = 1;
                 //2/3 will do this action
                 if(can==1||can==2){
                     printf("ai's action is %u ",action[i]);
                     printf("\n");
-                    //printf("B\n");
                     if(i==0){
                         get_develop_card(player,p);
                         map_log_update(p,"choose to get develop card",-1);
