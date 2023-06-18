@@ -383,7 +383,7 @@ void player_move(){
                 }else if(cho_move==1){
                     REFRESH
                     //bank
-                    if(list_can_trade(p1,1)==-1){
+                    if(list_can_trade(p1,1,0)==-1){
                         printf(PURPLE"You don't have any resource can be traded.\e[0m\n");
                         break;
                     }

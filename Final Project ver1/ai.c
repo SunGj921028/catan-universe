@@ -80,18 +80,22 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         for(int i=0;i<5;i++){
             if(player->hand >= 7){
                 if(trade_judge(player,option,resource_type[i])){
-                    if(action==6){
-                        if(port[resource_type[i]] == 1){
+                    if(list_can_trade(player,(action-4),1)){
+                        if(action==6){
+                            if(port[resource_type[i]] == 1){
+                                trade(player,1,resource_type[i],option);
+                            }
+                        }else if(action==7){
+                            if(port[5] == 1){
+                                trade(player,1,resource_type[i],option);
+                            }
+                        }else if(action==5){
                             trade(player,1,resource_type[i],option);
                         }
-                    }else if(action==7){
-                        if(port[5] == 1){
-                            trade(player,1,resource_type[i],option);
-                        }
-                    }else if(action==5){
-                        trade(player,1,resource_type[i],option);
+                        return true;
+                    }else{
+                        return false;
                     }
-                    return true;
                 }
             }
         }

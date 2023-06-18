@@ -160,7 +160,7 @@ void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     return;
 }
 
-int32_t list_can_trade(sPlayer * player, uint8_t trade_option){
+int32_t list_can_trade(sPlayer * player, uint8_t trade_option, uint8_t is_ai){
     //1->bank
     //2->harbor(2:1)
     //3->harbor(3:1)
@@ -168,40 +168,52 @@ int32_t list_can_trade(sPlayer * player, uint8_t trade_option){
     uint8_t number_you_need = 0;
     if(trade_option==1){ number_you_need = 4;}
     else if(trade_option==2){ number_you_need = 2;}
-    else{ number_you_need = 3;}
+    else if(trade_option==3){ number_you_need = 3;}
     printf("___________________________________\n");
     if(player->iron >= number_you_need){
         line = true;
-        printf("|");
-        printf(CYAN"You can use iron to trade.\e[0m\t  ");
-        printf("|\n");
+        if(!is_ai){
+            printf("|");
+            printf(CYAN"You can use iron to trade.\e[0m\t  ");
+            printf("|\n");
+        }
     }
     if(player->wood >= number_you_need){
         line = true;
-        printf("|");
-        printf(BROWN"You can use wood to trade.\e[0m\t  ");
-        printf("|\n");
+        if(!is_ai){
+            printf("|");
+            printf(BROWN"You can use wood to trade.\e[0m\t  ");
+            printf("|\n");
+        }
     }
     if(player->wheat >= number_you_need){
         line = true;
-        printf("|");
-        printf(YELLOW"You can use wheat to trade.\e[0m\t  ");
-        printf("|\n");
+        if(!is_ai){
+            printf("|");
+            printf(YELLOW"You can use wheat to trade.\e[0m\t  ");
+            printf("|\n");
+        }
     }
     if(player->brick >= number_you_need){
         line = true;
-        printf("|");
-        printf(L_RED"You can use brick to trade.\e[0m\t  ");
-        printf("|\n");
+        if(!is_ai){
+            printf("|");
+            printf(L_RED"You can use brick to trade.\e[0m\t  ");
+            printf("|\n");
+        }
     }
     if(player->sheep >= number_you_need){
         line = true;
-        printf("|");
-        printf(L_GREEN"You can use wool(sheep) to trade.\e[0m");
-        printf("|\n");
+        if(!is_ai){
+            printf("|");
+            printf(L_GREEN"You can use wool(sheep) to trade.\e[0m");
+            printf("|\n");
+        }
     }
     if(line){
-        printf("-----------------------------------\n");
+        if(!is_ai){
+            printf("-----------------------------------\n");
+        }
     }else{
         return -1;
     }
