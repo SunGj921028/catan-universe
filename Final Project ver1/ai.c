@@ -47,17 +47,19 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         }
     }else if(action==2){
         //build road
-        if(judge_build(player,1,player_number)){
+        if(judge_build(player,1,player_number)!=-1){
             return true;
-        }else{ return false;}
+        }else{ 
+            return false;
+        }
     }else if(action==3){
         //build village
-        if(judge_build(player,0,player_number)){
+        if(judge_build(player,0,player_number)!=-1){
             return true;
         }else{ return false;}
     }else if(action==4){
         //upgrade village
-        if(judge_build(player,2,player_number)){
+        if(judge_build(player,2,player_number)!=-1){
             return true;
         }else{ return false;}
     }else if(action==5 || action==6 || action==7){

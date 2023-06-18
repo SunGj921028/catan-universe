@@ -27,10 +27,12 @@ extern sPlayer * p3;
 extern sPlayer * p4;
 
 bool judge_buy_card(sPlayer * player){
+    printf("%u %u %u %u %u\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
     if((player->wheat <= 0) || (player->iron <= 0) || (player->sheep <= 0)){
         return false;
+    }else{
+        return true;
     }
-    return true;
 }
 void save_develop_card(uint8_t p){
     sPlayer * player;
