@@ -209,7 +209,7 @@ void check_hand(){
     return;
 }
 
-int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai){
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai, uint8_t player_num){
     for(int8_t i=3;i<20;i=i+2){
         for(int8_t j=2;j<12;j=j+2){
             if(map[i][j][0]==3 && map[i][j][4]==1){
@@ -249,6 +249,7 @@ int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai){
             }
         }
     }
+    map_log_update(player_num,"move robbor to point",block_id);
     return 1;
 }
 
@@ -287,7 +288,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
     if(is_ai){
         while(1){
             region_cho = rand() % 19;
-            if(move_robbor(region_cho,&nearby_player[0],is_ai) != -1){
+            if(move_robbor(region_cho,&nearby_player[0],is_ai,player_number) != -1){
                 break;
             }else{continue;}
         }
@@ -311,7 +312,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                     }
                 }
             }
-            if(move_robbor(region_cho,&nearby_player[0],is_ai)){
+            if(move_robbor(region_cho,&nearby_player[0],is_ai,player_number)){
                 break;
             }else{continue;}
         }

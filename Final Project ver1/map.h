@@ -13,7 +13,7 @@ void map_init();
 
 int32_t map_print(int8_t printer_mood);
 
-bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p);
+bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p, int32_t *can_build_1x54);
 
 int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t is_init, uint8_t is_ai);
 

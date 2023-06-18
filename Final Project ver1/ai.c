@@ -20,7 +20,7 @@ void some_ai_logic(sPlayer * player, uint8_t type){
 }
 
 //判斷6個行為可不可以做
-bool judge_ai_action(uint8_t action, uint8_t player_number){
+bool judge_ai_action(uint8_t action, uint8_t player_number, int32_t can_build[54]){
     sPlayer * player;
     if(player_number==1) {player = p1;}
     else if(player_number==2) {player = p2;}
@@ -48,19 +48,19 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
         }
     }else if(action==2){
         //build road
-        if(judge_build(player,1,player_number)!=-1){
+        if(judge_build(player,1,player_number,&can_build[0])!=-1){
             return true;
         }else{ 
             return false;
         }
     }else if(action==3){
         //build village
-        if(judge_build(player,0,player_number)!=-1){
+        if(judge_build(player,0,player_number,&can_build[0])!=-1){
             return true;
         }else{ return false;}
     }else if(action==4){
         //upgrade village
-        if(judge_build(player,2,player_number)!=-1){
+        if(judge_build(player,2,player_number,&can_build[0])!=-1){
             return true;
         }else{ return false;}
     }else if(action==5 || action==6 || action==7){
@@ -133,31 +133,32 @@ void ai_move(int p){
             action[j] = action[i];
             action[i] = temp;
         }
+        int32_t can_build_V[54] = {0};
         // for(int i=0;i<8;i++){
         //     printf("%u ",action[i]);
         // }
         // printf("\n");
         for(int i=0;i<8;i++){
             sleep(1);
-            if(judge_ai_action(action[i],p)){
+            if(judge_ai_action(action[i],p,can_build_V)){
                 //uint8_t can = rand() % 3;
                 uint8_t can = 1;
                 //2/3 will do this action
                 if(can==1||can==2){
                     printf("ai's action is %u ",action[i]);
                     printf("\n");
-                    if(i==0){
+                    if(action[i]==0){
                         get_develop_card(player,p);
                         map_log_update(p,"choose to get develop card",-1);
                         REFRESH
                         sleep(1);
-                    }else if(i==1){
+                    }else if(action[i]==1){
                         //use card
                         //have done
                         map_log_update(p,"choose to use develop card",-1);
                         REFRESH
                         sleep(1);
-                    }else if(i==2){
+                    }else if(action[i]==2){
                         //build road
                         //random 0-71
                         //uint8_t count = 0;
@@ -177,13 +178,19 @@ void ai_move(int p){
                             }
                             //count++;
                         }
-                    }else if(i==3){
+                    }else if(action[i]==3){
                         //build village
                         //random 0-53
                         //uint8_t count_V = 0;
-                        while(1){
-                            int32_t V_ran = rand() % 54;
-                            int32_t result = build_village(p,V_ran,0,1);
+                        //int32_t V_ran = rand() % 54;
+                        for(int k=0;k<54;k++){
+                            int m = k + rand()/(RAND_MAX/(54-k)+1);
+                            int temp = can_build_V[m];
+                            can_build_V[m] = can_build_V[k];
+                            can_build_V[k] = temp;
+                        }
+                        for(int k=0;k<54;k++){
+                            int32_t result = build_village(p,can_build_V[k],0,1);
                             if(result!=-1 && result!=700){
                                 (player->brick) -= 1;
                                 (player->wheat) -= 1;
@@ -200,15 +207,21 @@ void ai_move(int p){
                                 sleep(1);
                                 break;
                             }
-                            //count_V++;
                         }
-                    }else if(i==4){
+                        //count_V++;
+                    }else if(action[i]==4){
                         //upgrade
                         //Need to find which can be upgraded
                         //uint8_t count_u = 0;
-                        while(1){
-                            int32_t UP_vil = rand() % 54;
-                            if(village_upgrade(p,UP_vil,1)!= -1){
+                        for(int k=0;k<54;k++){
+                            int m = k + rand()/(RAND_MAX/(54-k)+1);
+                            int temp = can_build_V[m];
+                            can_build_V[m] = can_build_V[k];
+                            can_build_V[k] = temp;
+                        }
+                        for(int k=0;k<54;k++){
+                            //int32_t UP_vil = rand() % 54;
+                            if(village_upgrade(p,can_build_V[k],1)!= -1){
                                 player->wheat -= 2;
                                 player->iron -= 3;
                                 resource[2] += 2;
@@ -221,18 +234,18 @@ void ai_move(int p){
                                 //map_log_update(p,"upgrade its village to city.",-1);
                                 break;
                             }
-                            //count_u++;
                         }
+                        //count_u++;
                         sleep(1);
-                    }else if(i==5){
+                    }else if(action[i]==5){
                         map_log_update(p,"chooses to trade with bank.",-1);
                         REFRESH
                         sleep(1);
-                    }else if(i==6){
+                    }else if(action[i]==6){
                         map_log_update(p,"chooses to trade with harbor(2:1).",-1);
                         REFRESH
                         sleep(1);
-                    }else if(i==7){
+                    }else if(action[i]==7){
                         map_log_update(p,"chooses to trade with harbor(3:1).",-1);
                         REFRESH
                         sleep(1);

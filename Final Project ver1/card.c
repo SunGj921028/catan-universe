@@ -174,7 +174,7 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
                     continue;
                 }
             }
-            if(move_robbor(region_cho, &nearby[0],is_ai)){
+            if(move_robbor(region_cho, &nearby[0],is_ai,player_number)){
                 break;
             }else{continue;}
         }
@@ -209,7 +209,7 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
     }else{
         while(1){
             region_cho = rand() % 18;
-            if(move_robbor(region_cho, &nearby[0],is_ai)){
+            if(move_robbor(region_cho, &nearby[0],is_ai,player_number)){
                 break;
             }else{continue;}
             uint8_t temp_player[5] = {0};

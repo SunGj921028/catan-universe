@@ -303,8 +303,125 @@ int32_t accept_or_not(int32_t resource_give[5], int32_t resource_get[5], uint8_t
     //1 ->accept
     //0 ->deny
     //-1 ->judge no pass
-    if(is_ai){
-    }else{}
+    if(is_ai)
+    {
+        if( judge_player_trade(resource_give, resource_get, p_com, 1, player_number) )
+        {
+            uint8_t accept = rand() % 100;
+            if((accept>=0)&&(accept<=32))
+            {
+                sPlayer * player;
+                if(player_number == 2) {player = p2;}
+                else if(player_number == 3) {player = p3;}
+                else if(player_number == 4) {player = p4;}
+
+                (p_com->iron) = (p_com->iron) - (resource_give[0]);
+                (player->iron) = (player->iron) + (resource_give[0]);
+                (p_com->wood) = (p_com->wood) - (resource_give[1]);
+                (player->wood) = (player->wood) + (resource_give[1]);
+                (p_com->wheat) = (p_com->wheat) - (resource_give[2]);
+                (player->wheat) = (player->wheat) + (resource_give[2]);
+                (p_com->brick) = (p_com->brick) - (resource_give[3]);
+                (player->brick) = (player->brick) + (resource_give[3]);
+                (p_com->sheep) = (p_com->sheep) - (resource_give[4]);
+                (player->sheep) = (player->sheep) + (resource_give[4]);        
+
+                (p_com->iron) = (p_com->iron) + (resource_get[0]);
+                (player->iron) = (player->iron) - (resource_get[0]);
+                (p_com->wood) = (p_com->wood) + (resource_get[1]);
+                (player->wood) = (player->wood) - (resource_get[1]);
+                (p_com->wheat) = (p_com->wheat) + (resource_get[2]);
+                (player->wheat) = (player->wheat) - (resource_get[2]);
+                (p_com->brick) = (p_com->brick) + (resource_get[3]);
+                (player->brick) = (player->brick) - (resource_get[3]);
+                (p_com->sheep) = (p_com->sheep) + (resource_get[4]);
+                (player->sheep) = (player->sheep) - (resource_get[4]);
+
+                int16_t get_total = 0;
+                int16_t give_total = 0;
+
+                for(int8_t i = 0;i<5;i++ )
+                {
+                    get_total = get_total + resource_get[i];
+                }
+                for(int8_t i = 0;i<5;i++ )
+                {
+                    give_total = give_total + resource_give[i];
+                }
+                p_com->hand = p_com->hand + get_total - give_total;
+                player->hand = player->hand - get_total + give_total;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return (-1);
+        }
+    }
+    else
+    {
+        int8_t accept = 0;
+        printf("Player %u want to trade with you !!\n",player_number);
+        printf("Player %u would like get the following resources !!\n",player_number);
+        printf(PURPLE"iron "CYAN"wood "YELLOW"wheat "RED"brick " L_GREEN"sheep");
+        printf("\n");
+        printf(GRAY"   %d "WHITE"   %d "YELLOW"    %d "RED"    %d " L_GREEN"   %d\e[0m",resource_get[0],resource_get[1],resource_get[2],resource_get[3],resource_get[4]);
+        printf("\n");
+        printf("Player %u pay you the following resources for the resources it want !!\n",player_number);
+        printf(PURPLE"iron "CYAN"wood "YELLOW"wheat "RED"brick " L_GREEN"sheep");
+        printf("\n");
+        printf(GRAY"   %d "WHITE"   %d "YELLOW"    %d "RED"    %d " L_GREEN"   %d\e[0m",resource_give[0],resource_give[1],resource_give[2],resource_give[3],resource_give[4]);
+        printf("\n");
+        printf("Do you want to trade with Player %u ? (Yes:1 No:0): ",player_number);
+        scanf("%hhd",&accept);
+        if(accept)
+        {
+            (p_com->iron) = (p_com->iron) - (resource_give[0]);
+            (p1->iron) = (p1->iron) + (resource_give[0]);
+            (p_com->wood) = (p_com->wood) - (resource_give[1]);
+            (p1->wood) = (p1->wood) + (resource_give[1]);
+            (p_com->wheat) = (p_com->wheat) - (resource_give[2]);
+            (p1->wheat) = (p1->wheat) + (resource_give[2]);
+            (p_com->brick) = (p_com->brick) - (resource_give[3]);
+            (p1->brick) = (p1->brick) + (resource_give[3]);
+            (p_com->sheep) = (p_com->sheep) - (resource_give[4]);
+            (p1->sheep) = (p1->sheep) + (resource_give[4]);
+
+            (p_com->iron) = (p_com->iron) + (resource_get[0]);
+            (p1->iron) = (p1->iron) - (resource_get[0]);
+            (p_com->wood) = (p_com->wood) + (resource_get[1]);
+            (p1->wood) = (p1->wood) - (resource_get[1]);
+            (p_com->wheat) = (p_com->wheat) + (resource_get[2]);
+            (p1->wheat) = (p1->wheat) - (resource_get[2]);
+            (p_com->brick) = (p_com->brick) + (resource_get[3]);
+            (p1->brick) = (p1->brick) - (resource_get[3]);
+            (p_com->sheep) = (p_com->sheep) + (resource_get[4]);
+            (p1->sheep) = (p1->sheep) - (resource_get[4]);
+
+            int16_t get_total = 0;
+            int16_t give_total = 0;
+
+            for(int8_t i = 0;i<5;i++ )
+            {
+                get_total = get_total + resource_get[i];
+            }
+            for(int8_t i = 0;i<5;i++ )
+            {
+                give_total = give_total + resource_give[i];
+            }
+            p_com->hand = p_com->hand + get_total - give_total;
+            p1->hand = p1->hand - get_total + give_total;              
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 }
 
 bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlayer * p_com, uint8_t type, int32_t getfrom){

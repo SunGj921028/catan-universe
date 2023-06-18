@@ -97,7 +97,8 @@ void player_move(){
                     sleep(1);
                     break;
                 }else if(cho_move==1){
-                    if(!judge_build(p1,0,1)){
+                    int32_t can_build[54] = {0};
+                    if(!judge_build(p1,0,1,&can_build[0])){
                         REFRESH
                         printf(RED"You don't have enough resource to build village!!\e[0m\n");
                         break;
@@ -154,7 +155,8 @@ void player_move(){
                     }
                     REFRESH
                 }else if(cho_move==2){
-                    if(!judge_build(p1,1,1)){
+                    int32_t can_build[54] = {0};
+                    if(!judge_build(p1,1,1,&can_build[0])){
                         REFRESH
                         printf(RED"You don't have enough resource to build road!!\e[0m\n");
                         break;
@@ -214,7 +216,8 @@ void player_move(){
                 break;
             case 2:
                 //upgrade
-                if(!judge_build(p1,2,1)){
+                int32_t can_build[54] = {0};
+                if(!judge_build(p1,2,1,&can_build[0])){
                     REFRESH
                     printf(RED"You don't have enough resource to upgrade your village!!\e[0m\n");
                     break;

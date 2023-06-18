@@ -33,7 +33,7 @@ void take_resource_dice(int32_t harvest_resource[2][5]);
 
 //ai
 void ai_move(int p);
-bool judge_ai_action(uint8_t action, uint8_t player_number);
+bool judge_ai_action(uint8_t action, uint8_t player_number, int32_t can_build[54]);
 
 //thief move
 bool judge_five(char input[30]);
@@ -42,7 +42,7 @@ void check_hand();
 void print_player_hands(sPlayer * player, uint8_t n);
 void input_key(sPlayer * player, uint8_t p_number, int num);
 void throw_card(sPlayer * player, int arr[], size_t n);
-int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai);
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1, uint8_t is_ai, uint8_t player_num);
 void steal_resource(uint8_t player_cho, sPlayer * player);
 
 //real player

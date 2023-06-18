@@ -8,11 +8,8 @@
 #include "map.h"
 #include "init.h"
 #include "data.h"
-#include "color.h"
+#include "phase.h"
 
-#define BK_RED printf("\e[0;101m")
-#define BK_GRN printf("\e[0;102m")
-#define BK_YEL printf("\e[0;103m")
 #define BK_BUL printf("\e[0;104m")
 #define BK_WIT printf("\e[0;107m")
 #define CCLEAR printf("\e[0m")
@@ -23,16 +20,6 @@
 //int8_t map[23][13][5];
 int8_t c_map_deep = 5;
 
-//update color
-//block random
-//puts point
-
-//move rubbor
-//port
-//player log
-
-//calc lonest road
-
 char player_log[40][LOG_LEN+1];
 char player_movement[9][67];
 int8_t player_m_pID[9];
@@ -42,62 +29,75 @@ int8_t ocean_f[38][2]={{31,31},{31,31},{29,29},{27,27},{26,26},{25,25},{17,17},{
 int8_t map_block_i=0;
 int8_t map_line_i=0;
 int8_t map_point_i=0;
-int max_length;
-int32_t vertices_array[72];
-int graph[MAX_VERTICES][MAX_VERTICES];
-int visited[MAX_VERTICES];
-
 bool is_slash;
 
-bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p){
-    //0->village
-    //1->road
-    //2->city
+/*
+0ocean(no use now)
+       0   \1   \2   \3   \4
+1point type\who \ID  \VoC \potp
+2line  type\who \ID  \ST
+3block type\ID  \RT  \Pit*\ocp*
+*/
+
+int32_t long_road_arr[4];
+int graph[MAX_VERTICES][MAX_VERTICES]; // 圖的鄰接矩陣表示
+int visited[MAX_VERTICES]; // 記錄頂點是否已訪問
+int max_length = 0; // 最長道路的長度
+int32_t vertices_array[72];
+int32_t path[16] = {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100};
+
+bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p, int32_t *can_build_1x54){
+    bool can_build_bool=false;
+    for(int8_t i=0;i<54;i++){
+        *(can_build_1x54 +i)=0;
+    }
     if(build_type==1){
         if(player->wood>0 && player->brick>0){ return true;}
         else{ return false;}
     }else if(build_type==0){
         if(player->wood>0 && player->sheep>0 && player->wheat>0 && player->brick>0 ){
-          bool something_can = false;
-          for(int m=0;m<54;m++){
             for(int8_t i=0;i<23;i++){
               for(int8_t j=0;j<13;j++){
-                if(map[i][j][0] == 1 && map[i][j][2]==m){
-                  if(map[i][j][1]==0){
-                    bool near_no_player=true;
-                    bool road_connected=false;
-                    if(map[i-1][j][0]==2){//up
-                      if(map[i-2][j][1]!=0){near_no_player=false;}
-                      if(map[i-1][j][1]==p){road_connected=true;}
-                    }
-                    if(map[i+1][j][0]==2){//down
-                      if(map[i+2][j][1]!=0){near_no_player=false;}
-                      if(map[i+1][j][1]==p){road_connected=true;}
-                    }
-                    if(map[i][j-1][0]==2){//left
-                      if(map[i][j-2][1]!=0){near_no_player=false;}
-                      if(map[i][j-1][1]==p){road_connected=true;}
-                    }
-                    if(map[i][j+1][0]==2){//right
-                      if(map[i][j+2][1]!=0){near_no_player=false;}
-                      if(map[i][j+1][1]==p){road_connected=true;}
-                    }
-                    if(near_no_player && road_connected){
-                      something_can = true;
-                    }
+                if(map[i][j][0] == 1 && map[i][j][1]==0){
+                  bool near_no_player=true;
+                  bool road_connected=false;
+                  if(map[i-1][j][0]==2){//up
+                    if(map[i-2][j][1]!=0){near_no_player=false;}
+                    if(map[i-1][j][1]==p){road_connected=true;}
                   }
+                  if(map[i+1][j][0]==2){//down
+                    if(map[i+2][j][1]!=0){near_no_player=false;}
+                    if(map[i+1][j][1]==p){road_connected=true;}
+                  }
+                  if(map[i][j-1][0]==2){//left
+                    if(map[i][j-2][1]!=0){near_no_player=false;}
+                    if(map[i][j-1][1]==p){road_connected=true;}
+                  }
+                  if(map[i][j+1][0]==2){//right
+                    if(map[i][j+2][1]!=0){near_no_player=false;}
+                    if(map[i][j+1][1]==p){road_connected=true;}
+                  }
+                  if(near_no_player && road_connected){
+                    can_build_bool=true;
+                    *(can_build_1x54 + map[i][j][2]) = 1;
+                  }
+                  
                 }
               }
             }
-          }
-          if(!something_can){
-            return false;
-          }
-          return true;
+            return can_build_bool;
         }
         else {return false;}
     }else if(build_type==2){
-        if(player->wheat>=2 && player->iron>=3){ return true;}
+        if(player->wheat>=2 && player->iron>=3){ 
+            for(int8_t i=0;i<23;i++){
+              for(int8_t j=0;j<13;j++){
+                if(map[i][j][0] == 1 && map[i][j][1]==p){
+                  *(can_build_1x54 + map[i][j][2]) = 1;
+                }
+              }
+            }
+        }
         else{ return false;}
     }
 }
@@ -350,12 +350,6 @@ void pdp0(int32_t len){
     printf(" ");
   }
 }
-void pdp1(int32_t len){
-  CCLEAR;
-  for(int8_t i=len;i<LOG_LEN*2+3;i++){
-    printf(" ");
-  }
-}
 
 int32_t pd_slt(int32_t player_ID, int32_t log_order){
   player_ID--;
@@ -371,7 +365,7 @@ void pd_builder(){
     }else{
       sprintf(player_log[i*10+0],"Player%d",i+1);
     }
-    sprintf(player_log[i*10+1],"Lonest road");
+    sprintf(player_log[i*10+1],"Lonest road: %d",Longest_Path(i+1));
     sprintf(player_log[i*10+2],"Knight used: %u",psa[i]->U_knight);
     // if(i==0){
     sprintf(player_log[i*10+3]," %02u %02u %02u %02u %02u", psa[i]->iron, psa[i]->wood, psa[i]->wheat, psa[i]->brick, psa[i]->sheep);
@@ -379,7 +373,7 @@ void pd_builder(){
     //   sprintf(player_log[i*10+3],"Total resource card: %d", (psa[i]->iron)+(psa[i]->wood)+(psa[i]->wheat)+(psa[i]->brick)+(psa[i]->sheep));
     // }
     //if(i==0){
-    sprintf(player_log[i*10+4],"  %u  %u  %u  %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card);
+    sprintf(player_log[i*10+4],"   %u   %u   %u   %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card);
     // }else{
     //   sprintf(player_log[i*10+4],"Total develop card: %d",(psa[i]->knight)+(psa[i]->harvest_card)+(psa[i]->build_card)+(psa[i]->steal_card));
     // }
@@ -391,8 +385,6 @@ void pd_builder(){
   }
 }
 
-//me card type,knight used, latest move;
-//oth card total,knight used, latest move;
 /*log printer detect&select*/
 void pd_print(int8_t ptime){
   char temp[100];
@@ -447,7 +439,6 @@ void pd_print(int8_t ptime){
     map_color_slt(2,player_m_pID[ptime%(u_h+d_h+9)]);
     printf("%s",player_movement[ptime%(u_h+d_h+9)]);
   }
-  
 }
 
 /*center of map and log*/
@@ -458,14 +449,6 @@ void map_p_main2log(int8_t *ptime,int8_t pmood){
     pd_print(*ptime);
   }
   (*ptime)++;
-  printf("\n");
-}
-
-/*debug tool: point details*/
-void d3_pd(int32_t x,int32_t y){
-  for(int8_t k=0;k<c_map_deep;k++){
-    printf("%d:%d/",k,map[x][y][k]);
-  }
   printf("\n");
 }
 
@@ -532,6 +515,9 @@ void map_init(){
 /*Map printer*/
 int32_t map_print(int8_t printer_mood){
   if(printer_mood==0){
+    for(int i=1;i<=4;i++){
+      score(i);
+    }
     pd_builder();
   }
   int8_t ptime=0;
@@ -574,8 +560,8 @@ int32_t map_log_update(int32_t player_ID, char *do_stuff, int32_t build_in){
     strcpy(player_movement[i-1],player_movement[i]);
     player_m_pID[i-1]=player_m_pID[i];
   }
-  char temp[67];
-  for(int32_t i=0;i<66;i++){temp[i]=0;}
+  char temp[75];
+  for(int32_t i=0;i<75;i++){temp[i]=0;}
   if(build_in==-1){
     if(player_ID==1){
       sprintf(temp," %s %s",player_name,do_stuff);
@@ -595,12 +581,12 @@ int32_t map_log_update(int32_t player_ID, char *do_stuff, int32_t build_in){
 }
 
 int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uint8_t is_ai){
-  if(!(0 <= point_ID && point_ID < 54)){
-    printf(RED"Point ID is invalid!\e[0m\n");
+  if(!(0 <= point_ID && point_ID < 54) && (!is_ai)){
+    printf("Point ID is invalid!\n");
     return -1;
   }
-  if(!(1 <=player_ID && player_ID <=4)){
-    printf(RED"No player exist!\e[0m\n");
+  if(!(1 <=player_ID && player_ID <=4) && (!is_ai)){
+    printf("No player exist!\n");
     return -1;
   }
   for(int i=0;i<5;i++){
@@ -695,20 +681,16 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
               }
             }
             return 1;
-          }else if(!near_no_player){
-            if(!is_ai){
-              printf(RED"This village is too close to others!\e[0m\n");
-            }
+          }else if(!near_no_player && (!is_ai)){
+            printf("This village is too close to others!\n");
             return -1;
-          }else if(!road_connected){
-            if(!is_ai){
-              printf(RED"No road connected!\e[0m\n");
-            }
+          }else if(!road_connected && (!is_ai)){
+            printf("No road connected!\n");
             return -1;
           }
         }else{
           if(!is_ai){
-            printf(RED"This village is owned by other players!\e[0m\n");
+            printf("This village is owned by other players!\n");
           }
           return -1;
         }
@@ -716,17 +698,13 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
     }
   }
   if(!is_ai){
-    printf(RED"This point can't be build!\e[0m\n");
+    printf("This point can't be build!\n");
   }
   return -1;
 }
 
 /*village upgrade*/
 int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
-  if(point_ID<0 || point_ID>53){
-    printf(RED"Wrong ID input!!\e[0m\n");
-    return -1;
-  }
   for(int8_t i=0;i<23;i++){
     for(int8_t j=0;j<13;j++){
       if(map[i][j][0]==1 && map[i][j][2]==point_ID){
@@ -735,7 +713,6 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
           if(!is_ai){
             printf("Upgrade success!\n");
           }
-          map_log_update(player_ID,"upgrade its village to city.",-1);
           return 1;
         }else{
           if(!is_ai){
@@ -746,11 +723,10 @@ int32_t village_upgrade(int32_t player_ID,int32_t point_ID, uint8_t is_ai){
       }
     }
   }
-  return -1;
 }
 
 int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
-  if(!(0 <= road_ID && road_ID < 72)){
+  if(!(0 <= road_ID && road_ID < 72)  && (!is_ai)){
     printf("Road ID is invalid!\n");
     return -1;
   }
@@ -831,100 +807,6 @@ int32_t harvest(int32_t dice_number,int32_t *harvest_resource_2x5){
   return 0;
 }
 
-// 深度優先搜索函式
-void DFS(int vertex, int length) {
-    visited[vertex] = 1; // 設定頂點為已訪問
-
-    // 檢查與該頂點相鄰的其他頂點
-    for (int i = 0; i < MAX_VERTICES; i++) {
-        if (graph[vertex][i] == 1 && visited[i] == 0) {
-            DFS(i, length + 1); // 遞迴訪問相鄰頂點
-        }
-    }
-
-    // 更新最長道路的長度
-    if (length > max_length) {
-        max_length = length;
-    }
-
-    visited[vertex] = 0; // 重置頂點為未訪問
-}
-
-// 偵測最長道路
-int detectLongestPath(int vertices) {
-    max_length = 0;
-
-    // 對每個頂點進行深度優先搜索
-    for (int i = 0; i < MAX_VERTICES; i++) {
-        for (int j = 0; j < vertices; j++) {
-            visited[j] = 0; // 重置頂點的訪問狀態
-        }
-        DFS(i, 1);
-    }
-
-    return max_length;
-}
-
-int32_t Longest_Path(int32_t player_ID){
-  int32_t edges=0;
-  int32_t vertices=0;
-  int32_t edgesArr[72][2];
-  for(int8_t i=0;i<72;i++){
-    edgesArr[i][0]=0;
-    edgesArr[i][1]=0;
-  }
-  for(int8_t i=0;i<72;i++){
-    vertices_array[i]=0;
-  }
-  for (int i = 0; i < vertices; i++) {
-      for (int j = 0; j < vertices; j++) {
-          graph[i][j] = 0;
-      }
-  }
-  for(int8_t i=0;i<23;i++){
-    for(int8_t j=0;j<13;j++){
-      if(map[i][j][0]==2 && map[i][j][1]==player_ID){
-        if(map[i][j][3]==0){
-          edgesArr[edges][0] = map[i][j-1][2];
-          edgesArr[edges][1] = map[i][j+1][2];
-          if(vertices_array[map[i][j-1][2]]==0){
-            vertices_array[map[i][j-1][2]]=1;
-            vertices++;
-          }
-          if(vertices_array[map[i][j+1][2]]==0){
-            vertices_array[map[i][j+1][2]]=1;
-            vertices++;
-          }
-        }else{
-          edgesArr[edges][0] = map[i-1][j][2];
-          edgesArr[edges][1] = map[i+1][j][2];
-          if(vertices_array[map[i-1][j][2]]==0){
-            vertices_array[map[i-1][j][2]]=1;
-            vertices++;
-          }
-          if(vertices_array[map[i+1][j][2]]==0){
-            vertices_array[map[i+1][j][2]]=1;
-            vertices++;
-          }
-        }
-        edges++;
-      }
-    }
-  }
-  for (int i = 0; i < edges; i++) {
-      int src = edgesArr[i][0];
-      int dest = edgesArr[i][1];
-      graph[src][dest] = 1;
-      graph[dest][src] = 1; // 無向圖，需設定雙向
-  }
-  // for(int8_t i=0;i<12;i++){//D3rr0r
-  //   printf("%d %d\n",edgesArr[i][0],edgesArr[i][1]);
-  // }
-  // printf("%d %d\n",edges,vertices);
-  int longestPath = detectLongestPath(vertices);
-  printf("Lonest path: %d\n", longestPath);
-}
-
 int32_t find_port(int32_t player_ID,int32_t *port_array_1x6){
     for(int32_t i=0;i<6;i++){
       *(port_array_1x6 + i)=0;
@@ -939,3 +821,439 @@ int32_t find_port(int32_t player_ID,int32_t *port_array_1x6){
     return 0;
 }
 
+int pathlength(int path[16])//路徑長度判斷用於判斷是否達到最大路徑
+{
+    int length = 0;
+    for (int i = 0; i < 16; i++) 
+    {
+        if (path[i]!=(100)) 
+	{
+        	length++;
+        }
+    }
+    
+    return length;
+
+}
+// 深度優先搜索函式
+void DFS(int vertex, int length) 
+{
+
+    visited[vertex] = 1; // 設定頂點為已訪問
+    path[length] = vertex;
+    // 檢查與該頂點相鄰的其他頂點
+
+    	for (int i = 0; i < MAX_VERTICES; i++) 
+    	{
+        	if (graph[vertex][i] == 1 && visited[i] == 0) 
+		{
+            		DFS(i, length + 1); // 遞迴訪問相鄰頂點
+        	}
+		if(vertex>=72)
+		{
+			break;
+		}
+    	}
+
+    	// 更新最長道路的長度
+    	if (length > max_length) 
+	{
+        	max_length = length;
+    	}
+    
+    visited[vertex] = 0; // 重置頂點為未訪問
+}
+void DFS2(int vertex, int length,int longestPath) 
+{
+//	printf("aaa\n");
+    visited[vertex] = 1; // 設定頂點為已訪問
+    path[length] = vertex;
+    // 檢查與該頂點相鄰的其他頂點
+    if(1)
+    {
+    	for (int i = 0; i < MAX_VERTICES; i++) 
+    	{        
+    		if (pathlength(path)== longestPath+1) 
+		{
+        		break;
+    		}
+
+        	if (graph[vertex][i] == 1 && visited[i] == 0) 
+		{
+            		DFS2(i, length + 1,longestPath); // 遞迴訪問相鄰頂點
+        	}
+		if(vertex>=72)
+		{
+			break;
+		}
+
+    	}
+    }
+    // 更新最長道路的長度
+    if (length > max_length) {
+        max_length = length;
+    }
+
+    visited[vertex] = 0; // 重置頂點為未訪問
+}
+
+// 函式: 偵測最長道路
+int detectLongestPath(int vertices, int edges, int edgesArr[][2]) {
+    max_length = 0;
+    int judge = 0;
+    int judge2 = 0;
+
+    for (int i = 0; i < edges; i++) 
+    {
+    	if (((edgesArr[i][0]==72)||(edgesArr[i][1]==72))&&(judge == 1)) 
+	{
+        	judge2 = 1;
+        }
+        if ((edgesArr[i][0]==72)||(edgesArr[i][1]==72)) 
+	{
+        	judge = 1;
+        }        
+
+    }
+
+    if((vertices-edges)>=2)
+    {
+      int offset = vertices - edges;
+      vertices = vertices - offset + 1;
+    }
+
+    // 初始化鄰接矩陣
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        for (int j = 0; j < MAX_VERTICES; j++) {
+            graph[i][j] = 0;
+        }
+    }
+
+    // 建立圖的鄰接矩陣
+    for (int i = 0; i < edges; i++) {
+        int src = edgesArr[i][0];
+        int dest = edgesArr[i][1];
+        graph[src][dest] = 1;
+        graph[dest][src] = 1; // 無向圖，需設定雙向
+    }
+
+    for(int i = 0;i<16;i++)
+    {
+	path[i] = 0;
+    }
+    if(judge==0)
+    {
+    	// 對每個頂點進行深度優先搜索
+    	for (int i = 0; i < MAX_VERTICES; i++) 
+    	{
+        	for (int j = 0; j < MAX_VERTICES; j++) 
+		{
+            		visited[j] = 0; // 重置頂點的訪問狀態
+        	}
+        	DFS(i, 1);//1迴圈符合 0線型符合
+//		if(pathlength(path)==8)
+//		{
+//			break;
+//		}	
+    	}
+
+    	if((vertices-edges)==1)//是否為path的判斷
+    	{
+        	for(int i = 0;i<16;i++)
+    		{
+			path[i] = 0;
+    		}
+		max_length = 0;
+    		for (int i = 0; i < MAX_VERTICES; i++) 
+    		{
+  
+ 			for (int j = 0; j < MAX_VERTICES; j++) 
+			{
+            			visited[j] = 0; // 重置頂點的訪問狀態
+        		}
+        		DFS(i, 0);//1迴圈符合 0線型符合	
+//			if(pathlength(path)==8)
+//			{
+//				break;
+//			}		
+    		}        
+    	}
+    }
+    else if(judge==1)
+    {   
+    	// 對每個頂點進行深度優先搜索
+    	for (int i = 0; i < MAX_VERTICES; i++) 
+    	{
+        	for (int j = 0; j < MAX_VERTICES; j++) 
+		{
+            		visited[j] = 0; // 重置頂點的訪問狀態
+        	}
+        	DFS(i, 1);//1迴圈符合 0線型符合
+//		if(pathlength(path)==8)
+//		{
+//			break;
+//		}	
+    	}
+
+    	if((vertices-edges)==1)//是否為path的判斷
+    	{
+        	for(int i = 0;i<16;i++)
+    		{
+			path[i] = 0;
+    		}
+		max_length = 0;
+    		for (int i = 0; i < MAX_VERTICES; i++) 
+    		{
+        		for (int j = 0; j < MAX_VERTICES; j++) 
+			{
+            			visited[j] = 0; // 重置頂點的訪問狀態
+        		}
+        		DFS(i, 0);//1迴圈符合 0線型符合	
+//			if(pathlength(path)==8)
+//			{
+//				break;
+//			}		
+    		}        
+    	}
+
+    }	    
+    return max_length;
+}
+int detectLongestPath2(int vertices, int edges, int edgesArr[][2],int longestPath) {
+    max_length = 0;
+    int judge = 0;
+    int judge2 = 0;
+
+    for (int i = 0; i < edges; i++) 
+    {
+    	if (((edgesArr[i][0]>72)||(edgesArr[i][1]>72))&&(judge == 1)) 
+	{
+        	judge2 = 1;
+        }
+        if ((edgesArr[i][0]==72)||(edgesArr[i][1]==72)) 
+	{
+        	judge = 1;
+        }        
+
+    }
+    // printf("aaa: %d\n", judge );
+    // printf("bbb: %d\n", judge2 );
+
+    // 初始化鄰接矩陣
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        for (int j = 0; j < MAX_VERTICES; j++) {
+            graph[i][j] = 0;
+        }
+    }
+
+    // 建立圖的鄰接矩陣
+    for (int i = 0; i < edges; i++) {
+        int src = edgesArr[i][0];
+        int dest = edgesArr[i][1];
+        graph[src][dest] = 1;
+        graph[dest][src] = 1; // 無向圖，需設定雙向
+    }
+
+    for(int i = 0;i<16;i++)
+    {
+	path[i] = 100;
+    }
+
+    // 對每個頂點進行深度優先搜索
+    for (int i = 0; i < MAX_VERTICES; i++) 
+    {
+        for (int j = 0; j < MAX_VERTICES; j++) 
+	{
+            visited[j] = 0; // 重置頂點的訪問狀態
+        }
+        DFS2(i, 1,longestPath);//1迴圈符合 0線型符合
+    	for (int i = 0; i < 16; i++) 
+    	{
+		if(i==15)
+		{
+			path[i] = 100;
+		}
+		else
+		{
+        	path[i] = path[i+1];
+		}
+    	}
+
+		if(pathlength(path)==longestPath)
+		{
+			for(int i = 0;i<edges;i++)
+			{
+				if((path[0]==edgesArr[i][0])&&(path[longestPath-1]==edgesArr[i][1]))
+				{
+					path[longestPath] = path[0];
+				}
+				else if((path[0]==edgesArr[i][1])&&(path[longestPath-1]==edgesArr[i][0]))
+				{
+					path[longestPath] = path[0];
+				}
+
+			}
+			break;
+		}	
+    }
+
+    if((vertices-edges)==1)//是否為path的判斷
+    {
+        for(int i = 0;i<16;i++)
+    	{
+		path[i] = 100;
+    	}
+	max_length = 0;
+    	for (int i = 0; i < MAX_VERTICES; i++) 
+    	{
+        	for (int j = 0; j < MAX_VERTICES; j++) 
+		{
+            		visited[j] = 0; // 重置頂點的訪問狀態
+        	}
+        	DFS2(i, 0,longestPath);//1迴圈符合 0線型符合	
+		if(pathlength(path)==longestPath+1)
+		{
+			break;
+		}		
+    	}        
+    }
+
+    if(judge2 == 1)
+    {
+    	int tmp[3] = {100,100,100};
+	int index = 0;
+	for( int i = 0 ;i < edges ; i++ )
+    	{
+		if( edgesArr[i][0] == path[0] )
+		{
+			tmp[index] = edgesArr[i][1];
+			index++;		
+		}
+		else if( edgesArr[i][1] == path[0] )
+		{
+			tmp[index] = edgesArr[i][0];
+			index++;		
+		}
+    	}
+    	for(int i = 0;i<3;i++)
+    	{
+    		if(i==2)
+		{
+	    		//printf("%d\n",tmp[i]);
+		}
+		else
+		{
+    			//printf("%d->",tmp[i]);
+		}
+    	}
+	int count = 0;
+	int number = 0;
+    	for(int i = 0;i<3;i++)
+    	{
+		if(tmp[i]>=72&&tmp[i]!=100&&tmp[i]!=path[longestPath])
+		{
+			count = 1;
+			number = tmp[i];
+		}
+	}
+
+	if(count == 1)
+	{
+		for(int i = 15;i>=0;i--)
+		{
+			if(i>0)
+			{
+				path[i] = path[i-1]; 
+			}
+			else if(i==0)
+			{
+				path[i] = number;
+			}
+		}
+		max_length++;
+	}
+    }
+    return max_length;
+}
+
+int32_t Longest_Path(int32_t player_ID){
+  int32_t edges=0;
+  int32_t vertices=0;
+  int32_t edgesArr[72][2];
+  int32_t node_i=72;
+  int32_t node_array_temp[54];
+  for(int8_t i=0;i<72;i++){
+    edgesArr[i][0]=0;
+    edgesArr[i][1]=0;
+  }
+  for(int8_t i=0;i<72;i++){
+    vertices_array[i]=0;
+  }
+  for(int8_t i=0;i<54;i++){
+    node_array_temp[i]=0;
+  }
+  for (int i = 0; i < vertices; i++) {
+      for (int j = 0; j < vertices; j++) {
+          graph[i][j] = 0;
+      }
+  }
+  for(int8_t i=0;i<23;i++){
+    for(int8_t j=0;j<13;j++){
+      if(map[i][j][0]==2 && map[i][j][1]==player_ID){
+        if(map[i][j][3]==0){
+          if(map[i][j-1][1]==0 || map[i][j-1][1]==player_ID){
+            edgesArr[edges][0] = map[i][j-1][2];
+          }else{
+            edgesArr[edges][0] = node_array_temp[map[i][j-1][2]]==0?node_i:node_array_temp[map[i][j-1][2]];
+            if(node_array_temp[map[i][j-1][2]]!=0){node_array_temp[map[i][j-1][2]]=node_i;}
+          }
+          if(map[i][j+1][1]==0 || map[i][j+1][1]==player_ID){
+            edgesArr[edges][1] = map[i][j+1][2];
+          }else{
+            edgesArr[edges][1] = node_array_temp[map[i][j+1][2]]!=0?node_i:node_array_temp[map[i][j+1][2]];
+            if(node_array_temp[map[i][j+1][2]]!=0){node_array_temp[map[i][j+1][2]]=node_i;}
+          }
+
+          if(vertices_array[map[i][j-1][2]]==0){
+            vertices_array[map[i][j-1][2]]=1;
+            vertices++;
+          }
+          if(vertices_array[map[i][j+1][2]]==0){
+            vertices_array[map[i][j+1][2]]=1;
+            vertices++;
+          }
+        }else{
+          if(map[i-1][j][1]==0 || map[i-1][j][1]==player_ID){
+            edgesArr[edges][0] = map[i-1][j][2];
+          }else{
+            edgesArr[edges][0] = node_array_temp[map[i-1][j][2]]==0?node_i:node_array_temp[map[i-1][j][2]];
+            if(node_array_temp[map[i-1][j][2]]!=0){node_array_temp[map[i-1][j][2]]=node_i;}
+          }
+          if(map[i+1][j][1]==0 || map[i+1][j][1]==player_ID){
+            edgesArr[edges][1] = map[i+1][j][2];
+          }else{
+            edgesArr[edges][1] = node_array_temp[map[i+1][j][2]]==0?node_i:node_array_temp[map[i+1][j][2]];
+            if(node_array_temp[map[i+1][j][2]]!=0){node_array_temp[map[i+1][j][2]]=node_i;}
+          }
+          if(vertices_array[map[i-1][j][2]]==0){
+            vertices_array[map[i-1][j][2]]=1;
+            vertices++;
+          }
+          if(vertices_array[map[i+1][j][2]]==0){
+            vertices_array[map[i+1][j][2]]=1;
+            vertices++;
+          }
+        }
+        edges++;
+      }
+    }
+  }
+  // for(int8_t i=0;i<15;i++){//D3rr0r
+  //   printf("%d %d\n",edgesArr[i][0],edgesArr[i][1]);
+  // }
+  // printf("%d %d\n",edges,vertices);
+  int longestPath = detectLongestPath(vertices,edges,edgesArr);
+  int longestPath2 = detectLongestPath2(vertices,edges,edgesArr,longestPath);
+  printf("Lonest path: %d\n", longestPath2);
+  return longestPath2;
+}
