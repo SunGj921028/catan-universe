@@ -233,6 +233,7 @@ bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type){
         if(resource_to_trade >= 3){ return true;}
         else{ return false;}
     }
+    return false;
 }
 
 void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_type){
