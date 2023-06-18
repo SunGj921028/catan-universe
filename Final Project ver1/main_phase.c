@@ -541,7 +541,8 @@ void trade_player(uint8_t p, uint8_t is_ai){
             }
         }
     }else{
-        while(1){
+        uint8_t count = 0;
+        while(count<5){
             for(int i=0;i<5;i++){
                 resource_give[i] = rand() % 1;
             }
@@ -549,8 +550,10 @@ void trade_player(uint8_t p, uint8_t is_ai){
                 break;
             }else{
                 printf(RED"You don't have enough resource!!\e[0m\n");
+                count++;
                 continue;
             }
+            //usleep(500000);
         }
         for(int i=0;i<5;i++){
             resource_get[i] = rand() % 1;
