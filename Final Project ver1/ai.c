@@ -85,6 +85,8 @@ bool judge_ai_action(uint8_t action, uint8_t player_number){
                         if(port[5] == 1){
                             trade(player,1,resource_type[i],option);
                         }
+                    }else if(action==5){
+                        trade(player,1,resource_type[i],option);
                     }
                     return true;
                 }
@@ -107,7 +109,7 @@ void ai_move(int p){
     sPlayer * player;
     if(p == 2) {player = p2;}
     else if(p == 3) {player = p3;}
-    else {player = p4;}
+    else if(p == 4) {player = p4;}
 
     //throw dice for ai(p)
     throw_dice(player,1,p);     //dice -> take resource or thief
@@ -130,11 +132,12 @@ void ai_move(int p){
         // printf("\n");
         for(int i=0;i<8;i++){
             sleep(1);
-            REFRESH
             if(judge_ai_action(action[i],p)){
                 uint8_t can = rand() % 3;
                 //2/3 will do this action
                 if(can==1||can==2){
+                    printf("ai's action is %u ",action[i]);
+                    printf("\n");
                     //printf("B\n");
                     if(i==0){
                         get_develop_card(player,p);

@@ -531,7 +531,9 @@ void map_init(){
 
 /*Map printer*/
 int32_t map_print(int8_t printer_mood){
-  pd_builder();
+  if(printer_mood==0){
+    pd_builder();
+  }
   int8_t ptime=0;
   for(int8_t i=0;i<23;i++){
     if(i==0||i==22){

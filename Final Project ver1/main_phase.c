@@ -211,11 +211,17 @@ int32_t list_can_trade(sPlayer * player, uint8_t trade_option){
 
 bool trade_judge(sPlayer * player, uint8_t trade_option, uint8_t type){
     uint8_t resource_to_trade = 0;
-    if(type==0) { resource_to_trade = player->iron;}
-    else if(type==1) { resource_to_trade = player->wood;}
-    else if(type==2) { resource_to_trade = player->wheat;}
-    else if(type==3) { resource_to_trade = player->brick;}
-    else { resource_to_trade = player->sheep;}
+    if(type==0) {
+        resource_to_trade = player->iron;
+    }else if(type==1) {
+        resource_to_trade = player->wood;
+    }else if(type==2) { 
+        resource_to_trade = player->wheat;
+    }else if(type==3) { 
+        resource_to_trade = player->brick;
+    }else if(type==4) { 
+        resource_to_trade = player->sheep;
+    }
 
     if(trade_option==1){
         if(resource_to_trade >= 4){ return true;}
