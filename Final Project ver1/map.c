@@ -39,7 +39,8 @@ bool is_slash;
 3block type\ID  \RT  \Pit*\ocp*
 */
 
-int32_t long_road_arr[4];
+int32_t lr_arr[4];
+int32_t len_of_longest=4;
 int graph[MAX_VERTICES][MAX_VERTICES]; // 圖的鄰接矩陣表示
 int visited[MAX_VERTICES]; // 記錄頂點是否已訪問
 int max_length = 0; // 最長道路的長度
@@ -374,7 +375,7 @@ void pd_builder(){
     //   sprintf(player_log[i*10+3],"Total resource card: %d", (psa[i]->iron)+(psa[i]->wood)+(psa[i]->wheat)+(psa[i]->brick)+(psa[i]->sheep));
     // }
     //if(i==0){
-    sprintf(player_log[i*10+4],"   %u   %u   %u   %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card);
+    sprintf(player_log[i*10+4],"   %u   %u   %u   %u   %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card, psa[i]->score_card);
     // }else{
     //   sprintf(player_log[i*10+4],"Total develop card: %d",(psa[i]->knight)+(psa[i]->harvest_card)+(psa[i]->build_card)+(psa[i]->steal_card));
     // }
@@ -412,7 +413,7 @@ void pd_print(int8_t ptime){
         }
         CCLEAR;pdp0(15);
       }else if(ptime==5){
-        pdp0(printf("KNI HAR BUI STE"));
+        pdp0(printf("KNI HAR BUI STE SCR"));
       }else{
         pdp0(pd_slt(1,(ptime-2)));
       }
@@ -631,7 +632,7 @@ int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time, uin
             map[i][j][1] = player_ID;
             map[i][j][3] = 1;
             if(!is_ai){
-              printf("Build village %d %d success!\n",i,j);
+              printf("Build village success!\n");
             }
             map_log_update(player_ID,"build village in",point_ID);
             if(init_time>=1){
@@ -750,7 +751,7 @@ int32_t build_road(int32_t player_ID, int32_t road_ID, uint8_t is_ai){
           if(near_point || road_connected){
             map[i][j][1] = player_ID;
             if(!is_ai){
-              printf("Build road %d %d success!\n",i,j);
+              printf("Build road success!\n");
             }
             map_log_update(player_ID,"build road in",road_ID);
             return 1;
@@ -820,6 +821,31 @@ int32_t find_port(int32_t player_ID,int32_t *port_array_1x6){
       }
     }
     return 0;
+}
+
+int32_t Longest_Player(){
+  sPlayer *psa[4] = {p1,p2,p3,p4};
+  for(int8_t i=0;i<4;i++){
+    lr_arr[i]=Longest_Path(i+1);
+  }
+  int32_t player_IDd1=1;
+  int8_t longest_r=0;
+  for(int8_t i=0;i<4;i++){
+    if(longest_r<lr_arr[i]){
+      longest_r = lr_arr[i];
+      player_IDd1=i;
+    }
+  }
+  if(longest_r>len_of_longest){
+    for(int8_t i=0;i<4;i++){
+      if(i==player_IDd1){
+        (psa[i]->M_road) = 1;
+      }else{
+        (psa[i]->M_road) = 0;
+      }
+    }
+    len_of_longest = longest_r;
+  }
 }
 
 int pathlength(int path[16])//路徑長度判斷用於判斷是否達到最大路徑
@@ -903,6 +929,7 @@ int detectLongestPath(int vertices, int edges, int edgesArr[][2]) {
     max_length = 0;
     int judge = 0;
     int judge2 = 0;
+    int judge3 = 0;
 
     for (int i = 0; i < edges; i++) 
     {
@@ -914,7 +941,10 @@ int detectLongestPath(int vertices, int edges, int edgesArr[][2]) {
 	{
         	judge = 1;
         }        
-
+        if ((edgesArr[i][0]==0)||(edgesArr[i][1]==0)) 
+	{
+        	judge3 = 1;
+        }  
     }
 
     if((vertices-edges)>=2)
@@ -1024,10 +1054,11 @@ int detectLongestPath2(int vertices, int edges, int edgesArr[][2],int longestPat
     max_length = 0;
     int judge = 0;
     int judge2 = 0;
+    int judge3 = 0;
 
     for (int i = 0; i < edges; i++) 
     {
-    	if (((edgesArr[i][0]>72)||(edgesArr[i][1]>72))&&(judge == 1)) 
+    	if (((edgesArr[i][0]==72)||(edgesArr[i][1]==72))&&(judge == 1)) 
 	{
         	judge2 = 1;
         }
@@ -1035,10 +1066,19 @@ int detectLongestPath2(int vertices, int edges, int edgesArr[][2],int longestPat
 	{
         	judge = 1;
         }        
-
+        if ((edgesArr[i][0]==0)||(edgesArr[i][1]==0)) 
+	{
+        	judge3 = 1;
+        }  
     }
     // printf("aaa: %d\n", judge );
     // printf("bbb: %d\n", judge2 );
+
+    if((judge3 == 1))
+    {
+      int offset = vertices - edges;
+      vertices = vertices - offset + 1;      
+    }
 
     // 初始化鄰接矩陣
     for (int i = 0; i < MAX_VERTICES; i++) {
@@ -1255,6 +1295,6 @@ int32_t Longest_Path(int32_t player_ID){
   // printf("%d %d\n",edges,vertices);
   int longestPath = detectLongestPath(vertices,edges,edgesArr);
   int longestPath2 = detectLongestPath2(vertices,edges,edgesArr,longestPath);
-  printf("Lonest path: %d\n", longestPath2);
+  //printf("Lonest path: %d\n", longestPath2);
   return longestPath2;
 }

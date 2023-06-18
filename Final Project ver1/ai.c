@@ -172,9 +172,9 @@ void ai_move(int p){
                         while(1){
                             int32_t road_rand = rand() % 72;
                             if(build_road(p,road_rand,1)!=-1){
-                                player->wood -= 1;
-                                player->brick -= 1;
-                                player->hand -= 2;
+                                (player->wood) -= 1;
+                                (player->brick) -= 1;
+                                (player->hand) -= 2;
                                 resource[1] += 1;
                                 resource[3] += 1;
                                 player->road.road_build += 1;
@@ -206,8 +206,8 @@ void ai_move(int p){
                                 resource[1] += 1;
                                 resource[2] += 1;
                                 resource[3] += 1;
-                                resource[5] += 1;
-                                player->hand -= 4;
+                                resource[4] += 1;
+                                (player->hand) -= 4;
                                 (player->village.village_build) += 1;
                                 (player->village.village_hand) -= 1;
                                 //map_log_update(p,"build a village",-1);
@@ -229,15 +229,15 @@ void ai_move(int p){
                         for(int k=0;k<54;k++){
                             //int32_t UP_vil = rand() % 54;
                             if(village_upgrade(p,can_build_V[k],1)!= -1){
-                                player->wheat -= 2;
-                                player->iron -= 3;
+                                (player->wheat) -= 2;
+                                (player->iron) -= 3;
                                 resource[2] += 2;
                                 resource[0] += 3;
-                                player->hand -= 5;
-                                player->city.city_build++;
-                                player->city.city_hand--;
-                                player->village.village_build--;
-                                player->village.village_hand++;
+                                (player->hand) -= 5;
+                                (player->city.city_build)++;
+                                (player->city.city_hand)--;
+                                (player->village.village_build)--;
+                                (player->village.village_hand)++;
                                 //map_log_update(p,"upgrade its village to city.",-1);
                                 break;
                             }

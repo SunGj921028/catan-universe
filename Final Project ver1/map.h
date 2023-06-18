@@ -28,3 +28,5 @@ int32_t Longest_Path(int32_t player_ID);
 int32_t find_port(int32_t player_ID,int32_t *port_array_1x6);
 
 int32_t map_log_update(int32_t player_ID, char *do_stuff, int32_t build_in);
+
+int32_t Longest_Player();

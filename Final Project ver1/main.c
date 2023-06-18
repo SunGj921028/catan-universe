@@ -50,6 +50,10 @@ char extra;
 char player_name[20] = {0};
 int ai_main_move = 0;
 
+void print_surprise(uint8_t player){
+    if(){}
+}
+
 void title(){
     CLEAR;
     printf("\033[3C ________        ___      ____________      ___         _       _\n"
@@ -125,8 +129,9 @@ int main(int argc, char *argv[]){
                 sleep(2);
             }
             judge_the_U_knight();
-            //score(count%5);
+            Longest_Player();
             REFRESH
+            print_surprise(count%5);
             PASS;
             count += 1;
             //print_init(count%5);

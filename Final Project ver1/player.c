@@ -148,6 +148,10 @@ void player_move(){
                             (p1->brick) -= 1;
                             (p1->wood) -= 1;
                             (p1->sheep) -= 1;
+                            resource[1] += 1;
+                            resource[2] += 1;
+                            resource[3] += 1;
+                            resource[4] += 1;
                             (p1->hand) -= 4;
                             (p1->village.village_build) += 1;
                             (p1->village.village_hand) -= 1;
@@ -204,9 +208,11 @@ void player_move(){
                                 break;
                             }
                         }else{
-                            (p1->wood) -= 2;
+                            (p1->wood) -= 1;
                             (p1->brick) -= 1;
                             (p1->hand) -= 2;
+                            resource[1] += 1;
+                            resource[3] += 1;
                             (p1->road.road_build) += 1;
                             (p1->road.road_hand) -= 1;
                             break;
@@ -240,6 +246,8 @@ void player_move(){
                         (p1->wheat) -= 2;
                         (p1->iron) -= 3;
                         (p1->hand) -= 5;
+                        resource[2] += 2;
+                        resource[0] += 3;
                         (p1->city.city_build) += 1;
                         (p1->city.city_hand) -= 1;
                         (p1->village.village_build) -= 1;
