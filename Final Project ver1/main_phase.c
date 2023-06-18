@@ -474,10 +474,6 @@ void trade_player(uint8_t p, uint8_t is_ai){
         while(1){
             REFRESH
             printf(PURPLE"iron(0) "CYAN"wood(1) "YELLOW"wheat(2) "RED"brick(3) " L_GREEN"wool(4)\e[0m\n");
-            if(count_get_char!=0){
-                getchar();
-            }
-            count_get_char++;
             printf("How many resources do you want to give for trade? (input's pattern is like x x x x x)\n");
             fgets(res_cho,30,stdin);
             if(strlen(res_cho)>16) {printf("invalid input!!\n"); continue;}
@@ -538,6 +534,9 @@ void trade_player(uint8_t p, uint8_t is_ai){
             }
         }
     }else{
+        for(int i=0;i<5;i++){
+            resource_give[i] = rand() % 2;
+        }
     }
 }
 

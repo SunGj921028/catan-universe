@@ -93,12 +93,13 @@ bool judge_build(sPlayer * player, uint8_t build_type, uint8_t p, int32_t *can_b
             for(int8_t i=0;i<23;i++){
               for(int8_t j=0;j<13;j++){
                 if(map[i][j][0] == 1 && map[i][j][1]==p){
+                  can_build_bool=true;
                   *(can_build_1x54 + map[i][j][2]) = 1;
                 }
               }
             }
         }
-        else{ return false;}
+        return can_build_bool;
     }
 }
 
