@@ -83,11 +83,11 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
                 }
                 if(sum!=num){
                     printf(RED"Invalid number of cards you throw!!\e[0m\n");
+                    fflush(stdout);
                     continue;
                 }
                 uint8_t *ptr[5] = {&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
                 for(int i=0;i<5;i++){
-                    //printf("%d\n",*ptr);
                     if(in_arr[i]<0 || in_arr[i]>*(ptr[i])){
                         printf(RED"invalid input!!\e[0m\n");
                         can_throw = false;
@@ -102,6 +102,7 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
                 }
             }else{
                 printf(RED"Wrong format of input!!\e[0m\n");
+                fflush(stdout);
                 continue;
             }
         }
@@ -151,7 +152,6 @@ void input_key(sPlayer * player, uint8_t p_number, int num){
 }
 
 void print_player_hands(sPlayer * player, uint8_t n){
-    PASS;
     int num = floor(( double )( (player->hand)/2.0) );
     if(n==1){
         char state_with_player_number[60] = {0};

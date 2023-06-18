@@ -55,13 +55,6 @@ void score(uint8_t p){
 }
 
 void take_resource_dice(int32_t harvest_resource[2][5]){
-    // printf("harvest test\n");
-    // for(int i=0;i<2;i++){
-    //     for(int j=0;j<5;j++){
-    //         printf("%d ",harvest_resource[i][j]);
-    //     }
-    //     printf("\n");
-    // }
     REFRESH
     sPlayer * player;
     for(int i=0;i<2;i++){
@@ -139,7 +132,18 @@ int32_t dice(){
 }
 
 void throw_dice(sPlayer * player, uint8_t is_ai, uint8_t player_number){
-    int32_t dice_result = dice();
+    uint8_t c = 0;
+    int32_t dice_result = 0;
+    while(1){
+        dice_result = dice();
+        if(dice_result==7){ c++;}
+        if(c==2){
+            c = 0;
+            continue;
+        }else{
+            break;
+        }
+    }
     // dice_result = 7;
     show_dice_v2(dice_result);
     if(!is_ai){ printf("%s throw %d points\n",player_name,dice_result);}
@@ -434,6 +438,12 @@ int32_t accept_or_not(int32_t resource_give[5], int32_t resource_get[5], uint8_t
 bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlayer * p_com, uint8_t type, int32_t getfrom){
     //type==0 -> give
     //type==1 -> get
+    sPlayer * player;
+    if(getfrom==1){ player = p1;}
+    else if(getfrom==2){ player = p2;}
+    else if(getfrom==3){ player = p3;}
+    else if(getfrom==4){ player = p4;}
+    uint8_t *r[5] = {&(player->iron),&(player->wood),&(player->wheat),&(player->brick),&(player->sheep)};
     uint8_t *temp[5] = {&(p_com->iron),&(p_com->wood),&(p_com->wheat),&(p_com->brick),&(p_com->sheep)};
     if(type==0){
         for(int i=0;i<5;i++){
@@ -442,15 +452,9 @@ bool judge_player_trade(int32_t resource_give[5], int32_t resource_get[5], sPlay
             }
         }
     }else{
-        // sPlayer * get;
-        // if(getfrom==1){ get = p1;}
-        // else if(getfrom==2){ get = p2;}
-        // else if(getfrom==3){ get = p3;}
-        // else { get = p4;}
-        // uint8_t *p_r[5] = {&(get->iron),&(get->wood),&(get->wheat),&(get->brick),&(get->sheep)};
         uint8_t temp_res[5] = {0};
         for(int i=0;i<5;i++){
-            temp_res[i] += resource_give[i];
+            temp_res[i] += (resource_give[i]+(*(r[i])));
         }
         for(int j=0;j<5;j++){
             if(resource_get[j]>temp_res[j]){

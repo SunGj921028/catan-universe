@@ -141,8 +141,8 @@ void ai_move(int p){
                 uint8_t can = 1;
                 //2/3 will do this action
                 if(can==1||can==2){
-                    printf("ai's action is %u ",action[i]);
-                    printf("\n");
+                    // printf("ai's action is %u ",action[i]);
+                    // printf("\n");
                     if(action[i]==0){
                         get_develop_card(player,p);
                         //map_log_update(p,"choose to get develop card",-1);

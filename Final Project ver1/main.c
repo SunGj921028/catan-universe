@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
                 ai_move(count%5); //2 3 4
                 sleep(2);
             }
-            //judge_the_U_knight();
+            judge_the_U_knight();
             Longest_Player();
             fflush(stdout);
             REFRESH

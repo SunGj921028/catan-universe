@@ -369,16 +369,16 @@ void pd_builder(){
     }
     sprintf(player_log[i*10+1],"Lonest road: %d",Longest_Path(i+1));
     sprintf(player_log[i*10+2],"Knight used: %u",psa[i]->U_knight);
-    // if(i==0){
-    sprintf(player_log[i*10+3]," %02u %02u %02u %02u %02u", psa[i]->iron, psa[i]->wood, psa[i]->wheat, psa[i]->brick, psa[i]->sheep);
-    // }else{
-    //   sprintf(player_log[i*10+3],"Total resource card: %d", (psa[i]->iron)+(psa[i]->wood)+(psa[i]->wheat)+(psa[i]->brick)+(psa[i]->sheep));
-    // }
-    //if(i==0){
-    sprintf(player_log[i*10+4],"   %u   %u   %u   %u   %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card, psa[i]->score_card);
-    // }else{
-    //   sprintf(player_log[i*10+4],"Total develop card: %d",(psa[i]->knight)+(psa[i]->harvest_card)+(psa[i]->build_card)+(psa[i]->steal_card));
-    // }
+    if(i==0){
+      sprintf(player_log[i*10+3]," %02u %02u %02u %02u %02u", psa[i]->iron, psa[i]->wood, psa[i]->wheat, psa[i]->brick, psa[i]->sheep);
+    }else{
+      sprintf(player_log[i*10+3],"Total resource card: %u", (psa[i]->iron)+(psa[i]->wood)+(psa[i]->wheat)+(psa[i]->brick)+(psa[i]->sheep));
+    }
+    if(i==0){
+      sprintf(player_log[i*10+4],"   %u   %u   %u   %u   %u",psa[i]->knight, psa[i]->harvest_card, psa[i]->build_card, psa[i]->steal_card, psa[i]->score_card);
+    }else{
+      sprintf(player_log[i*10+4],"Total develop card: %u",(psa[i]->knight)+(psa[i]->harvest_card)+(psa[i]->build_card)+(psa[i]->steal_card));
+    }
     sprintf(player_log[i*10+5],"Remained road: %u",psa[i]->road.road_hand);
     sprintf(player_log[i*10+6],"Remained village: %u",psa[i]->village.village_hand);
     sprintf(player_log[i*10+7],"Remained city: %u",psa[i]->city.city_hand);

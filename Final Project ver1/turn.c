@@ -29,8 +29,6 @@ void first_sec_turn(){
 	int count=0;
 	int vi_cho = 0;
 	int r_cho = 0;
-	//hahahahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-	player_order = 0;
 	while(count!=4){
 		vi_cho = 0;
 		r_cho = 0;

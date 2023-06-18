@@ -27,7 +27,7 @@ extern sPlayer * p3;
 extern sPlayer * p4;
 
 bool judge_buy_card(sPlayer * player){
-    printf("%u %u %u %u %u\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
+    //printf("%u %u %u %u %u\n",player->iron,player->wood,player->wheat,player->brick,player->sheep);
     if((player->wheat <= 0) || (player->iron <= 0) || (player->sheep <= 0)){
         return false;
     }else{
@@ -238,11 +238,6 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
 {
     int32_t take_resource1 = 0;  
     int8_t count = 1;
-    // if(is_ai){
-    //     printf(PURPLE"*Player %d uses the harvest_card\e[0m\n",p);
-    // }else{
-    //     printf(PURPLE"*%s uses the harvest_card\e[0m\n",player_name);
-    // }
     while(count<3)
     {
         while(1)

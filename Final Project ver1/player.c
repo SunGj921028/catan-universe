@@ -245,8 +245,6 @@ void player_move(){
                             if(village_number<0 || village_number>53){
                                 printf(RED"Wrong Input!!\e[0m\n");
                                 continue;
-                            }else{
-                                break;
                             }
                         }
 					}
@@ -263,7 +261,7 @@ void player_move(){
                         break;
                     }else{
                         while(1){
-                            printf("Do you want keep Upgrading Village ? (0 or 1): ");
+                            printf("Do you want to keep Upgrading Village ? (0 or 1): ");
                             if((scanf("%d",&redo)) == 0){
                                 printf(RED"Wrong Input!!\e[0m\n");
                                 while (getchar() != '\n');
@@ -434,7 +432,6 @@ void player_move(){
                             printf(YELLOW"-->You can't use this resource to trade with Bank!!\n");
                             printf("   You can press y to redo your choice,\n");
                             printf("   Or press n to end this action!\e[0m\n");
-                            PASS;
                             char cyn[20] = {0};
                             while(1){
                                 printf("Do you want to keep trading with Bank ? (y or n): ");
@@ -461,6 +458,30 @@ void player_move(){
                             ok = true;
                             break;
                         }
+                    }
+                    bool p = false;
+                    bool g = false;
+                    uint8_t *r[5] = {&(p1->iron),&(p1->wood),&(p1->wheat),&(p1->brick),&(p1->sheep)};
+                    for(int i = 0;i < 5;i++){
+                        if(port[i]==1){
+                            if(*(r[i]) >= 2){
+                                p = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(port[5]==1){
+                        for(int i=0;i<5;i++){
+                            if(*(r[i]) >= 3){
+                                g = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(p || g){
+                        ok = true;
+                    }else{
+                        ok = false;
                     }
                     while(ok){
                         printf("0 -> cancel\n");
