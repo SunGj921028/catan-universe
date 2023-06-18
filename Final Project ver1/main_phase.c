@@ -262,7 +262,7 @@ void trade(sPlayer * player, uint8_t is_ai, uint8_t give_type, uint8_t trade_typ
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf(RED"ERROR\e[0m\n");
+                    printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }else{break;}
@@ -499,7 +499,7 @@ void trade_player(uint8_t p, uint8_t is_ai){
                                     continue;
                                 }else{
                                     if(scanf("%c",&extra)==1 && extra != '\n'){
-                                        printf(RED"ERROR\e[0m\n");
+                                        printf(RED"Wrong Input!!\e[0m\n");
                                         while (getchar() != '\n');
                                         continue;
                                     }else{

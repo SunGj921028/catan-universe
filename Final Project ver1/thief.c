@@ -302,7 +302,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf(RED"ERROR\e[0m\n");
+                    printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }else{
@@ -361,7 +361,7 @@ void thief_action(sPlayer * player, uint8_t is_ai, uint8_t player_number){
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf(RED"ERROR\e[0m\n");
+                    printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }else{

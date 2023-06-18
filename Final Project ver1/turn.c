@@ -49,7 +49,7 @@ void first_sec_turn(){
 						continue;
 					}else{
 						if(scanf("%c",&extra)==1 && extra != '\n'){
-							printf(RED"ERROR\e[0m\n");
+							printf(RED"Wrong Input!!\e[0m\n");
 							while (getchar() != '\n');
 							continue;
 						}
@@ -68,7 +68,7 @@ void first_sec_turn(){
 						continue;
 					}else{
 						if(scanf("%c",&extra)==1 && extra != '\n'){
-							printf(RED"ERROR\e[0m\n");
+							printf(RED"Wrong Input!!\e[0m\n");
 							while (getchar() != '\n');
 							continue;
 						}
@@ -178,7 +178,7 @@ void first_sec_turn(){
 						continue;
 					}else{
 						if(scanf("%c",&extra)==1 && extra != '\n'){
-							printf(RED"ERROR\e[0m\n");
+							printf(RED"Wrong Input!!\e[0m\n");
 							while (getchar() != '\n');
 							continue;
 						}
@@ -197,7 +197,7 @@ void first_sec_turn(){
 						continue;
 					}else{
 						if(scanf("%c",&extra)==1 && extra != '\n'){
-							printf(RED"ERROR\e[0m\n");
+							printf(RED"Wrong Input!!\e[0m\n");
 							while (getchar() != '\n');
 							continue;
 						}

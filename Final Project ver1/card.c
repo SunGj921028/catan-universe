@@ -169,7 +169,7 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf(RED"ERROR\e[0m\n");
+                    printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }
@@ -194,7 +194,7 @@ int32_t knight_card(sPlayer * player,uint8_t player_number,uint8_t is_ai){
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf(RED"ERROR\e[0m\n");
+                    printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }
@@ -256,7 +256,7 @@ void harvest_card(sPlayer * player, uint8_t p, uint8_t is_ai)
                     continue;
                 }else{
                     if(scanf("%c",&extra)==1 && extra != '\n'){
-                        printf(RED"ERROR\e[0m\n");
+                        printf(RED"Wrong Input!!\e[0m\n");
                         while (getchar() != '\n');
                         continue;
                     }
@@ -341,7 +341,7 @@ void build_card(sPlayer * player,uint8_t player_number,uint8_t is_ai)
                     continue;
                 }else{
                     if(scanf("%c",&extra)==1 && extra != '\n'){
-                        printf(RED"ERROR\e[0m\n");
+                        printf(RED"Wrong Input!!\e[0m\n");
                         while (getchar() != '\n');
                         continue;
                     }
@@ -393,7 +393,7 @@ void steal_card(sPlayer * player1,sPlayer * player2, sPlayer * player3, sPlayer 
                 continue;
             }else{
                 if(scanf("%c",&extra)==1 && extra != '\n'){
-                    printf(RED"ERROR\e[0m\n");
+                    printf(RED"Wrong Input!!\e[0m\n");
                     while (getchar() != '\n');
                     continue;
                 }
