@@ -542,21 +542,40 @@ void trade_player(uint8_t p, uint8_t is_ai){
         }
     }else{
         uint8_t count = 0;
+        int32_t sum = 0;
         while(count<5){
             for(int i=0;i<5;i++){
                 resource_give[i] = rand() % 1;
             }
+            for(int i=0;i<5;i++){
+                sum += resource_give[i];
+            }
+            if(sum==0){
+                count++;
+                continue;
+            }
             if(judge_player_trade(resource_give,resource_get,p_commit,0,0)){
                 break;
             }else{
-                printf(RED"You don't have enough resource!!\e[0m\n");
+                //printf(RED"You don't have enough resource!!\e[0m\n");
                 count++;
                 continue;
             }
             //usleep(500000);
         }
-        for(int i=0;i<5;i++){
-            resource_get[i] = rand() % 1;
+        while(1){
+            for(int i=0;i<5;i++){
+                resource_get[i] = rand() % 1;
+            }
+            sum = 0;
+            for(int i=0;i<5;i++){
+                sum += res_get[i];
+            }
+            if(sum==0){
+                continue;
+            }else{
+                break;
+            }
         }
         int32_t player_cho = 0;
         while(1){

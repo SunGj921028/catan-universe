@@ -90,7 +90,7 @@ void get_develop_card(sPlayer * player, uint8_t player_number){
     resource[4] += 1;
     //printf("%u %u %u %u\n",player->knight,player->harvest_card,player->build_card,player->steal_card);
     map_log_update(player_number,"buy a develop card!!",-1);
-    PASS;
+    //PASS;
     keep_index++;
     develop_index++;
     REFRESH

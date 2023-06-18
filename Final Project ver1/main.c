@@ -142,7 +142,7 @@ int main(int argc, char *argv[]){
             Longest_Player();
             REFRESH
             print_surprise(count%5);
-            PASS;
+            //PASS;
             count += 1;
             //print_init(count%5);
             if(count == 5) {count = 1;}

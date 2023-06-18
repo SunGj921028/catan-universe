@@ -222,6 +222,7 @@ void player_move(){
                 REFRESH
                 break;
             case 2:
+                PASS;
                 //upgrade
                 if(!judge_build(p1,2,1,&can_build[0])){
                     REFRESH
