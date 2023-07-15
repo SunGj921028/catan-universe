@@ -1,0 +1,48 @@
+//請一開始就呼叫，沒有它就沒有整個地圖。
+void map_init();
+
+
+// printer_mood 有四個輸入值:
+//    0 最基本print，會
+//    1 print點位編號、建造村莊或城市使用
+//    2 print道路編號、建造道路使用
+//    3 print板塊編號、移動強盜使用
+int32_t map_print(int8_t printer_mood);
+
+
+// player_ID 1~4  玩家編號
+// point_ID  0~53 點位編號
+// init_time 有四個輸入值:
+//    0 正常使用
+//    1 第一輪放置村莊使用
+//    2 第二輪放置村莊使用，會在 init_build_take 回傳此玩家該拿什麼資源幾張卡
+// 會自動檢測村莊會不會沒有道路連接，是否距離其他村莊太近
+int32_t build_village(int32_t player_ID, int32_t point_ID, int8_t init_time);
+int8_t init_build_take[5];
+
+
+// player_ID 1~4  玩家編號
+// point_ID  0~53 點位編號
+// 會自動檢測玩家選擇的地點是否為自己的村莊
+int32_t village_upgrade(int32_t player_ID,int32_t point_ID);
+
+
+// player_ID 1~4  玩家編號
+// point_ID  0~71 道路編號
+// 會自動檢測該道路是否能與自己的道路相連、以及是否有村莊相連
+int32_t build_road(int32_t player_ID, int32_t road_ID);
+
+// check!!
+// dice_number 2~12
+// *harvest_resource_2x5 一個2*5 array的起點 (&array[0][0])
+// *harvest_resource_2x5 的回傳結果如下:
+//    資源編號 | 玩家1拿幾張 | 玩家2拿幾張 ...
+//    如果 資源編號==-1 則代表此行無資源獲取
+int32_t harvest(int32_t dice_number,int32_t *harvest_resource_2x5);
+
+
+// block_id  0~19
+// *nearby_player_5x1 一個5*1 array的起點 (&array[0])
+// *nearby_player_5x1 的回傳結果如下:
+//    0 | 玩家1是否在附近(T=1, F=0) | 玩家2是否在附近(T=1, F=0) ...
+int32_t move_robbor(int32_t block_id,int32_t *nearby_player_5x1);
