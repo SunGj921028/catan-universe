@@ -1,3 +1,6 @@
-# Final_Project
-CSIE2 Final Project
-檔案放置處>~<
+# CISE2 Final_Project
+# Catan Game
+This is a Board Game made in C language as Catan Universe!
+
+<br />
+
