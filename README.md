@@ -1,8 +1,8 @@
 # CSIE2 Final_Project
 # Catan Game
 This is a Board Game made in C language as Catan Universe!
-[![Contributors][contributors-shield]][contributors-url]
-[![Issues][issues-shield]][issues-url]
+![](https://img.shields.io/github/stars/hsiangfeng/README-Example-Template.svg)｜![](https://img.shields.io/github/forks/hsiangfeng/README-Example-Template.svg)｜![](https://img.shields.io/github/issues-pr/hsiangfeng/README-Example-Template.svg)｜![](https://img.shields.io/github/issues/hsiangfeng/README-Example-Template.svg)
+
 ***
 ### **Environment Set**
 1. Linux System
