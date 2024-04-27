@@ -47,8 +47,10 @@ void score(uint8_t p){
     if((player->final_score) >= 10){
         if(p==1){
             printf(RED"You win this game!!\e[0m\n");
+            exit(0);
         }else{
             printf(RED"Player %d win this game!!!\e[0m\n",p);
+            exit(0);
         }
     }
     return;
