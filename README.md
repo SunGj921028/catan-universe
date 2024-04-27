@@ -20,7 +20,7 @@ make
 ```sh
 .catan
 ```
-
+***
 ### Folder description
 
 ```
@@ -49,7 +49,12 @@ filetree
 │  ├── phase.h
 │  ├── catan
 ```
+***
 ### Work Table
+| 傅靖嘉 | 鄭元翔 | 郭建辰 | 古承穎 | 
+|:------------|:-------------:|-------------:|-------------:|
+| Cell 1      |   Centered    |        $1600 |        $1600 |
+| Cell 2      |    Cell 3     |          $12 |          $12 |
 
 
 ### Feel Free to Contact Us
