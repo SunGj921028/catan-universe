@@ -1,6 +1,8 @@
 # CSIE2 Final_Project
 # Catan Game
 This is a Board Game made in C language as Catan Universe!
+[![Contributors][contributors-shield]][contributors-url]
+[![Issues][issues-shield]][issues-url]
 ***
 ### **Environment Set**
 1. Linux System
