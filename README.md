@@ -8,6 +8,7 @@ This is a Board Game made in C language as Catan Universe!
 2. Make sure you have C Language installed
 3. Clone the repo
 ***
+
 ### **How to play this Game**
 #### Clone this repo
 ```sh
@@ -21,8 +22,9 @@ make
 ```sh
 .catan
 ```
+
 ***
-### Folder description
+### Folder description 📂
 
 ```
 filetree 
@@ -50,11 +52,13 @@ filetree
 │  ├── phase.h
 │  ├── catan
 ```
+
 ***
 ### Watch our Co-edited notes
-[link](https://adaptive-poinsettia-e06.notion.site/3b76b9a058314a4da89247b2a264df95?pvs=4)
+[Notion](https://adaptive-poinsettia-e06.notion.site/3b76b9a058314a4da89247b2a264df95?pvs=4)
 ***
-### Work Table
+
+### Work Table 💼
 - **傅靖嘉**
      * Project Manager, 整體程式邏輯架構, 發展卡部分功能實作, 玩家與AI設計, 選單介面設計, 交易功能實作, 盜賊功能實作, 資源系統實作(收成..), 每回合抽卡判定
 - **鄭元翔**
@@ -64,4 +68,4 @@ filetree
 - **古承穎**
      * 骰子畫面功能實作, 發展卡洗牌功能, 遊戲測試
 
-### Feel Free to Contact Us💬
+### Feel Free to Contact Us 💬
