@@ -1,7 +1,6 @@
 # CSIE2 Final_Project
 # Catan Game
 This is a Board Game made in C language as Catan Universe!
-![](https://img.shields.io/github/stars/hsiangfeng/README-Example-Template.svg)｜![](https://img.shields.io/github/forks/hsiangfeng/README-Example-Template.svg)｜![](https://img.shields.io/github/issues-pr/hsiangfeng/README-Example-Template.svg)｜![](https://img.shields.io/github/issues/hsiangfeng/README-Example-Template.svg)
 
 ***
 ### **Environment Set**
@@ -53,7 +52,8 @@ filetree
 ```
 ***
 ### Work Table
-| 傅靖嘉 | Project Manager, |
+* 傅靖嘉
+      * Project Manager
 | 鄭元翔 | 
 | 郭建辰 | 
 | 古承穎 | 
