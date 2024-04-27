@@ -64,4 +64,4 @@ filetree
 - **古承穎**
      * 骰子畫面功能實作, 發展卡洗牌功能, 遊戲測試
 
-### Feel Free to Contact Us
+### Feel Free to Contact Us💬
