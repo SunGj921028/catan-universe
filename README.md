@@ -52,11 +52,14 @@ filetree
 ```
 ***
 ### Work Table
-* 傅靖嘉
-      * Project Manager
-| 鄭元翔 | 
-| 郭建辰 | 
-| 古承穎 | 
+- **傅靖嘉**
+     * Project Manager
+- **鄭元翔**
+     * Project Manager
+- **郭建辰**
+     * Project Manager
+- **古承穎**
+     * Project Manager
 
 
 ### Feel Free to Contact Us
