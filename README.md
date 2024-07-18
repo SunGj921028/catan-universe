@@ -14,7 +14,7 @@ This is a Board Game made in C language as Catan Universe!
 ```sh
 git clone https://github.com/SunGj921028/CSIE-Final_Project.git
 ```
-#### Run the make command in the folder named catan_universe
+#### Run the make command in the folder /catan_universe
 ```sh
 make
 ```
