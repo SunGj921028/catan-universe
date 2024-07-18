@@ -1,5 +1,5 @@
 # CSIE2 Final_Project
-# Catan Game
+# Catan Board Game
 This is a Board Game made in C language as Catan Universe!
 
 ***
