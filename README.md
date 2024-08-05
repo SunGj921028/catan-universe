@@ -2,6 +2,10 @@
 # Catan Board Game
 This is a Board Game made in C language as Catan Universe!
 
+## Game View
+![螢幕擷取畫面 2024-04-29 192751](https://github.com/user-attachments/assets/1bd2fedf-0592-46b4-bb22-ea45340ee878)
+
+
 ***
 ### **Environment Set**
 1. Linux System
